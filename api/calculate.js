@@ -101,7 +101,12 @@ export default async function handler(req, res) {
         precio_calculado: round(precioTotal, 2), tarifa_hora: round(tarifaHora, 2),
         relacion_smi: relacionSMI, pago_auditoria: false,
       }),
-    }).catch(err => console.error('[Legacy Supabase] Error:', err.message));
+    }).then(async r => {
+  if (!r.ok) {
+    const txt = await r.text();
+    console.error('[Legacy Supabase] Error insert:', r.status, txt);
+  }
+}).catch(err => console.error('[Legacy Supabase] Error:', err.message));
   }
 
   return res.status(200).json({
