@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora Legacy v2.5 — Pricing Profesional</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --obsidian:   #050505;
+      --carbon:     #0D0D0D;
+      --surface:    #141414;
+      --surface2:   #191919;
+      --border:     #1F1F1F;
+      --border2:    #2A2A2A;
+      --subtle:     #6B7280;
+      --text:       #D1D5DB;
+      --white:      #F9FAFB;
+      --red:        #E31E24;
+      --red-hover:  #FF2D34;
+      --red-dim:    #1A0608;
+      --red-glow:   rgba(227,30,36,0.15);
+      --green:      #22C55E;
+      --green-dim:  #052010;
+      --gold:       #C9A84C;
+      --gold-dim:   #1A1408;
+      --gold-glow:  rgba(201,168,76,0.18);
+      --gold-border:rgba(201,168,76,0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--obsidian); font-family: 'Urbanist', sans-serif; color: var(--text); min-height: 100vh; }
+
+    /* ── Fields ─────────────────────────────────── */
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field-label { font-size: 11px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--subtle); line-height: 1.4; }
+    .field-label .req { color: var(--red); margin-left: 2px; }
+
+    .input-wrap { position: relative; display: flex; align-items: center; }
+    .currency-prefix { position: absolute; left: 14px; font-size: 14px; font-weight: 600; color: var(--subtle); pointer-events: none; z-index: 1; user-select: none; }
+    .has-prefix .form-input { padding-left: 36px; }
+
+    .form-input, .form-select {
+      width: 100%; background: var(--carbon); border: 1px solid var(--border);
+      color: var(--white); border-radius: 10px; padding: 14px 16px; font-size: 15px;
+      font-weight: 500; font-family: 'Urbanist', sans-serif;
+      transition: border-color .18s, box-shadow .18s, background .18s;
+      appearance: none; -webkit-appearance: none;
+    }
+    .form-input::placeholder { color: #374151; font-weight: 400; }
+    .form-input:focus, .form-select:focus {
+      outline: none; border-color: var(--red); box-shadow: 0 0 0 3px var(--red-glow); background: #0F0F0F;
+    }
+    .form-select option { background: #141414; color: var(--white); }
+    .form-select:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .select-wrap { position: relative; }
+    .select-arrow { pointer-events: none; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
+
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+
+    /* ── Section blocks ──────────────────────────── */
+    .section-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 20px; }
+    .section-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+    .section-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+    .section-title { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--subtle); }
+
+    /* ── Pill buttons ────────────────────────────── */
+    .pill-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill-btn {
+      flex: 1; min-width: 0; padding: 11px 10px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--carbon); color: var(--subtle);
+      font-family: 'Urbanist', sans-serif; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all .15s; text-align: center; white-space: nowrap;
+    }
+    .pill-btn:hover { border-color: #3A3A3A; color: var(--text); }
+    .pill-btn.active { border-color: var(--red); background: var(--red-dim); color: var(--white); box-shadow: 0 0 0 2px var(--red-glow); }
+
+    /* ── Conditional panels ──────────────────────── */
+    .conditional-panel {
+      display: none; flex-direction: column; gap: 14px; margin-top: 14px;
+      padding-top: 14px; border-top: 1px solid var(--border);
+      animation: slideDown .22s ease both;
+    }
+    .conditional-panel.visible { display: flex; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .sub-section-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--subtle); padding: 4px 0 2px; }
+    .sub-section-divider { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--subtle); padding: 10px 0 4px; border-top: 1px solid var(--border); margin-top: 6px; }
+
+    /* ── Contraste card ──────────────────────────── */
+    .contraste-card { background: var(--surface2); border: 1px solid var(--border2); border-radius: 12px; padding: 18px 20px; }
+
+    /* ── CTA button ──────────────────────────────── */
+    .btn-calculate {
+      width: 100%; background: var(--red); color: #fff; font-family: 'Urbanist', sans-serif;
+      font-size: 14px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+      border: none; border-radius: 10px; padding: 17px; cursor: pointer;
+      transition: background .18s, box-shadow .18s, transform .1s;
+    }
+    .btn-calculate:hover { background: var(--red-hover); box-shadow: 0 0 28px rgba(227,30,36,.4); }
+    .btn-calculate:active { transform: scale(.99); }
+    .btn-calculate:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* ── Results ─────────────────────────────────── */
+    .result-wrap { display: none; flex-direction: column; gap: 16px; animation: fadeUp .35s ease both; }
+    .result-wrap.visible { display: flex; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    .result-hero { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .result-hero-top { padding: 28px 24px 24px; text-align: center; background: linear-gradient(160deg, #0F0F0F 0%, #141414 100%); }
+    .result-service-name { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--red); margin-bottom: 12px; }
+    .result-price-label { font-size: 11px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--subtle); margin-bottom: 8px; }
+    .result-price { font-size: clamp(44px,12vw,72px); font-weight: 800; color: var(--white); letter-spacing: -.03em; line-height: 1; }
+    .result-price-sub { font-size: 13px; color: var(--subtle); margin-top: 8px; }
+
+    .breakdown { padding: 18px 24px; border-top: 1px solid var(--border); }
+    .breakdown-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--subtle); margin-bottom: 14px; }
+    .breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #141414; font-size: 14px; }
+    .breakdown-row:last-child { border-bottom: none; }
+    .breakdown-row .val { font-weight: 600; color: var(--white); }
+    .breakdown-total-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0 2px; margin-top: 6px; border-top: 1px solid var(--border2); font-size: 16px; font-weight: 800; }
+    .breakdown-total-row .val { color: var(--red); }
+
+    /* ── Diagnóstico SMI ─────────────────────────── */
+    .diagnostico-card { border-radius: 12px; padding: 18px 20px; border: 1px solid var(--border2); background: var(--surface2); }
+    .diagnostico-card.alerta { background: var(--red-dim); border-color: rgba(227,30,36,.35); }
+    .diagnostico-card.ok { background: var(--green-dim); border-color: rgba(34,197,94,.25); }
+    .diagnostico-smi-value { font-size: 28px; font-weight: 800; letter-spacing: -.02em; }
+    .diagnostico-smi-value.alerta { color: #F87171; }
+    .diagnostico-smi-value.ok { color: var(--green); }
+
+    /* ── Contraste resultado ─────────────────────── */
+    .contraste-result { border-radius: 12px; padding: 18px 20px; border: 1px solid; }
+    .contraste-result.under { background: var(--red-dim); border-color: rgba(227,30,36,.3); }
+    .contraste-result.over  { background: var(--green-dim); border-color: rgba(34,197,94,.25); }
+    .contraste-result.neutral { background: var(--surface2); border-color: var(--border2); }
+    .contraste-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+    .contraste-icon-big { font-size: 20px; margin-top: 1px; }
+    .contraste-value { font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
+    .contraste-desc { font-size: 13px; color: var(--subtle); line-height: 1.5; }
+
+    /* ── Upsell card ─────────────────────────────── */
+    .upsell-card {
+      background: linear-gradient(135deg, #0A0A0A 0%, #0F0D07 100%);
+      border: 1px solid var(--gold-border);
+      border-radius: 16px;
+      padding: 24px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .upsell-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .upsell-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--gold-dim); border: 1px solid var(--gold-border);
+      border-radius: 20px; padding: 4px 12px; margin-bottom: 16px;
+    }
+    .upsell-badge span { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); }
+    .upsell-title { font-size: 18px; font-weight: 800; color: var(--white); line-height: 1.3; letter-spacing: -.01em; margin-bottom: 10px; }
+    .upsell-title em { color: var(--gold); font-style: normal; }
+    .upsell-body { font-size: 13px; color: #9CA3AF; line-height: 1.7; margin-bottom: 20px; }
+    .upsell-body strong { color: var(--text); font-weight: 600; }
+    .btn-upsell {
+      display: block; width: 100%; padding: 16px;
+      background: linear-gradient(135deg, #B8962A 0%, #C9A84C 50%, #B8962A 100%);
+      color: #000; font-family: 'Urbanist', sans-serif; font-size: 14px; font-weight: 800;
+      letter-spacing: .05em; text-align: center; text-decoration: none;
+      border-radius: 10px; border: none; cursor: pointer;
+      transition: opacity .18s, box-shadow .18s;
+      box-shadow: 0 4px 24px rgba(201,168,76,.25);
+    }
+    .btn-upsell:hover { opacity: .9; box-shadow: 0 4px 32px rgba(201,168,76,.45); }
+    .upsell-guarantee { display: flex; align-items: center; gap: 6px; margin-top: 12px; justify-content: center; }
+    .upsell-guarantee span { font-size: 11px; color: var(--subtle); }
+
+    /* ── Warning card ────────────────────────────── */
+    .warning-card { background: #0A0A0A; border: 1px solid rgba(227,30,36,.25); border-radius: 14px; padding: 22px 20px; }
+    .warning-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .warning-title { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--red); }
+    .warning-body { font-size: 13px; line-height: 1.75; color: #9CA3AF; font-style: italic; }
+    .warning-body strong { color: var(--text); font-style: normal; font-weight: 600; }
+
+    /* ── Reset button ────────────────────────────── */
+    .btn-reset {
+      width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--border);
+      background: var(--carbon); color: var(--subtle); font-family: 'Urbanist', sans-serif;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: color .15s, border-color .15s; letter-spacing: .02em;
+    }
+    .btn-reset:hover { color: var(--text); border-color: var(--border2); }
+
+    /* ── Error ───────────────────────────────────── */
+    .error-card { background: var(--red-dim); border: 1px solid rgba(227,30,36,.4); border-radius: 10px; padding: 13px 16px; font-size: 14px; color: #FCA5A5; display: none; }
+    .error-card.visible { display: block; animation: fadeUp .2s ease both; }
+
+    /* ── Spinner ─────────────────────────────────── */
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.25); border-top-color: #fff; border-radius: 50%; animation: spin .65s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Logo ────────────────────────────────────── */
+    .logo-mark { width: 28px; height: 28px; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    /* ── Lead capture highlight ──────────────────── */
+    .lead-block { background: var(--surface); border: 1px solid #252525; border-radius: 14px; padding: 22px 20px; position: relative; overflow: hidden; }
+    .lead-block::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--red), #FF6B6B, var(--red)); }
+
+    @media (max-width: 380px) { .pill-btn { font-size: 12px; padding: 10px 6px; } }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ──────────────────────────────────────────────────── -->
+  <header style="border-bottom:1px solid var(--border);padding:16px 20px;">
+    <div style="max-width:540px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="logo-mark">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 12L7 2L12 12" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3.5 9H10.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <span style="color:var(--white);font-weight:800;font-size:16px;letter-spacing:-.01em;">Legacy</span>
+          <span style="color:var(--subtle);font-weight:400;font-size:16px;"> Calculator</span>
+        </div>
+      </div>
+      <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--subtle);background:var(--surface);border:1px solid var(--border);padding:4px 10px;border-radius:20px;">v2.5</span>
+    </div>
+  </header>
+
+  <!-- ── MAIN ────────────────────────────────────────────────────── -->
+  <main style="max-width:540px;margin:0 auto;padding:32px 16px 60px;">
+
+    <!-- Hero -->
+    <div style="margin-bottom:32px;">
+      <p style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:10px;">Herramienta Profesional de Pricing</p>
+      <h1 style="font-size:clamp(26px,7vw,36px);font-weight:800;color:var(--white);line-height:1.15;letter-spacing:-.02em;margin-bottom:10px;">
+        Tu precio justo,<br/>calculado con precisión.
+      </h1>
+      <p style="font-size:14px;color:var(--subtle);line-height:1.65;">
+        Configura tu servicio en segundos. La fórmula se aplica de forma segura en el servidor — tu propiedad intelectual protegida.
+      </p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!--  FORMULARIO                                                 -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <form id="calcForm" novalidate style="display:flex;flex-direction:column;gap:14px;">
+
+      <!-- ── BLOQUE 0: CAPTURA DE LEADS ──────────────────────────── -->
+      <div class="lead-block">
+        <div class="section-eyebrow">
+          <div class="section-dot"></div>
+          <span class="section-title">Tus datos de contacto</span>
+        </div>
+        <p style="font-size:12px;color:var(--subtle);line-height:1.6;margin-bottom:18px;">
+          Necesarios para enviarte el análisis y acceder a recursos exclusivos de Legacy.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+
+          <div class="field">
+            <label class="field-label" for="email">Correo electrónico<span class="req">*</span></label>
+            <input class="form-input" type="email" id="email" name="email"
+              placeholder="tu@correo.com" autocomplete="email" required />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="instagram">Instagram<span class="req">*</span></label>
+            <input class="form-input" type="text" id="instagram" name="instagram"
+              placeholder="@tu_usuario" autocomplete="off" required />
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── BLOQUE 1: UBICACIÓN ─────────────────────────────────── -->
+      <div class="section-block">
+        <div class="section-eyebrow">
+          <div class="section-dot"></div>
+          <span class="section-title">Ubicación y mercado</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+
+          <!-- País -->
+          <div class="field">
+            <label class="field-label" for="pais">País<span class="req">*</span></label>
+            <div class="select-wrap">
+              <select class="form-select" id="pais" name="pais" required>
+                <option value="" disabled selected>Selecciona tu país</option>
+                <option value="es">🇪🇸 España</option>
+                <option value="us">🇺🇸 Estados Unidos</option>
+                <option value="co">🇨🇴 Colombia</option>
+                <option value="mx">🇲🇽 México</option>
+                <option value="do">🇩🇴 República Dominicana</option>
+                <option value="ve">🇻🇪 Venezuela</option>
+                <option value="pe">🇵🇪 Perú</option>
+                <option value="ar">🇦🇷 Argentina</option>
+                <option value="cl">🇨🇱 Chile</option>
+                <option value="ec">🇪🇨 Ecuador</option>
+                <option value="other">🌍 Otro</option>
+              </select>
+              <span class="select-arrow"><svg width="11" height="6" viewBox="0 0 11 6" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+          </div>
+
+          <!-- Ciudad / Estado / Provincia (dependiente) -->
+          <div class="field">
+            <label class="field-label" for="ciudadEstado">Ciudad, Estado o Provincia<span class="req">*</span></label>
+            <div class="select-wrap">
+              <select class="form-select" id="ciudadEstado" name="ciudadEstado" required disabled>
+                <option value="" disabled selected>— Selecciona primero el país —</option>
+              </select>
+              <span class="select-arrow"><svg width="11" height="6" viewBox="0 0 11 6" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+          </div>
+
+          <!-- SMI -->
+          <div class="field">
+            <label class="field-label" for="smi">
+              SMI (Salario Mínimo Interprofesional) mensual
+              <span id="smiCurrencyLabel" style="font-size:10px;font-weight:500;text-transform:none;letter-spacing:0;color:#4B5563;"></span>
+              <span class="req">*</span>
+            </label>
+            <div class="input-wrap has-prefix">
+              <span class="currency-prefix" id="currencyPrefix">€</span>
+              <input class="form-input" type="number" id="smi" name="smi"
+                placeholder="Ej: 1134" min="0" step="1" required />
+            </div>
+            <p id="smiHint" style="font-size:12px;color:#374151;margin-top:3px;line-height:1.5;"></p>
+          </div>
+
+          <!-- Zona -->
+          <div class="field">
+            <label class="field-label" for="zona">Índice de zona<span class="req">*</span></label>
+            <div class="select-wrap">
+              <select class="form-select" id="zona" name="zona" required>
+                <option value="" disabled selected>Selecciona tu zona</option>
+                <option value="premium">Premium — Centro / zona exclusiva</option>
+                <option value="media">Media — Periferia / barrio estándar</option>
+                <option value="baja">Baja — Pueblo / zona rural</option>
+              </select>
+              <span class="select-arrow"><svg width="11" height="6" viewBox="0 0 11 6" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── BLOQUE 2: PERFIL PROFESIONAL ───────────────────────── -->
+      <div class="section-block">
+        <div class="section-eyebrow">
+          <div class="section-dot"></div>
+          <span class="section-title">Tu perfil profesional</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+
+          <div class="field">
+            <label class="field-label" for="nivel">Nivel técnico<span class="req">*</span></label>
+            <div class="select-wrap">
+              <select class="form-select" id="nivel" name="nivel" required>
+                <option value="" disabled selected>Selecciona tu nivel</option>
+                <option value="junior">Junior — En formación activa</option>
+                <option value="avanzado">Avanzado — Experiencia consolidada</option>
+                <option value="elite">Élite — Referente del sector</option>
+              </select>
+              <span class="select-arrow"><svg width="11" height="6" viewBox="0 0 11 6" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="estructura">Estructura de trabajo<span class="req">*</span></label>
+            <div class="select-wrap">
+              <select class="form-select" id="estructura" name="estructura" required>
+                <option value="" disabled selected>¿Dónde trabajas?</option>
+                <option value="casa">En casa / estudio propio</option>
+                <option value="salon">En salón (con gastos de local)</option>
+              </select>
+              <span class="select-arrow"><svg width="11" height="6" viewBox="0 0 11 6" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── BLOQUE 3: EL SERVICIO ───────────────────────────────── -->
+      <div class="section-block">
+        <div class="section-eyebrow">
+          <div class="section-dot"></div>
+          <span class="section-title">El servicio</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+
+          <div class="field">
+            <label class="field-label" for="nombreServicio">Nombre del servicio<span class="req">*</span></label>
+            <input class="form-input" type="text" id="nombreServicio" name="nombreServicio"
+              placeholder="Ej: Knotless Medium con Boho" maxlength="80" required />
+          </div>
+
+          <!-- Pills de tipo de trenzado -->
+          <div class="field">
+            <label class="field-label">Tipo de trenzado<span class="req">*</span></label>
+            <div class="pill-group" id="pillGroup">
+              <button type="button" class="pill-btn" data-tipo="pegadas">Pegadas</button>
+              <button type="button" class="pill-btn" data-tipo="sueltas">Sueltas</button>
+              <button type="button" class="pill-btn" data-tipo="fulani">Fulani Braids</button>
+            </div>
+            <input type="hidden" id="tipoTrenzado" name="tipoTrenzado" value="" />
+          </div>
+
+          <!-- ── Panel: PEGADAS ───────────────────────────── -->
+          <div class="conditional-panel" id="panel-pegadas">
+            <div class="field">
+              <label class="field-label" for="tipoPegadas">Tipo de pegadas<span class="req">*</span></label>
+              <div class="select-wrap">
+                <select class="form-select" id="tipoPegadas" name="tipoPegadas">
+                  <option value="" disabled selected>Selecciona tipo</option>
+                  <option value="cornrows">Cornrows normales</option>
+                  <option value="twist">Twist</option>
+                  <option value="barrel_twist">Barrel Twist</option>
+                </select>
+                <span class="select-arrow"><svg width="11" height="6" viewBox="0 0 11 6" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="complejidadPegadas">Complejidad del diseño<span class="req">*</span></label>
+              <div class="select-wrap">
+                <select class="form-select" id="complejidadPegadas" name="complejidadPegadas">
+                  <option value="" disabled selected>Selecciona complejidad</option>
+                  <option value="basico">Trenzados básicos</option>
+                  <option value="con_disenos">Con diseños geométricos / artísticos</option>
+                </select>
+                <span class="select-arrow"><svg width="11" height="6" viewBox="0 0 11 6" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="extensionesPegadas">Extensiones<span class="req">*</span></label>
+              <div class="select-wrap">
+                <select class="form-select" id="extensionesPegadas" name="extensionesPegadas">
+                  <option value="" disabled selected>¿Con extensiones?</option>
+                  <option value="con">Con extensiones</option>
+                  <option value="sin">Sin extensiones</option>
+                </select>
+                <span class="select-arrow"><svg width="11" height="6" viewBox="0 0 11 6" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Panel: SUELTAS ───────────────────────────── -->
+          <div class="conditional-panel" id="panel-sueltas">
+            <div class="field">
+              <label class="field-label" for="tamanoSueltas">Tamaño<span class="req">*</span></label>
+              <div class="select-wrap">
+                <select class="form-select" id="tamanoSueltas" name="tamanoSueltas">
+                  <option value="" disabled selected>Selecciona tamaño</option>
+                  <option value="jumbo">Jumbo — Extra gruesas</option>
+                  <option value="large">Large — Gruesas</option>
+                  <option value="lardium">Lardium — Intermedias</option>
+                  <option value="medium">Medium — Medianas</option>
+                  <option value="small">Small — Finas</option>
+                </select>
+                <span class="select-arrow"><svg width="11" height="6" viewBox="0 0 11 6" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="tipoSueltas">Técnica<span class="req">*</span></label>
+              <div class="select-wrap">
+                <select class="form-select" id="tipoSueltas" name="tipoSueltas">
+                  <option value="" disabled selected>Selecciona técnica</option>
+                  <option value="normales">Normales</option>
+                  <option value="twist">Twist</option>
+                </select>
+                <span class="select-arrow"><svg width="11" height="6" viewBox="0 0 11 6" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="bohoSueltas">Efecto Boho (rizos)<span class="req">*</span></label>
+              <div class="select-wrap">
+                <select class="form-select" id="bohoSueltas" name="bohoSueltas">
+                  <option value="" disabled selected>¿Añades rizos Boho?</option>
+                  <option value="si">Sí — Con efecto Boho</option>
+                  <option value="no">No — Sin efecto Boho</option>
+                </select>
+                <span class="select-arrow"><svg width="11" height="6" viewBox="0 0 11 6" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Panel: FULANI ────────────────────────────── -->
+          <div class="conditional-panel" id="panel-fulani">
+            <div class="sub-section-label">Parte de atrás — Sueltas</div>
+            <div class="field">
+              <label class="field-label" for="tamanoFulaniAtras">Tamaño de las sueltas<span class="req">*</span></label>
+              <div class="select-wrap">
+                <select class="form-select" id="tamanoFulaniAtras" name="tamanoFulaniAtras">
+                  <option value="" disabled selected>Selecciona tamaño</option>
+                  <option value="jumbo">Jumbo</option>
+                  <option value="large">Large</option>
+                  <option value="lardium">Lardium</option>
+                  <option value="medium">Medium</option>
+                  <option value="small">Small</option>
+                </select>
+                <span class="select-arrow"><svg width="11" height="6" viewBox="0 0 11 6" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </div>
+            </div>
+            <div class="sub-section-divider">Parte de delante — Pegadas</div>
+            <div class="field">
+              <label class="field-label" for="complejidadFulaniDelante">Complejidad de las pegadas<span class="req">*</span></label>
+              <div class="select-wrap">
+                <select class="form-select" id="complejidadFulaniDelante" name="complejidadFulaniDelante">
+                  <option value="" disabled selected>Selecciona complejidad</option>
+                  <option value="simples">Simples — pocas trenzas, sin adornos</option>
+                  <option value="medias">Medias — diseño definido con accesorios</option>
+                  <option value="elaboradas">Elaboradas — diseño intrincado y detallado</option>
+                </select>
+                <span class="select-arrow"><svg width="11" height="6" viewBox="0 0 11 6" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── BLOQUE 4: TIEMPO Y MATERIALES ──────────────────────── -->
+      <div class="section-block">
+        <div class="section-eyebrow">
+          <div class="section-dot"></div>
+          <span class="section-title">Tiempo y materiales</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+
+          <div class="field">
+            <label class="field-label" for="horas">Duración estimada del servicio (horas)<span class="req">*</span></label>
+            <input class="form-input" type="number" id="horas" name="horas"
+              placeholder="Ej: 4" min="0.5" step="0.5" required />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="materiales">
+              Coste de materiales y extensiones
+              <span id="matCurrLabel" style="font-size:10px;font-weight:500;text-transform:none;letter-spacing:0;color:#4B5563;"></span>
+              <span class="req">*</span>
+            </label>
+            <div class="input-wrap has-prefix">
+              <span class="currency-prefix" id="matPrefix">€</span>
+              <input class="form-input" type="number" id="materiales" name="materiales"
+                placeholder="0 si no aplica" min="0" step="0.01" required />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── BLOQUE 5: MÉTRICA DE CONTRASTE ─────────────────────── -->
+      <div class="contraste-card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <span style="font-size:14px;">📊</span>
+          <span style="font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--subtle);">Métrica de contraste</span>
+        </div>
+        <div class="field">
+          <label class="field-label" for="precioActual">
+            ¿Cuánto cobras actualmente por este servicio?
+            <span id="contrasteCurrLabel" style="font-size:10px;font-weight:500;text-transform:none;letter-spacing:0;color:#4B5563;"></span>
+            <span class="req">*</span>
+          </label>
+          <div class="input-wrap has-prefix">
+            <span class="currency-prefix" id="contrastePrefix">€</span>
+            <input class="form-input" type="number" id="precioActual" name="precioActual"
+              placeholder="Ej: 80" min="0" step="0.01" required />
+          </div>
+          <p style="font-size:12px;color:#374151;margin-top:4px;line-height:1.5;">
+            Pon 0 si es un servicio nuevo que todavía no has cobrado.
+          </p>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div class="error-card" id="errorCard"></div>
+
+      <!-- CTA -->
+      <button type="submit" class="btn-calculate" id="calcBtn">
+        Calcular mi precio justo
+      </button>
+
+    </form>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!--  PANTALLA DE RESULTADOS                                     -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div class="result-wrap" id="resultSection" style="margin-top:24px;">
+
+      <!-- Precio héroe -->
+      <div class="result-hero">
+        <div class="result-hero-top">
+          <p class="result-service-name" id="resServiceName"></p>
+          <p class="result-price-label">Precio total recomendado</p>
+          <p class="result-price" id="resTotal">—</p>
+          <p class="result-price-sub">Mano de obra + materiales incluidos</p>
+        </div>
+        <div class="breakdown">
+          <p class="breakdown-label">Desglose del cálculo</p>
+          <div class="breakdown-row">
+            <span style="color:var(--subtle);">Tarifa por hora</span>
+            <span class="val" id="resTarifaHora">—</span>
+          </div>
+          <div class="breakdown-row">
+            <span style="color:var(--subtle);">Mano de obra (<span id="resHorasLabel">—</span>h)</span>
+            <span class="val" id="resManoObra">—</span>
+          </div>
+          <div class="breakdown-row">
+            <span style="color:var(--subtle);">Materiales</span>
+            <span class="val" id="resMateriales">—</span>
+          </div>
+          <div class="breakdown-total-row">
+            <span style="color:var(--white);">Total</span>
+            <span class="val" id="resTotalBottom">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diagnóstico de Rendimiento Laboral (relacionSMI) -->
+      <div class="diagnostico-card" id="diagnosticoCard">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+          <span style="font-size:15px;">🔬</span>
+          <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);">Diagnóstico de Rendimiento Laboral</span>
+        </div>
+        <p style="font-size:13px;color:var(--subtle);margin-bottom:10px;line-height:1.6;">
+          Tus ingresos por hora en este peinado equivalen a
+        </p>
+        <p class="diagnostico-smi-value" id="diagSmiValue">—</p>
+        <p style="font-size:13px;color:var(--subtle);margin-top:4px;" id="diagSmiLabel">veces el SMI (Salario Mínimo Interprofesional) de tu país.</p>
+        <!-- Alerta sub-remuneración -->
+        <div id="diagAlerta" style="display:none;margin-top:14px;background:rgba(227,30,36,.12);border:1px solid rgba(227,30,36,.4);border-radius:8px;padding:12px 14px;">
+          <p style="font-size:13px;font-weight:700;color:#F87171;line-height:1.5;">
+            🚨 Alerta de Sub-remuneración: Estás ganando menos que el Salario Mínimo Interprofesional por hora. Esta tarifa no es sostenible.
+          </p>
+        </div>
+      </div>
+
+      <!-- Brecha de valoración -->
+      <div class="contraste-result" id="contrasteResult">
+        <div class="contraste-head">
+          <span class="contraste-icon-big" id="contrasteEmoji">📊</span>
+          <div>
+            <p style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:4px;">Brecha de valoración</p>
+            <p class="contraste-value" id="contrasteDiff">—</p>
+          </div>
+        </div>
+        <p class="contraste-desc" id="contrasteText"></p>
+      </div>
+
+      <!-- ── UPSELL CARD ──────────────────────────────────────────── -->
+      <div class="upsell-card">
+        <div class="upsell-badge">
+          <span style="font-size:12px;">✦</span>
+          <span>Auditoría Personalizada</span>
+        </div>
+        <h2 class="upsell-title">
+          ¿Quieres saber cómo solucionar este desfase?<br/>
+          Descarga tu Informe <em>"Auditoría Legacy"</em>
+        </h2>
+        <p class="upsell-body">
+          La estrategia exacta y paso a paso para <strong>subir tus precios sin perder clientes</strong>: desde cómo comunicarlo en redes hasta el guión para decírselo a tu clientela actual. Un informe en PDF generado con los datos reales que acabas de introducir.
+        </p>
+        <a href="#" class="btn-upsell">
+          Descargar mi Auditoría Personalizada — 9€
+        </a>
+        <div class="upsell-guarantee">
+          <span style="font-size:13px;">🔒</span>
+          <span>Pago seguro · Descarga inmediata · Garantía 14 días</span>
+        </div>
+      </div>
+
+      <!-- Nota de Realidad Legacy -->
+      <div class="warning-card">
+        <div class="warning-header">
+          <span style="font-size:16px;">⚠️</span>
+          <span class="warning-title">Nota de Realidad Legacy</span>
+        </div>
+        <p class="warning-body">
+          Este resultado es una <strong>guía matemática de lo que deberías cobrar</strong> para que tu tiempo y tu estructura sean rentables. El precio final es orientativo. Tu capacidad para cobrar esta cifra real depende directamente de <strong>cómo estés gestionando tus redes sociales, tu marketing, tu imagen de marca</strong> y, sobre todo, del <strong>público objetivo al que te estás dirigiendo</strong> y su disposición real a pagar por un servicio exclusivo. Usa este dato como tu <strong>brújula comercial</strong>.
+        </p>
+      </div>
+
+      <button type="button" class="btn-reset" onclick="resetForm()">← Nueva consulta</button>
+
+    </div>
+
+  </main>
+
+  <!-- ── FOOTER ──────────────────────────────────────────────────── -->
+  <footer style="border-top:1px solid var(--border);padding:24px 20px;text-align:center;">
+    <p style="font-size:11px;color:#374151;letter-spacing:.04em;">© 2025 Legacy Calculator · Herramienta exclusiva para profesionales del sector estético</p>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       LÓGICA DE FRONTEND
+       Solo UI: validación, condicionales, moneda, envío POST.
+       La fórmula NUNCA reside aquí.
+  ══════════════════════════════════════════════════════════════════ -->
+  <script>
+  (() => {
+    'use strict';
+
+    // ── Mapa de países: moneda + SMI + regiones ─────────────────────
+    const PAISES = {
+      es: {
+        simbolo: '€', codigo: 'EUR', smiLabel: 'EUR', smiDefault: 1134,
+        hint: 'España 2024: 1.134 €/mes',
+        regiones: ['Andalucía','Aragón','Asturias','Baleares','Canarias','Cantabria',
+          'Castilla-La Mancha','Castilla y León','Cataluña','Ceuta','Comunidad de Madrid',
+          'Comunidad Valenciana','Extremadura','Galicia','La Rioja','Melilla','Murcia',
+          'Navarra','País Vasco','Otra provincia']
+      },
+      us: {
+        simbolo: '$', codigo: 'USD', smiLabel: 'USD', smiDefault: 1256,
+        hint: 'USA 2024 (salario mínimo federal): ~1.256 USD/mes',
+        regiones: ['Alabama','Alaska','Arizona','California','Colorado','Connecticut',
+          'Florida','Georgia','Hawaii','Illinois','Maryland','Massachusetts','Michigan',
+          'Minnesota','Nevada','New Jersey','New York','North Carolina','Ohio','Oregon',
+          'Pennsylvania','Texas','Virginia','Washington','Wisconsin','Otro estado']
+      },
+      co: {
+        simbolo: '$', codigo: 'COP', smiLabel: 'COP', smiDefault: 1300000,
+        hint: 'Colombia 2024: ~1.300.000 COP/mes',
+        regiones: ['Antioquia','Atlántico','Bogotá D.C.','Bolívar','Boyacá',
+          'Caldas','Cauca','Cundinamarca','Córdoba','Huila','Magdalena',
+          'Meta','Nariño','Norte de Santander','Quindío','Risaralda',
+          'Santander','Sucre','Tolima','Valle del Cauca','Otro departamento']
+      },
+      mx: {
+        simbolo: '$', codigo: 'MXN', smiLabel: 'MXN', smiDefault: 2984,
+        hint: 'México 2024: ~2.984 MXN/mes',
+        regiones: ['Aguascalientes','Baja California','Chiapas','Chihuahua',
+          'Ciudad de México (CDMX)','Coahuila','Colima','Durango','Estado de México',
+          'Guanajuato','Guerrero','Hidalgo','Jalisco','Michoacán','Morelos',
+          'Nuevo León','Oaxaca','Puebla','Querétaro','Quintana Roo',
+          'San Luis Potosí','Sinaloa','Sonora','Tabasco','Tamaulipas',
+          'Tlaxcala','Veracruz','Yucatán','Zacatecas','Otro estado']
+      },
+      do: {
+        simbolo: 'RD$', codigo: 'DOP', smiLabel: 'DOP', smiDefault: 21000,
+        hint: 'Rep. Dominicana 2024: ~21.000 DOP/mes',
+        regiones: ['Azua','Baoruco','Barahona','Dajabón','Distrito Nacional',
+          'Duarte','Elías Piña','El Seibo','Espaillat','Hato Mayor',
+          'Hermanas Mirabal','Independencia','La Altagracia','La Romana',
+          'La Vega','Monte Cristi','Monte Plata','Monseñor Nouel',
+          'Pedernales','Peravia','Puerto Plata','Samaná','San Cristóbal',
+          'San José de Ocoa','San Juan','San Pedro de Macorís',
+          'Sánchez Ramírez','Santiago','Santiago Rodríguez',
+          'Santo Domingo','Valverde','Otra provincia']
+      },
+      ve: {
+        simbolo: 'Bs.', codigo: 'VES', smiLabel: 'VES', smiDefault: 130,
+        hint: 'Venezuela 2024: ~130 VES/mes (verificar)',
+        regiones: ['Amazonas','Anzoátegui','Apure','Aragua','Barinas',
+          'Bolívar','Carabobo','Cojedes','Delta Amacuro','Distrito Capital',
+          'Falcón','Guárico','Lara','Mérida','Miranda','Monagas',
+          'Nueva Esparta','Portuguesa','Sucre','Táchira','Trujillo',
+          'Vargas','Yaracuy','Zulia','Otro estado']
+      },
+      pe: {
+        simbolo: 'S/', codigo: 'PEN', smiLabel: 'PEN', smiDefault: 1025,
+        hint: 'Perú 2024: 1.025 S//mes',
+        regiones: ['Amazonas','Áncash','Apurímac','Arequipa','Ayacucho',
+          'Cajamarca','Callao','Cusco','Huancavelica','Huánuco','Ica',
+          'Junín','La Libertad','Lambayeque','Lima','Loreto','Madre de Dios',
+          'Moquegua','Pasco','Piura','Puno','San Martín','Tacna',
+          'Tumbes','Ucayali','Otra región']
+      },
+      ar: {
+        simbolo: '$', codigo: 'ARS', smiLabel: 'ARS', smiDefault: 180000,
+        hint: 'Argentina 2024: ~180.000 ARS/mes (verificar actualmente)',
+        regiones: ['Buenos Aires (Ciudad)','Buenos Aires (Provincia)','Catamarca',
+          'Chaco','Chubut','Córdoba','Corrientes','Entre Ríos','Formosa',
+          'Jujuy','La Pampa','La Rioja','Mendoza','Misiones','Neuquén',
+          'Río Negro','Salta','San Juan','San Luis','Santa Cruz','Santa Fe',
+          'Santiago del Estero','Tierra del Fuego','Tucumán','Otra provincia']
+      },
+      cl: {
+        simbolo: '$', codigo: 'CLP', smiLabel: 'CLP', smiDefault: 500000,
+        hint: 'Chile 2024: ~500.000 CLP/mes',
+        regiones: ['Arica y Parinacota','Tarapacá','Antofagasta','Atacama',
+          'Coquimbo','Valparaíso','Metropolitana de Santiago','O\'Higgins',
+          'Maule','Ñuble','Biobío','La Araucanía','Los Ríos','Los Lagos',
+          'Aysén','Magallanes','Otra región']
+      },
+      ec: {
+        simbolo: '$', codigo: 'USD', smiLabel: 'USD', smiDefault: 460,
+        hint: 'Ecuador 2024: 460 USD/mes',
+        regiones: ['Azuay','Bolívar','Cañar','Carchi','Chimborazo','Cotopaxi',
+          'El Oro','Esmeraldas','Galápagos','Guayas','Imbabura','Loja',
+          'Los Ríos','Manabí','Morona Santiago','Napo','Orellana',
+          'Pastaza','Pichincha','Santa Elena','Santo Domingo','Sucumbíos',
+          'Tungurahua','Zamora Chinchipe','Otra provincia']
+      },
+      other: {
+        simbolo: '$', codigo: 'USD', smiLabel: 'LOCAL', smiDefault: null,
+        hint: 'Introduce el SMI (Salario Mínimo Interprofesional) mensual en tu moneda local',
+        regiones: ['Mi ciudad / estado']
+      }
+    };
+
+    // ── DOM refs ────────────────────────────────────────────────────
+    let currentPais = null;
+
+    const $pais          = document.getElementById('pais');
+    const $ciudadEstado  = document.getElementById('ciudadEstado');
+    const $smi           = document.getElementById('smi');
+    const $smiHint       = document.getElementById('smiHint');
+    const $smiCurrLbl    = document.getElementById('smiCurrencyLabel');
+    const $currPrefix    = document.getElementById('currencyPrefix');
+    const $matPrefix     = document.getElementById('matPrefix');
+    const $matCurrLbl    = document.getElementById('matCurrLabel');
+    const $conPrefix     = document.getElementById('contrastePrefix');
+    const $conCurrLbl    = document.getElementById('contrasteCurrLabel');
+    const $tipoHidden    = document.getElementById('tipoTrenzado');
+    const $form          = document.getElementById('calcForm');
+    const $calcBtn       = document.getElementById('calcBtn');
+    const $errorCard     = document.getElementById('errorCard');
+    const $resultSec     = document.getElementById('resultSection');
+
+    // ── Cambio de país ──────────────────────────────────────────────
+    $pais.addEventListener('change', () => {
+      const key = $pais.value;
+      const p   = PAISES[key];
+      if (!p) return;
+      currentPais = key;
+
+      // Moneda
+      const sym = p.simbolo;
+      $currPrefix.textContent = sym;
+      $matPrefix.textContent  = sym;
+      $conPrefix.textContent  = sym;
+      $smiCurrLbl.textContent  = '(' + p.smiLabel + ')';
+      $matCurrLbl.textContent  = '(' + p.smiLabel + ')';
+      $conCurrLbl.textContent  = '(' + p.smiLabel + ')';
+      $smiHint.textContent     = p.hint;
+      if (p.smiDefault && !$smi.value) $smi.value = p.smiDefault;
+
+      // Poblar selector dependiente
+      $ciudadEstado.innerHTML  = '<option value="" disabled selected>Selecciona tu región</option>';
+      p.regiones.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r; opt.textContent = r;
+        $ciudadEstado.appendChild(opt);
+      });
+      $ciudadEstado.disabled   = false;
+      $ciudadEstado.value      = '';
+    });
+
+    // ── Pills de tipo trenzado ──────────────────────────────────────
+    const pills = document.querySelectorAll('.pill-btn');
+    const panels = {
+      pegadas: document.getElementById('panel-pegadas'),
+      sueltas: document.getElementById('panel-sueltas'),
+      fulani:  document.getElementById('panel-fulani'),
+    };
+
+    pills.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tipo = btn.dataset.tipo;
+        pills.forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        $tipoHidden.value = tipo;
+        Object.entries(panels).forEach(([k, el]) => el.classList.toggle('visible', k === tipo));
+      });
+    });
+
+    // ── Formateo de moneda ──────────────────────────────────────────
+    function fmt(value) {
+      if (!currentPais) return value.toFixed(2);
+      const p = PAISES[currentPais];
+      try {
+        return new Intl.NumberFormat('es-ES', {
+          style: 'currency', currency: p.codigo,
+          minimumFractionDigits: 0, maximumFractionDigits: 2,
+        }).format(value);
+      } catch (e) {
+        return p.simbolo + ' ' + value.toFixed(2);
+      }
+    }
+
+    // ── Recoger valores del formulario ──────────────────────────────
+    function getValues() {
+      return {
+        email:         document.getElementById('email').value.trim(),
+        instagram:     document.getElementById('instagram').value.trim(),
+        pais:          $pais.value,
+        ciudadEstado:  $ciudadEstado.value,
+        zona:          document.getElementById('zona').value,
+        smi:           parseFloat($smi.value),
+        nombreServicio: document.getElementById('nombreServicio').value.trim(),
+        nivel:         document.getElementById('nivel').value,
+        estructura:    document.getElementById('estructura').value,
+        horas:         parseFloat(document.getElementById('horas').value),
+        materiales:    parseFloat(document.getElementById('materiales').value) || 0,
+        precioActual:  parseFloat(document.getElementById('precioActual').value) || 0,
+        tipoTrenzado:  $tipoHidden.value,
+        // Pegadas
+        tipoPegadas:        document.getElementById('tipoPegadas').value,
+        complejidadPegadas: document.getElementById('complejidadPegadas').value,
+        extensionesPegadas: document.getElementById('extensionesPegadas').value,
+        // Sueltas
+        tamanoSueltas: document.getElementById('tamanoSueltas').value,
+        tipoSueltas:   document.getElementById('tipoSueltas').value,
+        bohoSueltas:   document.getElementById('bohoSueltas').value,
+        // Fulani
+        tamanoFulaniAtras:        document.getElementById('tamanoFulaniAtras').value,
+        complejidadFulaniDelante: document.getElementById('complejidadFulaniDelante').value,
+      };
+    }
+
+    // ── Validación ──────────────────────────────────────────────────
+    function validate(v) {
+      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!v.email || !emailRe.test(v.email))  return 'Introduce un correo electrónico válido.';
+      if (!v.instagram || v.instagram.length < 2) return 'Introduce tu usuario de Instagram.';
+      if (!v.pais)                              return 'Selecciona tu país.';
+      if (!v.ciudadEstado)                      return 'Selecciona tu ciudad, estado o provincia.';
+      if (!v.smi || v.smi <= 0)                return 'Introduce el SMI (Salario Mínimo Interprofesional) válido.';
+      if (!v.zona)                              return 'Selecciona el índice de zona.';
+      if (!v.nivel)                             return 'Selecciona tu nivel técnico.';
+      if (!v.estructura)                        return 'Selecciona tu estructura de trabajo.';
+      if (!v.nombreServicio || v.nombreServicio.length < 2) return 'Escribe el nombre del servicio.';
+      if (!v.tipoTrenzado)                      return 'Selecciona el tipo de trenzado (Pegadas, Sueltas o Fulani).';
+      if (!v.horas || v.horas <= 0)            return 'Introduce las horas estimadas del servicio.';
+      if (isNaN(v.materiales) || v.materiales < 0) return 'El coste de materiales no puede ser negativo.';
+      if (isNaN(v.precioActual) || v.precioActual < 0) return 'El precio actual no puede ser negativo.';
+      if (v.tipoTrenzado === 'pegadas') {
+        if (!v.tipoPegadas)        return 'Selecciona el tipo de pegadas.';
+        if (!v.complejidadPegadas) return 'Selecciona la complejidad del diseño.';
+        if (!v.extensionesPegadas) return 'Indica si usas extensiones o no.';
+      }
+      if (v.tipoTrenzado === 'sueltas') {
+        if (!v.tamanoSueltas) return 'Selecciona el tamaño de las sueltas.';
+        if (!v.tipoSueltas)   return 'Selecciona la técnica (normales o twist).';
+        if (!v.bohoSueltas)   return 'Indica si añades efecto Boho.';
+      }
+      if (v.tipoTrenzado === 'fulani') {
+        if (!v.tamanoFulaniAtras)        return 'Selecciona el tamaño (parte de atrás).';
+        if (!v.complejidadFulaniDelante) return 'Selecciona la complejidad (parte de delante).';
+      }
+      return null;
+    }
+
+    // ── Submit ──────────────────────────────────────────────────────
+    $form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      $errorCard.classList.remove('visible');
+
+      const vals = getValues();
+      const err  = validate(vals);
+      if (err) {
+        $errorCard.textContent = err;
+        $errorCard.classList.add('visible');
+        $errorCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return;
+      }
+
+      $calcBtn.disabled = true;
+      $calcBtn.innerHTML = '<span class="spinner"></span>Calculando…';
+      $resultSec.classList.remove('visible');
+
+      try {
+        const res  = await fetch('/api/calculate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(vals),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Error en el servidor.');
+        renderResult(data, vals.horas);
+      } catch (ex) {
+        $errorCard.textContent = ex.message || 'No se pudo conectar. Inténtalo de nuevo.';
+        $errorCard.classList.add('visible');
+      } finally {
+        $calcBtn.disabled = false;
+        $calcBtn.innerHTML = 'Calcular mi precio justo';
+      }
+    });
+
+    // ── Render de resultados ────────────────────────────────────────
+    function renderResult(data, horas) {
+      // Precios
+      document.getElementById('resServiceName').textContent = data.nombreServicio;
+      document.getElementById('resTotal').textContent       = fmt(data.precioTotal);
+      document.getElementById('resTarifaHora').textContent  = fmt(data.tarifaHora) + '/h';
+      document.getElementById('resManoObra').textContent    = fmt(data.precioManoObra);
+      document.getElementById('resMateriales').textContent  = fmt(data.materiales);
+      document.getElementById('resTotalBottom').textContent = fmt(data.precioTotal);
+      document.getElementById('resHorasLabel').textContent  = horas;
+
+      // ── Diagnóstico SMI ──
+      const smiVal   = parseFloat(data.relacionSMI);
+      const $diagCard = document.getElementById('diagnosticoCard');
+      const $diagVal  = document.getElementById('diagSmiValue');
+      const $diagAlerta = document.getElementById('diagAlerta');
+
+      $diagVal.textContent = smiVal.toFixed(2) + 'x';
+      $diagCard.classList.remove('alerta', 'ok');
+      $diagVal.classList.remove('alerta', 'ok');
+
+      if (smiVal < 1.0) {
+        $diagCard.classList.add('alerta');
+        $diagVal.classList.add('alerta');
+        $diagAlerta.style.display = 'block';
+      } else {
+        $diagCard.classList.add('ok');
+        $diagVal.classList.add('ok');
+        $diagAlerta.style.display = 'none';
+      }
+
+      // ── Contraste de valoración ──
+      const $cr  = document.getElementById('contrasteResult');
+      const $em  = document.getElementById('contrasteEmoji');
+      const $dv  = document.getElementById('contrasteDiff');
+      const $dt  = document.getElementById('contrasteText');
+      const diff = data.diferencia;
+      const pct  = data.porcentajeDiferencia;
+
+      $cr.classList.remove('under', 'over', 'neutral');
+      if (data.precioActual === 0) {
+        $cr.classList.add('neutral');
+        $em.textContent = '📊';
+        $dv.textContent = 'Nuevo servicio'; $dv.style.color = 'var(--text)';
+        $dt.textContent = 'Tu precio de referencia es ' + fmt(data.precioTotal) + '. Úsalo como base de partida.';
+      } else if (diff > 0) {
+        $cr.classList.add('under');
+        $em.textContent = '🔻';
+        $dv.textContent = 'Cobras ' + fmt(Math.abs(diff)) + ' menos'; $dv.style.color = '#F87171';
+        $dt.textContent = 'Estás cobrando ' + fmt(data.precioActual) + ', un ' + Math.abs(pct) + '% por debajo del precio recomendado. Cada servicio así representa dinero que dejas sobre la mesa.';
+      } else if (diff < 0) {
+        $cr.classList.add('over');
+        $em.textContent = '✅';
+        $dv.textContent = 'Cobras ' + fmt(Math.abs(diff)) + ' más'; $dv.style.color = 'var(--green)';
+        $dt.textContent = 'Tu tarifa actual de ' + fmt(data.precioActual) + ' supera el mínimo recomendado en un ' + Math.abs(pct) + '%. Estás bien posicionada en el mercado.';
+      } else {
+        $cr.classList.add('neutral');
+        $em.textContent = '⚖️';
+        $dv.textContent = 'Tarifa exacta'; $dv.style.color = 'var(--text)';
+        $dt.textContent = 'Lo que cobras coincide exactamente con el precio recomendado.';
+      }
+
+      $resultSec.classList.add('visible');
+      $resultSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ── Reset ────────────────────────────────────────────────────────
+    window.resetForm = function () {
+      $form.reset();
+      $tipoHidden.value = '';
+      pills.forEach(p => p.classList.remove('active'));
+      Object.values(panels).forEach(el => el.classList.remove('visible'));
+      $resultSec.classList.remove('visible');
+      $errorCard.classList.remove('visible');
+      $smiHint.textContent = '';
+      [$currPrefix, $matPrefix, $conPrefix].forEach(el => el.textContent = '€');
+      [$smiCurrLbl, $matCurrLbl, $conCurrLbl].forEach(el => el.textContent = '');
+      $ciudadEstado.innerHTML = '<option value="" disabled selected>— Selecciona primero el país —</option>';
+      $ciudadEstado.disabled  = true;
+      currentPais = null;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+  })();
+  </script>
+
+</body>
+</html>
