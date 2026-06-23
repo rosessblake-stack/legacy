@@ -1,5 +1,5 @@
-// api/calculate.js â€” Calculadora Legacy v2.5 Final
-// âš ï¸  SECRETO COMERCIAL: La fÃ³rmula solo existe en el servidor.
+// api/calculate.js — Calculadora Legacy v2.5 Final
+// ⚠️  SECRETO COMERCIAL: La fórmula solo existe en el servidor.
 
 export default async function handler(req, res) {
 
@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST')   return res.status(405).json({ error: 'MÃ©todo no permitido.' });
+  if (req.method !== 'POST')   return res.status(405).json({ error: 'Método no permitido.' });
 
   const {
     email, instagram, pais, provincia, ciudad, zona, smi,
@@ -18,19 +18,19 @@ export default async function handler(req, res) {
 
   // Validaciones
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email || !emailRe.test(email))            return res.status(400).json({ error: 'Email invÃ¡lido.' });
-  if (!pais)                                      return res.status(400).json({ error: 'PaÃ­s requerido.' });
-  if (!smi || Number(smi) <= 0)                  return res.status(400).json({ error: 'SMI invÃ¡lido.' });
+  if (!email || !emailRe.test(email))            return res.status(400).json({ error: 'Email inválido.' });
+  if (!pais)                                      return res.status(400).json({ error: 'País requerido.' });
+  if (!smi || Number(smi) <= 0)                  return res.status(400).json({ error: 'SMI inválido.' });
   if (!zona)                                      return res.status(400).json({ error: 'Zona requerida.' });
   if (!nivel)                                     return res.status(400).json({ error: 'Nivel requerido.' });
   if (!estructura)                                return res.status(400).json({ error: 'Estructura requerida.' });
-  if (!horas || Number(horas) <= 0)              return res.status(400).json({ error: 'Horas invÃ¡lidas.' });
+  if (!horas || Number(horas) <= 0)              return res.status(400).json({ error: 'Horas inválidas.' });
   if (!tipoTrenzado)                              return res.status(400).json({ error: 'Tipo de trenzado requerido.' });
-  if (isNaN(Number(materiales)) || Number(materiales) < 0) return res.status(400).json({ error: 'Materiales invÃ¡lidos.' });
+  if (isNaN(Number(materiales)) || Number(materiales) < 0) return res.status(400).json({ error: 'Materiales inválidos.' });
 
-  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-  //  FÃ“RMULA SECRETA â€” PROPIEDAD INTELECTUAL PROTEGIDA
-  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  // ══════════════════════════════════════════════════════════════
+  //  FÓRMULA SECRETA — PROPIEDAD INTELECTUAL PROTEGIDA
+  // ══════════════════════════════════════════════════════════════
   const SMI      = Number(smi);
   const HORAS    = Number(horas);
   const MATS     = Number(materiales);
@@ -71,14 +71,15 @@ export default async function handler(req, res) {
   const relacionSMI    = round(tarifaHora / horaBase, 2);
   const diferencia     = precioTotal - P_ACTUAL;
   const porcentajeDiferencia = P_ACTUAL > 0 ? ((diferencia / P_ACTUAL) * 100).toFixed(1) : null;
-  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  // ══════════════════════════════════════════════════════════════
 
   // Guardar en Supabase
   const SUPABASE_URL      = process.env.SUPABASE_URL;
   const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
   if (SUPABASE_URL && SUPABASE_ANON_KEY) {
-    fetch(`${SUPABASE_URL}/rest/v1/legacy_data`, {
+    const supabaseEndpoint = SUPABASE_URL.replace(/\/rest\/v1\/?$/, '') + '/rest/v1/legacy_data';
+    fetch(supabaseEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type':  'application/json',
@@ -87,26 +88,44 @@ export default async function handler(req, res) {
         'Prefer':        'return=minimal',
       },
       body: JSON.stringify({
-        timestamp: new Date().toISOString(),
-        email: email.toLowerCase().trim(),
-        instagram: instagram?.trim() || '',
-        pais, provincia: provincia || '', ciudad: ciudad || '', zona, smi: SMI,
-        nombre_servicio: (nombreServicio || '').trim(), nivel, estructura,
+        timestamp:    new Date().toISOString(),
+        email:        email.toLowerCase().trim(),
+        instagram:    instagram?.trim() || '',
+        pais,
+        provincia:    provincia || '',
+        ciudad:       ciudad || '',
+        zona,
+        smi:          SMI,
+        nombre_servicio: (nombreServicio || '').trim(),
+        nivel,
+        estructura,
         tipo_trenzado: tipoTrenzado,
-        tipo_pegadas: tipoPegadas || null, complejidad_pegadas: complejidadPegadas || null,
-        extensiones_pegadas: extensionesPegadas || null, tamano_sueltas: tamanoSueltas || null,
-        tipo_sueltas: tipoSueltas || null, boho_sueltas: bohoSueltas || null,
-        tamano_fulani_atras: tamanoFulaniAtras || null, complejidad_fulani_delante: complejidadFulaniDelante || null,
-        horas: HORAS, materiales: MATS, precio_actual: P_ACTUAL,
-        precio_calculado: round(precioTotal, 2), tarifa_hora: round(tarifaHora, 2),
-        relacion_smi: relacionSMI, pago_auditoria: false,
+        tipo_pegadas:           tipoPegadas          || null,
+        complejidad_pegadas:    complejidadPegadas   || null,
+        extensiones_pegadas:    extensionesPegadas   || null,
+        tamano_sueltas:         tamanoSueltas        || null,
+        tipo_sueltas:           tipoSueltas          || null,
+        boho_sueltas:           bohoSueltas          || null,
+        tamano_fulani_atras:    tamanoFulaniAtras    || null,
+        complejidad_fulani_delante: complejidadFulaniDelante || null,
+        horas:            HORAS,
+        materiales:       MATS,
+        precio_actual:    P_ACTUAL,
+        precio_calculado: round(precioTotal, 2),
+        tarifa_hora:      round(tarifaHora, 2),
+        relacion_smi:     relacionSMI,
+        pago_auditoria:   false,
       }),
     }).then(async r => {
-  if (!r.ok) {
-    const txt = await r.text();
-    console.error('[Legacy Supabase] Error insert:', r.status, txt);
-  }
-}).catch(err => console.error('[Legacy Supabase] Error:', err.message));
+      if (!r.ok) {
+        const txt = await r.text();
+        console.error('[Legacy Supabase] Insert fallido:', r.status, txt);
+      } else {
+        console.log('[Legacy Supabase] Insert OK');
+      }
+    }).catch(err => console.error('[Legacy Supabase] Error de red:', err.message));
+  } else {
+    console.warn('[Legacy Supabase] Variables de entorno no configuradas.');
   }
 
   return res.status(200).json({
