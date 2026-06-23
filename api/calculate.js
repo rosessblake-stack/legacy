@@ -90,7 +90,7 @@ export default async function handler(req, res) {
         timestamp: new Date().toISOString(),
         email: email.toLowerCase().trim(),
         instagram: instagram?.trim() || '',
-        pais, ciudad_estado: provincia || ciudad || '', zona, smi: SMI,
+        pais, provincia: provincia || '', ciudad: ciudad || '', zona, smi: SMI,
         nombre_servicio: (nombreServicio || '').trim(), nivel, estructura,
         tipo_trenzado: tipoTrenzado,
         tipo_pegadas: tipoPegadas || null, complejidad_pegadas: complejidadPegadas || null,
