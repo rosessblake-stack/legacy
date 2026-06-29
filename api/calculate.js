@@ -1,8 +1,12 @@
-// api/calculate.js â€” Calculadora Legacy v2.5 â€” Motor Internacional Calibrado
+// api/calculate.js â€” Calculadora Legacy v2.6
 // âš ï¸  SECRETO COMERCIAL: La fÃ³rmula solo existe en el servidor.
 //
-// MOTOR v2.5.2 â€” Factor Oasis por paÃ­s calibrado con datos reales de mercado
-// Regla: Factor Oasis solo se activa con nivel=elite Y zona=premium
+// CAMBIOS v2.6:
+//   - 5 niveles tÃ©cnicos con curva exponencial
+//   - Modificador local vs extranjero en LatinoamÃ©rica
+//   - Boho en Fulani Braids
+//   - Factor Oasis calibrado por paÃ­s (solo Ã‰lite + Premium)
+//   - Pisos tÃ©cnicos de mercado por paÃ­s
 
 export default async function handler(req, res) {
 
@@ -14,12 +18,18 @@ export default async function handler(req, res) {
 
   const {
     email, instagram, pais, provincia, ciudad, zona, smi,
+    clienteTipo,  // 'local' | 'extranjero' (solo LatinoamÃ©rica)
     nombreServicio, nivel, estructura, horas, materiales, precioActual,
-    tipoTrenzado, tipoPegadas, complejidadPegadas, extensionesPegadas,
-    tamanoSueltas, tipoSueltas, bohoSueltas, tamanoFulaniAtras, complejidadFulaniDelante,
+    tipoTrenzado,
+    // Pegadas
+    tipoPegadas, complejidadPegadas, extensionesPegadas,
+    // Sueltas
+    tamanoSueltas, tipoSueltas, bohoSueltas,
+    // Fulani
+    tamanoFulaniAtras, complejidadFulaniDelante, bohoFulani,
   } = req.body;
 
-  // Validaciones
+  // â”€â”€ Validaciones â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email || !emailRe.test(email))            return res.status(400).json({ error: 'Email invÃ¡lido.' });
   if (!pais)                                      return res.status(400).json({ error: 'PaÃ­s requerido.' });
@@ -40,140 +50,121 @@ export default async function handler(req, res) {
   const MATS       = Number(materiales);
   const P_ACTUAL   = Number(precioActual) || 0;
 
-  // â”€â”€ TASAS DE CAMBIO DE REFERENCIA (mercado real, no oficial) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  // Usadas para calcular el piso mÃ­nimo internacional en moneda local
+  // â”€â”€ TASAS DE CAMBIO REAL (mercado, no oficial) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const TASAS_USD = {
-    es:    1.00,    // EUR (referencia directa, 1 EUR â‰ˆ 1 USD para el cÃ¡lculo de piso)
-    us:    1.00,    // USD nativo
-    mx:    17.50,   // MXN por USD
-    co:    4100,    // COP por USD
-    do:    58.0,    // DOP por USD
-    ar:    1200,    // ARS por USD (mercado real, no oficial)
-    cl:    930,     // CLP por USD
-    pe:    3.75,    // PEN por USD
-    ec:    1.00,    // USD (Ecuador dolarizado)
-    ve:    38,      // VES por USD (referencia mercado informal)
-    other: 1.00,
+    es:1.00, us:1.00, gb:0.80, fr:1.00, de:1.00, it:1.00, pt:1.00,
+    nl:1.00, be:1.00, ch:0.90, at:1.00, se:10.5, no:10.8, dk:7.0,
+    mx:17.50, co:4100, do:58.0, ar:1200, cl:930, pe:3.75, ec:1.00,
+    ve:38, gt:7.8, hn:24.5, sv:1.00, ni:36.5, cr:520, pa:1.00,
+    py:7300, uy:39, bo:6.9, br:5.0,
+    ca:1.36, au:1.53, nz:1.65,
+    ng:1600, gh:15.5, ke:130, za:18.5, ma:10.0, eg:48,
+    other:1.00,
   };
 
-  // â”€â”€ PISOS TÃ‰CNICOS DE MERCADO (SMI mÃ­nimo efectivo en USD/mes) â”€â”€â”€â”€â”€â”€â”€â”€
-  // Basado en el mercado real del sector premium de belleza en cada paÃ­s.
-  // No es el SMI gubernamental â€” es el mÃ­nimo desde el que tiene sentido
-  // calcular para un profesional del sector estÃ©tico en contexto urbano.
+  // â”€â”€ PISOS TÃ‰CNICOS DE MERCADO (USD/mes) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const SMI_USD_PISO = {
-    es:    1134,    // EspaÃ±a: SMI oficial ya es razonable, no se toca
-    us:    1256,    // USA: SMI federal, ya es base real
-    mx:    600,     // MÃ©xico: piso tÃ©cnico $600 USD (mercado estÃ©tico DF/GDL)
-    co:    550,     // Colombia: piso $550 USD (mercado BogotÃ¡/MedellÃ­n real)
-    do:    500,     // Rep. Dominicana: piso $500 USD (mercado urbano real)
-    ar:    800,     // Argentina: piso $800 USD (equivale a ~960.000 ARS al cambio real)
-    cl:    650,     // Chile: piso $650 USD (mercado Santiago real)
-    pe:    500,     // PerÃº: piso $500 USD (mercado Lima real)
-    ec:    460,     // Ecuador: SMI oficial en USD, ya es directo
-    ve:    500,     // Venezuela: piso $500 USD (mercado Caracas real)
-    other: 600,
+    es:1134, us:1256, gb:1800, fr:1380, de:1800, it:1000, pt:900,
+    nl:2000, be:1900, ch:3000, at:1700, se:1200, no:1500, dk:1400,
+    mx:600,  co:550,  do:500,  ar:800,  cl:650,  pe:500,  ec:460,
+    ve:500,  gt:400,  hn:380,  sv:400,  ni:350,  cr:500,  pa:500,
+    py:400,  uy:550,  bo:380,  br:500,
+    ca:1600, au:1400, nz:1200,
+    ng:300,  gh:350,  ke:350,  za:450,  ma:350,  eg:300,
+    other:500,
   };
 
-  const tasa = TASAS_USD[pais] || 1.0;
-  const pisoUSD = SMI_USD_PISO[pais] || 600;
-  const SMI_PISO_LOCAL = pisoUSD * tasa;
+  const tasa         = TASAS_USD[pais] || 1.0;
+  const pisoUSD      = SMI_USD_PISO[pais] || 500;
+  const SMI_PISO     = pisoUSD * tasa;
+  const SMI_EFECTIVO = Math.max(SMI_INPUT, SMI_PISO);
 
-  // El SMI efectivo es el MAYOR entre lo que declarÃ³ el usuario y el piso tÃ©cnico.
-  // Protege al profesional en economÃ­as devaluadas sin imponer valores irreales.
-  const SMI_EFECTIVO = Math.max(SMI_INPUT, SMI_PISO_LOCAL);
-
-  // â”€â”€ FACTOR OASIS â€” Calibrado por paÃ­s â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  // Se activa SOLO cuando: nivel === 'elite' Y zona === 'premium'
-  // No aplica a EspaÃ±a ni USA (sus mercados premium ya estÃ¡n bien calibrados
-  // por el SMI base y los multiplicadores estÃ¡ndar).
-  //
-  // El multiplicador refleja la capacidad real de cobro en enclaves de
-  // capital extranjero, turismo de lujo y nomadismo digital de cada paÃ­s:
-  //
-  //  mx: 2.2 â†’ Tulum/CDMX Polanco: mercado dolarizado, turistas norteamericanos
-  //            pagan tarifas de Miami. Alta densidad de nÃ³madas digitales.
-  //  co: 2.0 â†’ El Poblado/Laureles MedellÃ­n + Cartagena VIP: hub nÃ³mada global.
-  //            Extranjeros con sueldos USD viviendo y consumiendo en COP.
-  //  do: 1.8 â†’ Punta Cana/Las Terrenas: turismo de resort cautivo.
-  //            Mercado blindado del exterior, menor volumen de nÃ³madas residentes.
-  //  ar: 2.5 â†’ Palermo Soho/Nordelta Buenos Aires: economÃ­a bimonetaria.
-  //            El profesional Ã‰lite cotiza y cobra en USD informales.
-  //            Mayor multiplicador porque la brecha entre SMI oficial y
-  //            mercado real es la mÃ¡s grande del sistema.
-  //  cl: 1.6 â†’ Las Condes/Vitacura Santiago: mercado premium estable,
-  //            menor afluencia de extranjeros que MX o CO.
-  //  pe: 1.7 â†’ Miraflores/San Isidro Lima: enclave de clase alta local
-  //            y turismo premium, mercado en crecimiento.
-  //  ec: 1.5 â†’ GalÃ¡pagos/CumbayÃ¡ Quito: dolarizado, turismo alto valor,
-  //            menor volumen que el resto del sistema.
-  //  ve: 2.0 â†’ Las Mercedes Caracas: economÃ­a completamente dolarizada
-  //            de facto. El pago real siempre es en USD.
-
-  const FACTOR_OASIS_POR_PAIS = {
-    mx: 2.2,
-    co: 2.0,
-    do: 1.8,
-    ar: 2.5,
-    cl: 1.6,
-    pe: 1.7,
-    ec: 1.5,
-    ve: 2.0,
-    // EspaÃ±a y USA: no tienen Factor Oasis, su mercado premium
-    // ya estÃ¡ correctamente reflejado en los multiplicadores base.
-    es: 1.0,
-    us: 1.0,
-    other: 1.5,
+  // â”€â”€ FACTOR OASIS (solo Ã‰lite + Premium en LATAM) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const FACTOR_OASIS = {
+    mx:2.2, co:2.0, do:1.8, ar:2.5, cl:1.6, pe:1.7,
+    ec:1.5, ve:2.0, gt:1.4, hn:1.3, cr:1.5, pa:1.6,
+    py:1.3, uy:1.5, bo:1.3, br:1.6,
+    ng:1.5, gh:1.4, ke:1.4, za:1.5, ma:1.3, eg:1.3,
+    es:1.0, us:1.0, gb:1.0, fr:1.0, de:1.0, it:1.0,
+    pt:1.0, nl:1.0, be:1.0, ch:1.0, ca:1.0, au:1.0,
+    other:1.4,
   };
 
-  const oasisActivo = nivel === 'elite' && zona === 'premium' && (FACTOR_OASIS_POR_PAIS[pais] || 1.0) > 1.0;
-  const factorOasis = oasisActivo ? (FACTOR_OASIS_POR_PAIS[pais] || 1.0) : 1.0;
+  const oasisActivo = nivel === 'elite' && zona === 'premium' && (FACTOR_OASIS[pais] || 1.0) > 1.0;
+  const factorOasis = oasisActivo ? (FACTOR_OASIS[pais] || 1.0) : 1.0;
   const SMI_FINAL   = SMI_EFECTIVO * factorOasis;
 
-  // â”€â”€ CÃLCULO BASE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â”€â”€ MODIFICADOR LOCAL VS EXTRANJERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // Solo aplica en paÃ­ses latinoamericanos y africanos donde la
+  // brecha de poder adquisitivo entre turista y local es significativa.
+  const PAISES_CLIENTE_TIPO = [
+    'mx','co','do','ar','cl','pe','ec','ve','gt','hn','sv','ni',
+    'cr','pa','py','uy','bo','br','ng','gh','ke','za','ma','eg'
+  ];
+  let modClienteTipo = 1.0;
+  if (clienteTipo === 'extranjero' && PAISES_CLIENTE_TIPO.includes(pais)) {
+    modClienteTipo = 1.35; // +35% sobre la tarifa calculada
+  }
+
+  // â”€â”€ HORA BASE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const horaBase = SMI_FINAL / 160;
 
-  const multNivel      = { junior: 1.5, avanzado: 2.5, elite: 4.0 };
-  const multZona       = { premium: 1.2, media: 1.0, baja: 0.9 };
-  const multEstructura = { casa: 1.0, salon: 1.3 };
+  // â”€â”€ 5 NIVELES â€” CURVA EXPONENCIAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // junior:1.5 â†’ intermedio:2.0 â†’ avanzado:2.8 â†’ profesional:3.5 â†’ elite:4.5
+  const multNivel = {
+    junior:       1.5,
+    intermedio:   2.0,
+    avanzado:     2.8,
+    profesional:  3.5,
+    elite:        4.5,
+  };
+
+  const multZona       = { premium:1.2, media:1.0, baja:0.9 };
+  const multEstructura = { casa:1.0, salon:1.3 };
 
   if (!(nivel      in multNivel))      return res.status(400).json({ error: 'Nivel no reconocido.' });
   if (!(zona       in multZona))       return res.status(400).json({ error: 'Zona no reconocida.' });
   if (!(estructura in multEstructura)) return res.status(400).json({ error: 'Estructura no reconocida.' });
 
-  // â”€â”€ MODIFICADOR DE COMPLEJIDAD TÃ‰CNICA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â”€â”€ MODIFICADOR DE COMPLEJIDAD TÃ‰CNICA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let modComplejidad = 1.0;
+
   if (tipoTrenzado === 'pegadas') {
-    if (tipoPegadas === 'barrel_twist') modComplejidad *= 1.10;
-    else if (tipoPegadas === 'twist')   modComplejidad *= 1.05;
+    if (tipoPegadas === 'barrel_twist')      modComplejidad *= 1.10;
+    else if (tipoPegadas === 'twist')        modComplejidad *= 1.05;
     if (complejidadPegadas === 'con_disenos') modComplejidad *= 1.20;
-    if (extensionesPegadas === 'con')   modComplejidad *= 1.08;
-  }
-  if (tipoTrenzado === 'sueltas') {
-    const mT = { jumbo: 0.90, large: 0.95, lardium: 1.00, medium: 1.10, small: 1.20 };
-    if (tamanoSueltas in mT) modComplejidad *= mT[tamanoSueltas];
-    if (tipoSueltas === 'twist') modComplejidad *= 1.08;
-    if (bohoSueltas === 'si')    modComplejidad *= 1.18;
-  }
-  if (tipoTrenzado === 'fulani') {
-    const mF = { jumbo: 0.90, large: 0.95, lardium: 1.00, medium: 1.10, small: 1.20 };
-    if (tamanoFulaniAtras in mF) modComplejidad *= mF[tamanoFulaniAtras];
-    const mD = { simples: 1.00, medias: 1.12, elaboradas: 1.25 };
-    if (complejidadFulaniDelante in mD) modComplejidad *= mD[complejidadFulaniDelante];
+    if (extensionesPegadas === 'con')        modComplejidad *= 1.08;
   }
 
-  // â”€â”€ TARIFA FINAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  if (tipoTrenzado === 'sueltas') {
+    const mT = { jumbo:0.90, large:0.95, lardium:1.00, medium:1.10, small:1.20 };
+    if (tamanoSueltas in mT) modComplejidad *= mT[tamanoSueltas];
+    if (tipoSueltas === 'twist') modComplejidad *= 1.08;
+    if (bohoSueltas  === 'si')   modComplejidad *= 1.18;
+  }
+
+  if (tipoTrenzado === 'fulani') {
+    const mF = { jumbo:0.90, large:0.95, lardium:1.00, medium:1.10, small:1.20 };
+    if (tamanoFulaniAtras in mF) modComplejidad *= mF[tamanoFulaniAtras];
+    const mD = { simples:1.00, medias:1.12, elaboradas:1.25 };
+    if (complejidadFulaniDelante in mD) modComplejidad *= mD[complejidadFulaniDelante];
+    // Boho en Fulani: mismo impacto que en sueltas
+    if (bohoFulani === 'si') modComplejidad *= 1.18;
+  }
+
+  // â”€â”€ TARIFA FINAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const tarifaHora =
     horaBase *
     multNivel[nivel] *
     multZona[zona] *
     multEstructura[estructura] *
-    modComplejidad;
+    modComplejidad *
+    modClienteTipo;
 
   const precioManoObra = tarifaHora * HORAS;
   const precioTotal    = precioManoObra + MATS;
 
-  // relacionSMI: siempre contra el SMI OFICIAL del usuario (no el ajustado)
-  // para mostrar cuÃ¡nto supera al mÃ­nimo real de su gobierno
+  // relacionSMI siempre contra SMI oficial del usuario
   const horaBaseOficial  = SMI_INPUT / 160;
   const relacionSMI      = round(tarifaHora / horaBaseOficial, 2);
   const diferencia       = precioTotal - P_ACTUAL;
@@ -185,14 +176,14 @@ export default async function handler(req, res) {
   //  FIN FÃ“RMULA SECRETA
   // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-  // â”€â”€ Guardar en Supabase (await â€” espera antes de responder) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â”€â”€ Guardar en Supabase â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const SUPABASE_URL      = process.env.SUPABASE_URL;
   const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
   if (SUPABASE_URL && SUPABASE_ANON_KEY) {
-    const supabaseEndpoint = SUPABASE_URL.replace(/\/rest\/v1\/?$/, '') + '/rest/v1/legacy_data';
+    const endpoint = SUPABASE_URL.replace(/\/rest\/v1\/?$/, '') + '/rest/v1/legacy_data';
     try {
-      const r = await fetch(supabaseEndpoint, {
+      const r = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type':  'application/json',
@@ -204,25 +195,20 @@ export default async function handler(req, res) {
           timestamp:    new Date().toISOString(),
           email:        email.toLowerCase().trim(),
           instagram:    instagram?.trim() || '',
-          pais,
-          provincia:    provincia || '',
-          ciudad:       ciudad || '',
-          zona,
-          smi:          SMI_INPUT,
-          nombre_servicio: (nombreServicio || '').trim(),
-          nivel,
-          estructura,
+          pais, provincia: provincia||'', ciudad: ciudad||'', zona,
+          smi: SMI_INPUT,
+          nombre_servicio: (nombreServicio||'').trim(),
+          nivel, estructura,
           tipo_trenzado: tipoTrenzado,
-          tipo_pegadas:               tipoPegadas               || null,
-          complejidad_pegadas:        complejidadPegadas        || null,
-          extensiones_pegadas:        extensionesPegadas        || null,
-          tamano_sueltas:             tamanoSueltas             || null,
-          tipo_sueltas:               tipoSueltas               || null,
-          boho_sueltas:               bohoSueltas               || null,
-          tamano_fulani_atras:        tamanoFulaniAtras         || null,
-          complejidad_fulani_delante: complejidadFulaniDelante  || null,
-          horas:            HORAS,
-          materiales:       MATS,
+          tipo_pegadas:               tipoPegadas              ||null,
+          complejidad_pegadas:        complejidadPegadas       ||null,
+          extensiones_pegadas:        extensionesPegadas       ||null,
+          tamano_sueltas:             tamanoSueltas            ||null,
+          tipo_sueltas:               tipoSueltas              ||null,
+          boho_sueltas:               bohoSueltas              ||null,
+          tamano_fulani_atras:        tamanoFulaniAtras        ||null,
+          complejidad_fulani_delante: complejidadFulaniDelante ||null,
+          horas: HORAS, materiales: MATS,
           precio_actual:    P_ACTUAL,
           precio_calculado: round(precioTotal, 2),
           tarifa_hora:      round(tarifaHora, 2),
@@ -239,11 +225,8 @@ export default async function handler(req, res) {
     } catch (err) {
       console.error('[Legacy Supabase] Error de red:', err.message);
     }
-  } else {
-    console.warn('[Legacy Supabase] Variables de entorno no configuradas.');
   }
 
-  // â”€â”€ Respuesta al cliente â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   return res.status(200).json({
     tarifaHora:          round(tarifaHora, 2),
     precioManoObra:      round(precioManoObra, 2),
@@ -254,12 +237,12 @@ export default async function handler(req, res) {
     porcentajeDiferencia,
     relacionSMI,
     oasisActivo,
-    factorOasis: oasisActivo ? factorOasis : null,
-    nombreServicio: (nombreServicio || '').trim(),
+    clienteTipo: clienteTipo || 'local',
+    nombreServicio: (nombreServicio||'').trim(),
     pais, tipoTrenzado,
   });
 }
 
-function round(value, decimals = 2) {
-  return Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+function round(v, d=2) {
+  return Math.round(v * Math.pow(10,d)) / Math.pow(10,d);
 }
