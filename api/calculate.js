@@ -17,7 +17,7 @@
 // FACTOR TIEMPO por nivel (OpciÃ³n C):
 //   Junior 0.20 | Intermedio 0.35 | Avanzado 0.55 | Profesional 0.75 | Ã‰lite 1.00
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
 
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
