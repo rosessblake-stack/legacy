@@ -427,6 +427,7 @@
             <input class="form-input" type="number" id="smi" name="smi" placeholder="Ej: 1550" min="0" step="1" required/>
           </div>
           <p class="field-hint" id="smiHint"></p>
+          <p id="smiAutoHint" style="font-size:10px;color:var(--subtle);margin-top:4px;line-height:1.5;display:none;">Hemos estimado <strong style="color:var(--text);" id="smiAutoVal"></strong> para <strong style="color:var(--text);" id="smiAutoCity"></strong>. Puedes ajustarlo si conoces mejor tu mercado.</p>
           <div class="chip-info" onclick="var b=this.nextElementSibling;b.classList.toggle('open');this.querySelector('span').textContent=b.classList.contains('open')?'▲ Cerrar':'💡 ¿Qué salario pongo?'">
             <span>💡 ¿Qué salario pongo?</span>
           </div>
@@ -760,7 +761,7 @@
           <label class="field-label" for="materiales">Gasto en productos usados en este servicio <span id="matCurrLabel" style="font-size:10px;font-weight:500;text-transform:none;letter-spacing:0;color:#4B5563;"></span><span class="req">*</span></label>
           <div class="input-wrap has-prefix">
             <span class="currency-prefix" id="matPrefix">€</span>
-            <input class="form-input" type="number" id="materiales" name="materiales" placeholder="0 si no aplica" min="0" step="0.01" required/>
+            <input class="form-input" type="number" id="materiales" name="materiales" placeholder="Ej: 8" min="0" step="0.01" required/>
           </div>
           <div class="chip-info" onclick="var b=this.nextElementSibling;b.classList.toggle('open');this.querySelector('span').textContent=b.classList.contains('open')?'▲ Cerrar':'💡 ¿Qué gasto pongo?'">
             <span>💡 ¿Qué gasto pongo?</span>
@@ -1203,7 +1204,16 @@ function initApp() {
     if (opt && opt.dataset.smi) {
       $smi.value = opt.dataset.smi;
       const geo = GEO[$pais.value];
-      $smiHint.textContent = 'SMI de mercado para ' + opt.value + ': ' + Number(opt.dataset.smi).toLocaleString('es-ES') + ' ' + (geo?.simbolo || '') + '/mes — ajústalo si conoces mejor tu mercado';
+      $smiHint.textContent = '';
+      // Hint dinámico
+      const hintEl = document.getElementById('smiAutoHint');
+      const valEl  = document.getElementById('smiAutoVal');
+      const cityEl = document.getElementById('smiAutoCity');
+      if (hintEl && valEl && cityEl) {
+        valEl.textContent  = Number(opt.dataset.smi).toLocaleString('es-ES') + ' ' + (geo?.simbolo || '') + '/mes';
+        cityEl.textContent = opt.value;
+        hintEl.style.display = 'block';
+      }
     }
   });
 
@@ -1400,7 +1410,27 @@ function initApp() {
     if (err) {
       $errorCard.textContent = err;
       $errorCard.classList.add('visible');
-      $errorCard.scrollIntoView({behavior:'smooth',block:'nearest'});
+      // Scroll al campo que falla y remarcarlo
+      const camposMap = {
+        'zona': () => {
+          document.querySelectorAll('.zona-pill').forEach(p => {
+            p.style.borderColor = 'var(--red)';
+            p.style.boxShadow = '0 0 0 2px var(--red-glow)';
+            setTimeout(() => { p.style.borderColor = ''; p.style.boxShadow = ''; }, 2500);
+          });
+          document.querySelector('.zona-pills').scrollIntoView({behavior:'smooth', block:'center'});
+        },
+        'país': () => { document.getElementById('pais').scrollIntoView({behavior:'smooth', block:'center'}); },
+        'provincia': () => { document.getElementById('provincia').scrollIntoView({behavior:'smooth', block:'center'}); },
+        'ciudad': () => { document.getElementById('ciudad').scrollIntoView({behavior:'smooth', block:'center'}); },
+        'nivel': () => { document.getElementById('nivel').scrollIntoView({behavior:'smooth', block:'center'}); },
+        'horas': () => { document.getElementById('horas').scrollIntoView({behavior:'smooth', block:'center'}); },
+        'extensiones': () => { document.getElementById('largoBlock').scrollIntoView({behavior:'smooth', block:'center'}); },
+      };
+      for (const [key, fn] of Object.entries(camposMap)) {
+        if (err.toLowerCase().includes(key)) { fn(); break; }
+      }
+      $errorCard.scrollIntoView({behavior:'smooth', block:'nearest'});
       return;
     }
     $calcBtn.disabled = true;
