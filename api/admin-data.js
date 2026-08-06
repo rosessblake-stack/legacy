@@ -37,7 +37,7 @@ export default async function handler(req, res) {
 
   try {
     // Construir query
-    let qs = 'select=*&order=created_at.desc&limit=500';
+    let qs = 'select=*&order=timestamp.desc&limit=500';
     if (filtros) {
       Object.entries(filtros).forEach(([k, v]) => {
         qs += `&${k}=eq.${encodeURIComponent(v)}`;
