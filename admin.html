@@ -342,8 +342,8 @@ async function loadOverview(){
     ]);
     codigos = Array.isArray(codigos)?codigos.filter(c=>c.activo):[];
 
-    var reales = Array.isArray(accesos)?accesos.filter(a=>a.tipo_acceso!=='espera'):[];
-    var espera  = Array.isArray(accesos)?accesos.filter(a=>a.tipo_acceso==='espera'):[];
+    var reales = Array.isArray(accesos)?accesos.filter(a=>a.codigo_usado!=='ESPERA'):[];
+    var espera  = Array.isArray(accesos)?accesos.filter(a=>a.codigo_usado==='ESPERA'):[];
 
     document.getElementById('statAccesos').textContent   = reales.length;
     document.getElementById('statCodigos').textContent   = Array.isArray(codigos)?codigos.length:'—';
@@ -357,7 +357,7 @@ async function loadOverview(){
           <div class="row-item">
             <div style="flex:1">
               <div style="font-size:12px;font-weight:700;color:var(--w)">${a.email||'—'}</div>
-              <div style="font-size:10px;color:var(--s)">${a.nombre_elite||''} · ${getDate(a)?fmtDate(getDate(a)):'—'}</div>
+              <div style="font-size:10px;color:var(--s)">${a.codigo_usado||''} · ${getDate(a)?fmtDate(getDate(a)):'—'}</div>
             </div>
             <span class="badge ${tipoBadge(a.tipo_acceso)}">${a.tipo_acceso||'—'}</span>
           </div>`).join('')+'</div>'
@@ -365,7 +365,7 @@ async function loadOverview(){
 
     // Distribución
     var dist={elite:0,invitado:0,admin:0};
-    reales.forEach(a=>{if(dist[a.tipo_acceso]!==undefined)dist[a.tipo_acceso]++;});
+    reales.forEach(a=>{var t=a.tipo_acceso||'invitado';if(dist[t]!==undefined)dist[t]++;});
     var tot=reales.length||1;
     document.getElementById('overviewDist').innerHTML=`
       <div style="display:flex;flex-direction:column;gap:9px">
@@ -398,22 +398,21 @@ function tipoBadge(tipo){
 function fmtDate(d){return d?new Date(d).toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';}
 
 // Helper para obtener fecha de un registro (soporta timestamp y created_at)
-function getDate(r){return r.timestamp||r.created_at||null;}
+function getDate(r){return r.fecha||r.creado_en||r.created_at||r.timestamp||null;}
 
 // ── ACCESOS ──
 async function loadAccesos(){
   document.getElementById('tablaAccesos').innerHTML='<div class="loading">Cargando…</div>';
   try{
-    var data=(await supa('accesos')).filter(a=>a.tipo_acceso!=='espera');
+    var data=(await supa('accesos')).filter(a=>a.codigo_usado!=='ESPERA');
     if(!data.length){document.getElementById('tablaAccesos').innerHTML='<div class="loading">Sin accesos.</div>';return;}
     document.getElementById('tablaAccesos').innerHTML=`
       <div style="overflow-x:auto">
       <table class="tbl">
-        <thead><tr><th>Email</th><th>Código</th><th>Invitado por</th><th>Tipo</th><th>Fecha</th></tr></thead>
+        <thead><tr><th>Email</th><th>Código usado</th><th>Tipo</th><th>Fecha</th></tr></thead>
         <tbody>${data.map(r=>`<tr>
           <td style="color:var(--w);font-weight:600">${r.email||'—'}</td>
           <td style="font-family:monospace;font-size:10px;letter-spacing:.06em">${r.codigo_usado||'—'}</td>
-          <td>${r.nombre_elite||'—'}</td>
           <td><span class="badge ${tipoBadge(r.tipo_acceso)}">${r.tipo_acceso||'—'}</span></td>
           <td style="font-size:10px;color:var(--s)">${fmtDate(getDate(r))}</td>
         </tr>`).join('')}</tbody>
@@ -430,13 +429,14 @@ async function loadCodigos(){
     document.getElementById('tablaCodigos').innerHTML=`
       <div style="overflow-x:auto">
       <table class="tbl">
-        <thead><tr><th>Código</th><th>Tipo</th><th>Nombre élite</th><th>Usos</th><th>Estado</th></tr></thead>
+        <thead><tr><th>Código</th><th>Tipo</th><th>Nombre élite</th><th>Usos</th><th>Estado</th><th>Creado</th></tr></thead>
         <tbody>${data.map(r=>`<tr>
           <td style="font-family:monospace;font-weight:700;color:var(--w);letter-spacing:.08em">${r.codigo||'—'}</td>
           <td><span class="badge ${tipoBadge(r.tipo)}">${r.tipo||'—'}</span></td>
           <td>${r.nombre_elite||'—'}</td>
           <td>${r.usos_actuales||0} / ${r.usos_permitidos||'∞'}</td>
           <td><span class="badge ${r.activo?'b-on':'b-off'}">${r.activo?'Activo':'Inactivo'}</span></td>
+          <td style="font-size:10px;color:var(--s)">${fmtDate(getDate(r))}</td>
         </tr>`).join('')}</tbody>
       </table></div>`;
   }catch(e){document.getElementById('tablaCodigos').innerHTML='<div class="err-box">Error al cargar códigos.</div>';}
@@ -446,15 +446,14 @@ async function loadCodigos(){
 async function loadEspera(){
   document.getElementById('tablaEspera').innerHTML='<div class="loading">Cargando…</div>';
   try{
-    var data=(await supa('accesos')).filter(a=>a.tipo_acceso==='espera');
+    var data=(await supa('accesos')).filter(a=>a.codigo_usado==='ESPERA');
     if(!data.length){document.getElementById('tablaEspera').innerHTML='<div class="loading">Lista de espera vacía.</div>';return;}
     document.getElementById('tablaEspera').innerHTML=`
       <div style="overflow-x:auto">
       <table class="tbl">
-        <thead><tr><th>Email</th><th>Instagram</th><th>Fecha</th></tr></thead>
+        <thead><tr><th>Email</th><th>Fecha</th></tr></thead>
         <tbody>${data.map(r=>`<tr>
           <td style="color:var(--w);font-weight:600">${r.email||'—'}</td>
-          <td style="color:var(--s)">${r.nombre_elite||'—'}</td>
           <td style="font-size:10px;color:var(--s)">${fmtDate(getDate(r))}</td>
         </tr>`).join('')}</tbody>
       </table></div>`;
