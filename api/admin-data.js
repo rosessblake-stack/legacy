@@ -32,6 +32,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Error de configuración del servidor.' });
   }
 
+  // Normalizar URL — funciona tanto con como sin /rest/v1/ al final
   const base = SUPABASE_URL.replace(/\/rest\/v1\/?$/, '');
 
   try {
@@ -53,8 +54,9 @@ export default async function handler(req, res) {
 
     if (!r.ok) {
       const err = await r.text();
-      console.error(`[admin-data] Supabase error en ${tabla}:`, err);
-      return res.status(500).json({ error: 'Error al consultar Supabase.' });
+      console.error(`[admin-data] Supabase error en ${tabla} (${r.status}):`, err);
+      console.error(`[admin-data] URL usada: ${base}/rest/v1/${tabla}`);
+      return res.status(500).json({ error: 'Error al consultar Supabase.', detalle: err, status: r.status });
     }
 
     const data = await r.json();
