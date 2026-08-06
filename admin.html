@@ -340,13 +340,13 @@ async function loadOverview(){
       supa('codigos'),
       supa('legacy_data')
     ]);
-    codigos = Array.isArray(codigos)?codigos.filter(c=>c.activo):[];
 
-    var reales = Array.isArray(accesos)?accesos.filter(a=>a.codigo_usado!=='ESPERA'):[];
+    var reales  = Array.isArray(accesos)?accesos.filter(a=>a.codigo_usado!=='ESPERA'):[];
     var espera  = Array.isArray(accesos)?accesos.filter(a=>a.codigo_usado==='ESPERA'):[];
+    var codigosActivos = Array.isArray(codigos)?codigos.filter(r=>r.activo&&r.usos_actuales>0):[];
 
     document.getElementById('statAccesos').textContent   = reales.length;
-    document.getElementById('statCodigos').textContent   = Array.isArray(codigos)?codigos.length:'—';
+    document.getElementById('statCodigos').textContent   = codigosActivos.length;
     document.getElementById('statEspera').textContent    = espera.length;
     document.getElementById('statConsultas').textContent = Array.isArray(consultas)?consultas.length:'—';
 
@@ -357,7 +357,7 @@ async function loadOverview(){
           <div class="row-item">
             <div style="flex:1">
               <div style="font-size:12px;font-weight:700;color:var(--w)">${a.email||'—'}</div>
-              <div style="font-size:10px;color:var(--s)">${a.codigo_usado||''} · ${getDate(a)?fmtDate(getDate(a)):'—'}</div>
+              <div style="font-size:10px;color:var(--s)">${a.tipo_acceso||''} · ${getDate(a)?fmtDate(getDate(a)):'—'}</div>
             </div>
             <span class="badge ${tipoBadge(a.tipo_acceso)}">${a.tipo_acceso||'—'}</span>
           </div>`).join('')+'</div>'
@@ -398,7 +398,7 @@ function tipoBadge(tipo){
 function fmtDate(d){return d?new Date(d).toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';}
 
 // Helper para obtener fecha de un registro (soporta timestamp y created_at)
-function getDate(r){return r.fecha||r.creado_en||r.created_at||r.timestamp||null;}
+function getDate(r){return r.fecha||r.timestamp||r.creado_en||r.created_at||null;}
 
 // ── ACCESOS ──
 async function loadAccesos(){
@@ -469,13 +469,14 @@ async function loadConsultas(){
     document.getElementById('tablaConsultas').innerHTML=`
       <div style="overflow-x:auto">
       <table class="tbl">
-        <thead><tr><th>Email</th><th>Servicio</th><th>País</th><th>Precio</th><th>Nivel</th><th>Fecha</th></tr></thead>
+        <thead><tr><th>Email</th><th>Servicio</th><th>País</th><th>Precio calculado</th><th>Nivel</th><th>Horas</th><th>Fecha</th></tr></thead>
         <tbody>${data.map(r=>`<tr>
           <td style="color:var(--w);font-weight:600">${r.email||'—'}</td>
           <td>${r.nombre_servicio||r.tipo_trenzado||'—'}</td>
           <td>${r.pais||'—'}</td>
-          <td style="font-weight:700;color:var(--w)">${r.precio_total?Math.round(r.precio_total)+'€':'—'}</td>
+          <td style="font-weight:700;color:var(--w)">${r.precio_calculado?Math.round(r.precio_calculado):'—'}</td>
           <td><span class="badge ${r.nivel==='elite'?'b-elite':'b-inv'}">${r.nivel||'—'}</span></td>
+          <td>${r.horas||'—'}</td>
           <td style="font-size:10px;color:var(--s)">${fmtDate(getDate(r))}</td>
         </tr>`).join('')}</tbody>
       </table></div>`;
