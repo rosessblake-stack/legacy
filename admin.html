@@ -326,7 +326,7 @@ async function supa(tabla, filtros){
   });
   if(!res.ok){
     var err = await res.json().catch(()=>({error:'Error desconocido'}));
-    throw new Error(err.error || 'Error '+res.status);
+    throw new Error(err.detalle || err.error || 'Error '+res.status);
   }
   var json = await res.json();
   return json.data || [];
