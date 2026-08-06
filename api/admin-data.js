@@ -38,8 +38,8 @@ export default async function handler(req, res) {
   try {
     // Construir query
     // Columna de fecha según tabla
-    const fechaCols = { accesos: 'fecha', codigos: 'creado_en', legacy_data: 'created_at' };
-    const fechaCol = fechaCols[tabla] || 'created_at';
+    const fechaCols = { accesos: 'fecha', codigos: 'creado_en', legacy_data: 'timestamp' };
+    const fechaCol = fechaCols[tabla] || 'timestamp';
     let qs = `select=*&order=${fechaCol}.desc&limit=500`;
     if (filtros) {
       Object.entries(filtros).forEach(([k, v]) => {
