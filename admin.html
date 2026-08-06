@@ -249,8 +249,8 @@ body{height:100vh;background:#050505;font-family:'Inter',sans-serif;color:var(--
 </div>
 
 <script>
-var SUPA_URL = 'https://crmpjtaczpmjfxxbujkb.supabase.co';
-var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNybXBqdGFjenBtamZ4eGJ1amtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMjczNDUsImV4cCI6MjA5NjcwMzM0NX0.F3tITqlOzqS7BMK-XDcFnoRXEwNSZvyrHQM4gfQsLk8';
+// Token admin — debe coincidir con ADMIN_TOKEN en Vercel env vars
+var ADMIN_TOKEN = 'legacy-admin-blake-2026';
 var PWD_HASH = 'b3a6ab1c0ea8be884c49b7d64de93c805339f8bb6b85e7465ba39c91077d6743';
 
 // ── LOGIN ──
@@ -314,28 +314,33 @@ function showScreen(id){
   if(id==='s-consultas')loadConsultas();
 }
 
-// ── SUPABASE FETCH ──
-async function supa(tabla, qs){
-  var url = SUPA_URL+'/rest/v1/'+tabla+'?'+qs+'&order=created_at.desc&limit=500';
-  var res = await fetch(url,{
-    headers:{
-      'apikey':SUPA_KEY,
-      'Authorization':'Bearer '+SUPA_KEY,
-      'Content-Type':'application/json'
-    }
+// ── FETCH VÍA ENDPOINT SEGURO ──
+async function supa(tabla, filtros){
+  var res = await fetch('/api/admin-data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Admin-Token': ADMIN_TOKEN
+    },
+    body: JSON.stringify({ tabla, filtros: filtros || null })
   });
-  if(!res.ok) throw new Error('Error '+res.status);
-  return await res.json();
+  if(!res.ok){
+    var err = await res.json().catch(()=>({error:'Error desconocido'}));
+    throw new Error(err.error || 'Error '+res.status);
+  }
+  var json = await res.json();
+  return json.data || [];
 }
 
 // ── OVERVIEW ──
 async function loadOverview(){
   try{
     var [accesos, codigos, consultas] = await Promise.all([
-      supa('accesos','select=*'),
-      supa('codigos','select=*&activo=eq.true'),
-      supa('legacy_data','select=*')
+      supa('accesos'),
+      supa('codigos'),
+      supa('legacy_data')
     ]);
+    codigos = Array.isArray(codigos)?codigos.filter(c=>c.activo):[];
 
     var reales = Array.isArray(accesos)?accesos.filter(a=>a.tipo_acceso!=='espera'):[];
     var espera  = Array.isArray(accesos)?accesos.filter(a=>a.tipo_acceso==='espera'):[];
@@ -396,7 +401,7 @@ function fmtDate(d){return d?new Date(d).toLocaleString('es-ES',{day:'2-digit',m
 async function loadAccesos(){
   document.getElementById('tablaAccesos').innerHTML='<div class="loading">Cargando…</div>';
   try{
-    var data=await supa('accesos','select=*&tipo_acceso=neq.espera');
+    var data=(await supa('accesos')).filter(a=>a.tipo_acceso!=='espera');
     if(!data.length){document.getElementById('tablaAccesos').innerHTML='<div class="loading">Sin accesos.</div>';return;}
     document.getElementById('tablaAccesos').innerHTML=`
       <div style="overflow-x:auto">
@@ -417,7 +422,7 @@ async function loadAccesos(){
 async function loadCodigos(){
   document.getElementById('tablaCodigos').innerHTML='<div class="loading">Cargando…</div>';
   try{
-    var data=await supa('codigos','select=*');
+    var data=await supa('codigos');
     if(!data.length){document.getElementById('tablaCodigos').innerHTML='<div class="loading">Sin códigos.</div>';return;}
     document.getElementById('tablaCodigos').innerHTML=`
       <div style="overflow-x:auto">
@@ -438,7 +443,7 @@ async function loadCodigos(){
 async function loadEspera(){
   document.getElementById('tablaEspera').innerHTML='<div class="loading">Cargando…</div>';
   try{
-    var data=await supa('accesos','tipo_acceso=eq.espera&select=*');
+    var data=(await supa('accesos')).filter(a=>a.tipo_acceso==='espera');
     if(!data.length){document.getElementById('tablaEspera').innerHTML='<div class="loading">Lista de espera vacía.</div>';return;}
     document.getElementById('tablaEspera').innerHTML=`
       <div style="overflow-x:auto">
@@ -457,7 +462,7 @@ async function loadEspera(){
 async function loadConsultas(){
   document.getElementById('tablaConsultas').innerHTML='<div class="loading">Cargando…</div>';
   try{
-    var data=await supa('legacy_data','select=*');
+    var data=await supa('legacy_data');
     if(!data.length){document.getElementById('tablaConsultas').innerHTML='<div class="loading">Sin consultas todavía.</div>';return;}
     document.getElementById('tablaConsultas').innerHTML=`
       <div style="overflow-x:auto">
