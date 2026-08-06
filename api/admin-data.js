@@ -37,7 +37,10 @@ export default async function handler(req, res) {
 
   try {
     // Construir query
-    let qs = 'select=*&order=timestamp.desc&limit=500';
+    // Columna de fecha según tabla
+    const fechaCols = { accesos: 'fecha', codigos: 'creado_en', legacy_data: 'created_at' };
+    const fechaCol = fechaCols[tabla] || 'created_at';
+    let qs = `select=*&order=${fechaCol}.desc&limit=500`;
     if (filtros) {
       Object.entries(filtros).forEach(([k, v]) => {
         qs += `&${k}=eq.${encodeURIComponent(v)}`;
