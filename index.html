@@ -4,1982 +4,752 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#050505">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Legacy Calculator</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex,nofollow">
+<title>Legacy · Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --red:#E31E24;--red-dim:rgba(227,30,36,.12);--red-glow:rgba(227,30,36,.25);
-  --gold:#C9A84C;--gold-dim:rgba(201,168,76,.1);--gold-border:rgba(201,168,76,.3);
-  --purple:#8B5CF6;--purple-dim:rgba(139,92,246,.1);--purple-border:rgba(139,92,246,.3);
-  --green:#22C55E;--green-dim:rgba(34,197,94,.08);--green-border:rgba(34,197,94,.25);
-  --blue:#3B82F6;--blue-dim:rgba(59,130,246,.1);
-  --orange:#F97316;
-  --white:rgba(255,255,255,1);
-  --text:rgba(255,255,255,0.82);
-  --subtle:rgba(255,255,255,0.38);
-  --muted:rgba(255,255,255,0.15);
-  --glass-bg:rgba(255,255,255,0.04);
-  --glass-border:rgba(255,255,255,0.09);
-  --glass-shine:rgba(255,255,255,0.07);
+  --red:#E31E24;--rd:rgba(227,30,36,.1);--rb:rgba(227,30,36,.25);
+  --gold:#C9A84C;--gd:rgba(201,168,76,.08);--gb:rgba(201,168,76,.25);
+  --purple:#8B5CF6;--pd:rgba(139,92,246,.08);--pb:rgba(139,92,246,.25);
+  --green:#22C55E;--gnd:rgba(34,197,94,.08);--gnb:rgba(34,197,94,.25);
+  --w:#fff;--t:rgba(255,255,255,.82);--s:rgba(255,255,255,.38);--m:rgba(255,255,255,.15);
+  --g:rgba(255,255,255,.04);--gb2:rgba(255,255,255,.08);--gs:rgba(255,255,255,.06);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;background:#050505;font-family:'Inter',sans-serif;color:var(--text);overflow-x:hidden;}
 html{overflow:hidden;}
-body{overflow-y:auto;}
-.clash{font-family:'Clash Display',sans-serif;}
+body{height:100vh;background:#050505;font-family:'Inter',sans-serif;color:var(--t);overflow-y:auto;}
 
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:#050505;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.1;}
+.b1{width:500px;height:500px;background:var(--red);top:-150px;left:-150px;animation:d1 14s ease-in-out infinite alternate;}
+.b2{width:400px;height:400px;background:var(--gold);bottom:-120px;right:-120px;animation:d2 18s ease-in-out infinite alternate;}
+@keyframes d1{to{transform:translate(30px,20px) scale(1.1);}}
+@keyframes d2{to{transform:translate(-20px,30px) scale(1.08);}}
 
+/* LOGIN */
+#loginScreen{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.login-wrap{width:100%;max-width:340px;}
+.logo-row{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center;}
+.logo-mark{width:32px;height:32px;background:var(--red);border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(227,30,36,.3);}
+.logo-text{font-family:'Clash Display',sans-serif;font-size:18px;font-weight:700;color:var(--w);}
+.admin-badge{display:inline-flex;align-items:center;gap:5px;background:var(--gd);border:1px solid var(--gb);border-radius:16px;padding:4px 12px;font-size:9px;font-weight:700;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px;}
+.login-title{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;color:var(--w);text-align:center;margin-bottom:6px;letter-spacing:-.02em;}
+.login-sub{font-size:13px;color:var(--s);text-align:center;margin-bottom:28px;line-height:1.6;}
+.inp{width:100%;background:var(--g);border:1px solid var(--gb2);border-radius:10px;padding:13px 16px;color:var(--w);font-family:'Inter',sans-serif;font-size:14px;outline:none;margin-bottom:8px;transition:border-color .2s;box-shadow:0 1px 0 var(--gs) inset;}
+.inp:focus{border-color:rgba(227,30,36,.4);}
+.inp::placeholder{color:var(--m);}
+.btn{width:100%;padding:14px;backdrop-filter:blur(20px);background:linear-gradient(135deg,rgba(201,168,76,.8),rgba(232,201,106,.8));border:1px solid rgba(201,168,76,.3);border-radius:10px;color:#0a0805;font-family:'Clash Display',sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 1px 0 rgba(255,240,180,.15) inset,0 6px 20px rgba(201,168,76,.15);transition:all .18s;margin-bottom:8px;}
+.btn:hover{box-shadow:0 1px 0 rgba(255,240,180,.15) inset,0 10px 28px rgba(201,168,76,.25);}
+.err{background:rgba(227,30,36,.08);border:1px solid rgba(227,30,36,.2);border-radius:8px;padding:10px 14px;font-size:11px;color:#F87171;margin-bottom:10px;display:none;text-align:center;}
 
-/* ── SPLASH ── */
-#splashScreen{position:fixed;inset:0;z-index:500;background:#050505;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .6s ease;}
-#splashScreen.fade-out{opacity:0;pointer-events:none;}
-#splashScreen.hidden{display:none;}
-.splash-logo{display:flex;align-items:center;gap:12px;animation:splashIn .6s cubic-bezier(.25,.46,.45,.94);}
-.splash-mark{width:48px;height:48px;background:var(--red);border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(227,30,36,.4);}
-.splash-name{font-family:'Clash Display',sans-serif;font-size:32px;font-weight:700;color:var(--white);letter-spacing:-.02em;}
-.splash-sub{font-size:13px;color:var(--subtle);letter-spacing:.06em;animation:splashIn .6s .2s cubic-bezier(.25,.46,.45,.94) both;}
-.splash-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 1.2s ease-in-out infinite;box-shadow:0 0 8px rgba(227,30,36,.5);}
-@keyframes splashIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-
-/* ── SELECTOR IDIOMA ── */
-.lang-selector{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:3px;display:flex;gap:2px;}
-.lang-btn{padding:5px 9px;border-radius:16px;font-size:10px;font-weight:700;color:var(--subtle);cursor:pointer;border:1px solid transparent;letter-spacing:.04em;display:flex;align-items:center;gap:4px;transition:all .15s;}
-.lang-btn:hover{color:var(--text);}
-.lang-btn.active{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12);color:var(--white);}
-.lang-flag{font-size:12px;}
-
-/* Selector grande en acceso */
-.lang-cards{display:flex;gap:8px;margin-bottom:24px;justify-content:center;}
-.lang-card{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:10px 14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px;transition:all .18s;}
-.lang-card:hover{background:rgba(255,255,255,.07);}
-.lang-card.active{background:rgba(227,30,36,.1);border-color:rgba(227,30,36,.28);}
-.lang-card-flag{font-size:20px;}
-.lang-card-name{font-size:9px;font-weight:700;color:var(--subtle);letter-spacing:.06em;}
-.lang-card.active .lang-card-name{color:rgba(255,150,150,.9);}
-
-/* ── MODAL COMPARTIR ── */
-#shareModal{display:none;position:fixed;inset:0;z-index:300;backdrop-filter:blur(30px) saturate(160%);-webkit-backdrop-filter:blur(30px) saturate(160%);background:rgba(5,5,5,.7);align-items:center;justify-content:center;padding:20px;}
-#shareModal.visible{display:flex;}
-.share-modal-inner{backdrop-filter:blur(24px);background:rgba(8,5,8,.9);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:22px;max-width:320px;width:100%;}
-.share-modal-title{font-family:'Clash Display',sans-serif;font-size:18px;font-weight:700;color:var(--white);margin-bottom:4px;}
-.share-modal-sub{font-size:12px;color:var(--subtle);line-height:1.6;margin-bottom:18px;}
-.share-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
-.share-opt{backdrop-filter:blur(16px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s;}
-.share-opt:hover{background:rgba(255,255,255,.08);}
-.share-opt.selected{border-color:rgba(227,30,36,.3);background:rgba(227,30,36,.08);}
-.share-opt-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
-.share-opt-title{font-size:12px;font-weight:700;color:var(--white);margin-bottom:2px;}
-.share-opt-sub{font-size:10px;color:var(--subtle);}
-.share-btn-dl{width:100%;padding:13px;backdrop-filter:blur(20px);background:rgba(139,92,246,.8);border:1px solid rgba(200,180,255,.2);border-radius:10px;color:#fff;font-family:'Clash Display',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:8px;box-shadow:0 1px 0 rgba(255,255,255,.1) inset;}
-.share-btn-cancel{width:100%;padding:10px;background:transparent;border:1px solid rgba(255,255,255,.07);border-radius:10px;color:var(--subtle);font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;}
-
-/* Canvas oculto para generación PNG */
-#shareCanvas{display:none;}
-
-
-/* ── PANEL ADMIN ── */
+/* ADMIN PANEL */
 #adminPanel{display:none;position:relative;z-index:1;min-height:100vh;flex-direction:column;}
-#adminPanel.visible{display:flex;}
-.admin-layout{display:flex;height:calc(100vh - 49px);overflow:hidden;}
-.admin-sidebar{width:200px;flex-shrink:0;background:rgba(5,5,5,.8);border-right:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;overflow-y:auto;backdrop-filter:blur(20px);}
-.admin-user-card{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:9px;}
-.admin-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--purple));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;}
-.admin-sec{padding:9px 12px 3px;font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.15);}
-.admin-sb-item{display:flex;align-items:center;gap:8px;padding:7px 10px;margin:1px 5px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;}
-.admin-sb-item:hover{background:rgba(255,255,255,.04);}
-.admin-sb-item.on{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);}
-.admin-sb-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
-.admin-sb-lbl{font-size:11px;font-weight:600;color:rgba(255,255,255,.38);}
-.admin-sb-item.on .admin-sb-lbl,.admin-sb-item:hover .admin-sb-lbl{color:rgba(255,255,255,.82);}
+#adminPanel.on{display:flex;}
 
-.admin-main{flex:1;overflow-y:auto;padding:20px;}
-.admin-screen{display:none;}
-.admin-screen.on{display:block;animation:fadeInA .2s ease;}
-@keyframes fadeInA{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.app-header{padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(30px);background:rgba(5,5,5,.75);border-bottom:1px solid var(--gb2);}
+.app-logo{display:flex;align-items:center;gap:8px;}
+.app-mark{width:24px;height:24px;background:var(--red);border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(227,30,36,.3);}
+.app-name{font-family:'Clash Display',sans-serif;font-size:14px;font-weight:700;color:var(--w);}
+.admin-tag{font-size:9px;font-weight:700;padding:2px 8px;background:var(--gd);border:1px solid var(--gb);border-radius:8px;color:var(--gold);margin-left:6px;letter-spacing:.06em;}
 
-.a-stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;position:relative;overflow:hidden;}
-.a-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-.asr::before{background:linear-gradient(90deg,transparent,var(--red),transparent);}
-.asp::before{background:linear-gradient(90deg,transparent,var(--purple),transparent);}
-.asgn::before{background:linear-gradient(90deg,transparent,#22C55E,transparent);}
-.asgo::before{background:linear-gradient(90deg,transparent,var(--gold),transparent);}
-.a-sn{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;color:var(--white);line-height:1;margin-bottom:3px;}
-.a-sl{font-size:10px;color:rgba(255,255,255,.38);}
-.a-st{font-size:10px;font-weight:600;margin-top:4px;color:#22C55E;}
+.tab-bar{display:flex;gap:4px;background:var(--g);border:1px solid var(--gb2);border-radius:10px;padding:3px;}
+.tab-btn{padding:6px 18px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--s);transition:all .15s;}
+.tab-btn.on{background:rgba(255,255,255,.08);color:var(--w);}
+.tab-btn.gold.on{background:var(--gd);border:1px solid var(--gb);color:var(--gold);}
 
-.a-card{backdrop-filter:blur(20px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;margin-bottom:12px;}
-.a-card-h{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;}
-.a-card-t{font-size:12px;font-weight:700;color:var(--white);}
-.a-card-b{padding:14px 16px;}
-.a-g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
-.a-g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+/* LAYOUT */
+.dash-layout{display:flex;height:calc(100vh - 49px);overflow:hidden;}
+.sidebar{width:200px;flex-shrink:0;background:rgba(5,5,5,.75);border-right:1px solid var(--gb2);display:flex;flex-direction:column;overflow-y:auto;backdrop-filter:blur(20px);}
+.sb-user{padding:12px 14px;border-bottom:1px solid var(--gb2);display:flex;align-items:center;gap:9px;}
+.sb-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--gold));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;}
+.sb-name{font-size:11px;font-weight:700;color:var(--w);}
+.sb-role{font-size:9px;font-weight:600;color:var(--gold);}
+.sb-sec{padding:9px 12px 3px;font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.15);}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 10px;margin:1px 5px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;}
+.sb-item:hover{background:var(--g);}
+.sb-item.on{background:var(--g);border-color:var(--gb2);}
+.sb-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.sb-lbl{font-size:11px;font-weight:600;color:var(--s);}
+.sb-item.on .sb-lbl,.sb-item:hover .sb-lbl{color:var(--t);}
+.sb-logout{margin:auto 8px 12px;padding:8px 10px;background:var(--g);border:1px solid var(--gb2);border-radius:8px;cursor:pointer;font-size:11px;color:var(--s);text-align:center;transition:all .15s;}
+.sb-logout:hover{color:var(--red);border-color:var(--rb);}
 
-.a-tbl{width:100%;border-collapse:collapse;}
-.a-tbl th{text-align:left;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.38);padding:7px 12px;border-bottom:1px solid rgba(255,255,255,.06);}
-.a-tbl td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;color:rgba(255,255,255,.82);}
-.a-tbl tr:last-child td{border-bottom:none;}
-.a-tbl tr:hover td{background:rgba(255,255,255,.02);}
+.main{flex:1;overflow-y:auto;padding:20px;}
+.screen{display:none;}
+.screen.on{display:block;animation:fi .2s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
 
-.a-row-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:10px 13px;display:flex;align-items:center;gap:11px;margin-bottom:7px;}
-.a-badge{padding:2px 7px;border-radius:7px;font-size:9px;font-weight:700;}
-.ab-elite{background:rgba(227,30,36,.1);border:1px solid rgba(227,30,36,.25);color:var(--red);}
-.ab-inv{background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.25);color:var(--purple);}
-.ab-esp{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.38);}
-.ab-admin{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);color:var(--gold);}
+/* CARDS */
+.card{backdrop-filter:blur(20px);background:var(--g);border:1px solid var(--gb2);border-radius:12px;overflow:hidden;margin-bottom:12px;}
+.ch{padding:12px 16px;border-bottom:1px solid var(--gb2);display:flex;align-items:center;justify-content:space-between;}
+.ct{font-size:12px;font-weight:700;color:var(--w);}
+.cb{padding:14px 16px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
 
-.a-loading{text-align:center;padding:32px;font-size:12px;color:rgba(255,255,255,.25);}
-.a-err{background:rgba(227,30,36,.08);border:1px solid rgba(227,30,36,.2);border-radius:8px;padding:10px 14px;font-size:11px;color:#F87171;margin-bottom:10px;}
+.stat{background:var(--g);border:1px solid var(--gb2);border-radius:10px;padding:14px;position:relative;overflow:hidden;}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.sr::before{background:linear-gradient(90deg,transparent,var(--red),transparent);}
+.sp::before{background:linear-gradient(90deg,transparent,var(--purple),transparent);}
+.sgn::before{background:linear-gradient(90deg,transparent,var(--green),transparent);}
+.sgo::before{background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.sn{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;color:var(--w);line-height:1;margin-bottom:3px;}
+.sl{font-size:10px;color:var(--s);}
 
-/* Tab switcher admin */
-.admin-tabs{display:flex;gap:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:3px;margin-bottom:0;}
-.admin-tab{padding:5px 16px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.38);transition:all .15s;}
-.admin-tab.on{background:rgba(255,255,255,.08);color:var(--white);}
-.admin-tab.red.on{background:rgba(227,30,36,.15);color:var(--red);}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{text-align:left;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);padding:7px 12px;border-bottom:1px solid var(--gb2);}
+.tbl td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;color:var(--t);}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(255,255,255,.02);}
 
-/* ── FONDO ── */
-.bg-wrap{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:#050505;}
-.bg-blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.14;}
-.b1{width:600px;height:600px;background:var(--red);top:-200px;left:-150px;animation:drift1 14s ease-in-out infinite alternate;}
-.b2{width:500px;height:500px;background:var(--purple);bottom:-150px;right:-100px;animation:drift2 18s ease-in-out infinite alternate;}
-.b3{width:350px;height:350px;background:var(--gold);top:45%;left:35%;animation:drift3 22s ease-in-out infinite alternate;}
-@keyframes drift1{to{transform:translate(40px,30px) scale(1.1);}}
-@keyframes drift2{to{transform:translate(-30px,40px) scale(1.08);}}
-@keyframes drift3{to{transform:translate(20px,-30px) scale(0.95);}}
+.badge{padding:2px 7px;border-radius:7px;font-size:9px;font-weight:700;letter-spacing:.04em;}
+.b-elite{background:var(--rd);border:1px solid var(--rb);color:var(--red);}
+.b-inv{background:var(--pd);border:1px solid var(--pb);color:var(--purple);}
+.b-esp{background:var(--g);border:1px solid var(--gb2);color:var(--s);}
+.b-admin{background:var(--gd);border:1px solid var(--gb);color:var(--gold);}
+.b-on{background:var(--gnd);border:1px solid var(--gnb);color:var(--green);}
+.b-off{background:var(--g);border:1px solid var(--gb2);color:var(--s);}
 
-/* ── ACCESO ── */
-#accesoScreen{position:relative;z-index:1;min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;}
-#accesoScreen.visible{display:flex;}
-.acc-wrap{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.loading{text-align:center;padding:28px;font-size:12px;color:var(--s);}
+.err-box{background:var(--rd);border:1px solid var(--rb);border-radius:8px;padding:10px 14px;font-size:11px;color:#F87171;margin:8px 0;}
+.refresh-btn{font-size:9px;color:var(--s);background:var(--g);border:1px solid var(--gb2);border-radius:6px;padding:3px 9px;cursor:pointer;transition:all .15s;}
+.refresh-btn:hover{color:var(--t);}
 
-.logo-row{display:flex;align-items:center;gap:10px;margin-bottom:28px;}
-.logo-mark{width:30px;height:30px;background:var(--red);border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(227,30,36,.3);}
-.logo-text{font-family:'Clash Display',sans-serif;font-size:18px;font-weight:700;color:var(--white);letter-spacing:-.01em;}
+/* Row items overview */
+.row-item{background:var(--g);border:1px solid var(--gb2);border-radius:9px;padding:10px 13px;display:flex;align-items:center;gap:11px;margin-bottom:7px;}
 
-.badge{display:inline-flex;align-items:center;border-radius:20px;padding:5px 14px;font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:22px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
-.badge-lock{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--subtle);}
-.badge-gold{background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold);}
-.badge-purple{background:var(--purple-dim);border:1px solid var(--purple-border);color:var(--purple);}
+/* ── CONSULTAS: filas expandibles ── */
+.c-row-wrap{border-bottom:1px solid rgba(255,255,255,.03);}
+.c-row-wrap:last-child{border-bottom:none;}
+.c-row-main{display:flex;align-items:center;padding:9px 14px;cursor:pointer;transition:background .15s;gap:0;}
+.c-row-main:hover,.c-row-main.open{background:rgba(255,255,255,.03);}
+.c-col-email{flex:2;min-width:0;}
+.c-col-servicio{flex:2;min-width:0;}
+.c-col-pais{flex:1;min-width:0;}
+.c-col-precio{flex:1.2;min-width:0;text-align:right;}
+.c-col-nivel{flex:.8;min-width:0;text-align:center;}
+.c-col-fecha{flex:1;min-width:0;text-align:right;}
+.c-col-arrow{width:26px;flex-shrink:0;text-align:center;}
+.c-cell-p{font-size:11px;font-weight:600;color:var(--w);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.c-cell-s{font-size:9px;color:var(--s);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.c-arrow{font-size:9px;color:var(--s);transition:transform .2s;display:inline-block;}
+.c-arrow.open{transform:rotate(90deg);color:var(--gold);}
 
-.acc-title{font-family:'Clash Display',sans-serif;font-size:36px;font-weight:700;color:var(--white);text-align:center;line-height:1.15;letter-spacing:-.03em;margin-bottom:12px;text-shadow:0 0 40px rgba(255,255,255,.08);}
-.acc-sub{font-size:13px;color:rgba(255,255,255,.45);text-align:center;line-height:1.75;margin-bottom:28px;max-width:280px;}
+.c-detail{display:none;padding:0 14px 14px;border-top:1px solid rgba(255,255,255,.04);animation:fi .18s ease;}
+.c-detail.open{display:block;}
 
-.glass-input{width:100%;backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:13px 16px;color:var(--white);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;outline:none;margin-bottom:8px;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 0 var(--glass-shine) inset;}
-.glass-input:focus{border-color:rgba(227,30,36,.4);box-shadow:0 0 0 3px rgba(227,30,36,.08),0 1px 0 var(--glass-shine) inset;}
-.glass-input::placeholder{color:var(--muted);}
+.c-precio-hero{display:flex;align-items:stretch;gap:8px;margin:12px 0 8px;}
+.c-precio-central{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:12px;text-align:center;}
+.c-precio-lbl{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);margin-bottom:5px;}
+.c-precio-num{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;color:var(--w);line-height:1;}
+.c-precio-rango{font-size:9px;color:var(--s);margin-top:4px;}
+.c-precio-rango strong{color:var(--t);}
+.c-smi-box{width:80px;flex-shrink:0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;}
+.c-smi-num{font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--w);}
+.c-smi-lbl{font-size:8px;color:var(--s);margin-top:2px;text-align:center;}
+.c-diff-box{flex:1;border-radius:9px;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;}
+.c-diff-box.below{background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.25);}
+.c-diff-box.above{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);}
+.c-diff-lbl{font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;}
+.c-diff-box.below .c-diff-lbl{color:#F97316;}
+.c-diff-box.above .c-diff-lbl{color:var(--green);}
+.c-diff-num{font-family:'Clash Display',sans-serif;font-size:18px;font-weight:700;line-height:1;margin-bottom:2px;}
+.c-diff-box.below .c-diff-num{color:#F97316;}
+.c-diff-box.above .c-diff-num{color:var(--green);}
+.c-diff-sub{font-size:9px;color:var(--s);}
 
-.btn-red{width:100%;padding:13px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(227,30,36,.85);border:1px solid rgba(255,100,100,.2);border-radius:10px;color:#fff;font-family:'Clash Display',sans-serif;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;margin-bottom:10px;box-shadow:0 1px 0 rgba(255,150,150,.15) inset,0 8px 24px rgba(227,30,36,.2);transition:all .18s;}
-.btn-red:hover{background:rgba(227,30,36,.95);box-shadow:0 1px 0 rgba(255,150,150,.15) inset,0 8px 32px rgba(227,30,36,.35);}
-.btn-outline{width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:10px;color:var(--muted);font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;}
-.btn-gold{width:100%;padding:14px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:linear-gradient(135deg,rgba(201,168,76,.8),rgba(232,201,106,.8));border:1px solid rgba(201,168,76,.3);border-radius:10px;color:#0a0805;font-family:'Clash Display',sans-serif;font-size:13px;font-weight:700;letter-spacing:.04em;cursor:pointer;box-shadow:0 1px 0 rgba(255,240,180,.2) inset,0 8px 24px rgba(201,168,76,.15);}
-.btn-purple{width:100%;padding:14px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:linear-gradient(135deg,rgba(139,92,246,.8),rgba(167,139,250,.8));border:1px solid rgba(200,180,255,.2);border-radius:10px;color:#fff;font-family:'Clash Display',sans-serif;font-size:13px;font-weight:700;letter-spacing:.04em;cursor:pointer;box-shadow:0 1px 0 rgba(220,200,255,.1) inset,0 8px 24px rgba(139,92,246,.18);}
+.c-pot{background:var(--pd);border:1px solid var(--pb);border-radius:8px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.c-pot-lbl{font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);}
+.c-pot-sub{font-size:9px;color:rgba(139,92,246,.5);margin-top:1px;}
+.c-pot-num{font-family:'Clash Display',sans-serif;font-size:16px;font-weight:700;color:var(--purple);}
 
-.or-div{display:flex;align-items:center;gap:8px;margin:10px 0;width:100%;}
-.or-div::before,.or-div::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06);}
-.or-div span{font-size:8px;color:rgba(255,255,255,.12);font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
-
-.err-msg{display:none;width:100%;background:rgba(227,30,36,.1);border:1px solid rgba(227,30,36,.25);border-radius:8px;padding:10px 14px;font-size:11px;color:#F87171;margin-bottom:8px;}
-
-/* Tarjeta acceso VIP/Elite */
-.acc-card{width:100%;backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border-radius:14px;padding:16px;margin-bottom:16px;position:relative;overflow:hidden;}
-.acc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;}
-.acc-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);}
-.acc-card-purple{background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);}
-.acc-card-gold{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.18);}
-
-.inv-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.03);border:1px solid rgba(139,92,246,.15);border-radius:10px;padding:10px 12px;margin-bottom:14px;width:100%;}
-.inv-av{width:32px;height:32px;border-radius:50%;background:rgba(139,92,246,.4);border:1px solid rgba(200,180,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
-
-/* ── MAIN APP ── */
-#mainContent{position:relative;z-index:1;display:none;min-height:100vh;flex-direction:column;}
-#mainContent.visible{display:flex;}
-
-.tf-header{padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);background:rgba(5,5,5,.7);border-bottom:1px solid rgba(255,255,255,.06);}
-.tf-logo{display:flex;align-items:center;gap:8px;}
-.tf-logo-text{font-family:'Clash Display',sans-serif;font-size:14px;font-weight:700;color:var(--white);}
-.tf-step-counter{font-size:10px;font-weight:500;color:var(--subtle);}
-
-.tf-progress{height:2px;background:rgba(255,255,255,.05);position:sticky;top:49px;z-index:99;}
-.tf-progress-fill{height:100%;background:linear-gradient(90deg,var(--red),#ff6b6b);transition:width .4s ease;box-shadow:0 0 10px rgba(227,30,36,.4);}
-
-.tf-main{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px 100px;}
-.tf-card{width:100%;max-width:520px;}
-
-/* Transición entre pasos */
-.tf-step{display:none;}
-.tf-step.active{display:block;animation:slideIn .3s cubic-bezier(.25,.46,.45,.94);}
-.tf-step.leaving{animation:slideOut .25s cubic-bezier(.55,.06,.68,.19) forwards;}
-@keyframes slideIn{from{opacity:0;transform:translateX(32px);}to{opacity:1;transform:translateX(0);}}
-@keyframes slideOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(-32px);}}
-@keyframes slideInBack{from{opacity:0;transform:translateX(-32px);}to{opacity:1;transform:translateX(0);}}
-
-.tf-eyebrow{font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:10px;text-shadow:0 0 16px rgba(227,30,36,.35);}
-.tf-q{font-family:'Clash Display',sans-serif;font-size:26px;font-weight:700;color:var(--white);line-height:1.2;margin-bottom:8px;letter-spacing:-.02em;}
-.tf-sub{font-size:13px;color:var(--subtle);line-height:1.7;margin-bottom:24px;}
-.tf-sub strong{color:var(--text);}
-
-/* Input glass */
-.tf-input{width:100%;background:transparent;border:none;border-bottom:2px solid rgba(255,255,255,.1);padding:12px 0;color:var(--white);font-family:'Inter',sans-serif;font-size:20px;font-weight:600;outline:none;transition:border-color .2s;margin-bottom:6px;}
-.tf-input:focus{border-bottom-color:rgba(227,30,36,.6);}
-.tf-input::placeholder{color:rgba(255,255,255,.12);}
-.tf-hint{font-size:11px;color:var(--muted);line-height:1.55;margin-bottom:16px;}
-.tf-hint strong{color:var(--subtle);}
-
-.tf-select{width:100%;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:10px;padding:12px 14px;color:var(--white);font-family:'Inter',sans-serif;font-size:14px;font-weight:500;outline:none;cursor:pointer;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 1px 0 var(--glass-shine) inset;transition:border-color .2s;margin-bottom:8px;appearance:none;}
-.tf-select:focus{border-color:rgba(227,30,36,.35);}
-option{background:#0d0d0d;color:#fff;}
-
-/* Opciones glass */
-.tf-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
-.tf-opt{backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:13px 16px;cursor:pointer;position:relative;overflow:hidden;transition:all .18s;}
-.tf-opt::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:rgba(255,255,255,.1);border-radius:3px 0 0 3px;transition:background .18s,box-shadow .18s;}
-.tf-opt::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--glass-shine),transparent);}
-.tf-opt:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14);}
-.tf-opt:active{transform:scale(.97);transition:transform .08s ease;}
-.tf-opt{transition:all .18s, transform .08s ease;}
-.tf-pill:active{transform:scale(.96);}
-.tf-btn-next:active{transform:scale(.98);}
-.tf-opt.active{background:var(--red-dim);border-color:rgba(227,30,36,.3);box-shadow:0 4px 20px rgba(227,30,36,.08) inset;}
-.tf-opt.active::before{background:var(--red);box-shadow:0 0 8px rgba(227,30,36,.5);}
-.tf-opt-name{font-size:13px;font-weight:600;color:var(--white);padding-left:12px;}
-.tf-opt.active .tf-opt-name{color:#ff9090;}
-.tf-opt-sub{font-size:10px;color:var(--subtle);padding-left:12px;margin-top:3px;}
-
-/* Variantes de opt */
-.tf-opt.opt-gold.active{background:var(--gold-dim);border-color:rgba(201,168,76,.3);}
-.tf-opt.opt-gold.active::before{background:var(--gold);box-shadow:0 0 8px rgba(201,168,76,.4);}
-.tf-opt.opt-gold.active .tf-opt-name{color:var(--gold);}
-.tf-opt.opt-subtle.active{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.15);}
-.tf-opt.opt-subtle.active::before{background:rgba(255,255,255,.3);}
-.tf-opt.opt-subtle.active .tf-opt-name{color:rgba(255,255,255,.5);}
-.tf-opt.opt-green.active{background:var(--green-dim);border-color:var(--green-border);}
-.tf-opt.opt-green.active::before{background:var(--green);}
-.tf-opt.opt-green.active .tf-opt-name{color:var(--green);}
-
-/* Reputación */
-.r-grey.active{background:rgba(60,60,60,.3);border-color:#3a3a3a;}
-.r-grey.active::before{background:#9CA3AF;}
-.r-grey.active .tf-opt-name{color:#9CA3AF;}
-.r-red.active{background:var(--red-dim);border-color:rgba(227,30,36,.3);}
-.r-red.active::before{background:var(--red);}
-.r-red.active .tf-opt-name{color:#F87171;}
-.r-blue.active{background:var(--blue-dim);border-color:rgba(59,130,246,.3);}
-.r-blue.active::before{background:var(--blue);}
-.r-blue.active .tf-opt-name{color:#93C5FD;}
-.r-purple.active{background:var(--purple-dim);border-color:var(--purple-border);}
-.r-purple.active::before{background:var(--purple);}
-.r-purple.active .tf-opt-name{color:#C4B5FD;}
-.r-gold.active{background:var(--gold-dim);border-color:var(--gold-border);}
-.r-gold.active::before{background:var(--gold);}
-.r-gold.active .tf-opt-name{color:var(--gold);}
-
-/* Pills glass */
-.tf-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px;}
-.tf-pill{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:20px;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--subtle);transition:all .15s;}
-.tf-pill:hover{color:var(--text);background:rgba(255,255,255,.07);}
-.tf-pill.active{background:var(--red-dim);border-color:rgba(227,30,36,.3);color:rgba(255,150,150,.9);}
-
-/* SMI pills */
-.smi-pills{display:flex;gap:8px;margin-bottom:8px;}
-.smi-pill{flex:1;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:10px;padding:11px 12px;cursor:pointer;text-align:center;transition:all .18s;box-shadow:0 1px 0 var(--glass-shine) inset;}
-.smi-pill.active{background:var(--gold-dim);border-color:var(--gold-border);box-shadow:0 0 20px rgba(201,168,76,.06);}
-.smi-pill-label{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);}
-.smi-pill.active .smi-pill-label{color:var(--gold);}
-.smi-pill-val{font-size:14px;font-weight:700;color:var(--white);}
-.smi-pill-desc{font-size:9px;color:var(--subtle);}
-
-/* Chip */
-.tf-chip{display:inline-flex;align-items:center;gap:5px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:16px;padding:4px 10px;cursor:pointer;margin-bottom:6px;}
-.tf-chip span{font-size:10px;font-weight:600;color:var(--gold);}
-.tf-chip-body{display:none;padding:12px 14px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:10px;font-size:11px;color:rgba(201,168,76,.7);line-height:1.7;margin-bottom:12px;}
-.tf-chip-body.open{display:block;}
-.tf-chip-body strong{color:var(--gold);}
-
-/* Sublabel */
-.tf-sublabel{font-size:9px;font-weight:700;color:var(--subtle);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.05);}
-.tf-sublabel:first-child,.tf-sublabel.first{margin-top:0;padding-top:0;border-top:none;}
-
-.tf-subfield{display:none;margin-top:4px;}
-.tf-subfield.visible{display:block;}
-
-/* Nav */
-.tf-nav{display:flex;align-items:center;gap:10px;margin-top:22px;}
-.tf-btn-next{backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);background:rgba(227,30,36,.85);border:1px solid rgba(255,100,100,.2);border-radius:10px;padding:13px 28px;color:#fff;font-family:'Clash Display',sans-serif;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;transition:all .18s;box-shadow:0 1px 0 rgba(255,150,150,.15) inset,0 6px 20px rgba(227,30,36,.2);}
-.tf-btn-next:hover:not(:disabled){background:rgba(227,30,36,.95);box-shadow:0 1px 0 rgba(255,150,150,.15) inset,0 8px 28px rgba(227,30,36,.35);}
-.tf-btn-next:disabled{background:rgba(227,30,36,.15);border-color:rgba(227,30,36,.1);color:rgba(255,255,255,.2);cursor:not-allowed;box-shadow:none;}
-.tf-btn-back{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--subtle);border-radius:10px;padding:12px 16px;font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;transition:all .15s;box-shadow:0 1px 0 var(--glass-shine) inset;}
-.tf-btn-back:hover{background:rgba(255,255,255,.08);color:var(--text);}
-.tf-enter{font-size:10px;color:rgba(255,255,255,.1);margin-left:4px;}
-.tf-error{backdrop-filter:blur(12px);background:rgba(227,30,36,.08);border:1px solid rgba(227,30,36,.2);border-radius:8px;padding:10px 14px;font-size:11px;color:#F87171;margin-bottom:12px;display:none;}
-
-
-/* ── CONTADOR PRECIO ── */
-@keyframes priceIn{from{opacity:0;transform:scale(.92)translateY(8px);}to{opacity:1;transform:scale(1)translateY(0);}}
-.res-bubble-precio.counting{animation:priceIn .4s cubic-bezier(.25,.46,.45,.94);}
-
-/* ── PULSO AL APARECER PRECIO ── */
-@keyframes pricePulse{0%{text-shadow:0 0 0 rgba(255,255,255,0);}40%{text-shadow:0 0 60px rgba(255,255,255,.15);}100%{text-shadow:0 0 0 rgba(255,255,255,0);}}
-.res-bubble-precio.pulse{animation:pricePulse .8s ease forwards;}
-
-/* ── SPINNER ── */
-#spinnerOverlay{display:none;position:fixed;inset:0;z-index:200;backdrop-filter:blur(30px) saturate(160%);-webkit-backdrop-filter:blur(30px) saturate(160%);background:rgba(5,5,5,.8);flex-direction:column;align-items:center;justify-content:center;gap:20px;}
-#spinnerOverlay.visible{display:flex;}
-.spinner{width:44px;height:44px;border:3px solid rgba(227,30,36,.15);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite;box-shadow:0 0 20px rgba(227,30,36,.2);}
-@keyframes spin{to{transform:rotate(360deg);}}
-.spinner-text{font-family:'Clash Display',sans-serif;font-size:16px;font-weight:600;color:var(--white);letter-spacing:-.01em;}
-.spinner-sub{font-size:12px;color:var(--subtle);}
-
-/* ── RESULTADO ── */
-#resultSection{display:none;position:relative;z-index:1;min-height:100vh;flex-direction:column;align-items:center;padding:32px 20px 100px;}
-#resultSection.visible{display:flex;}
-.res-card{width:100%;max-width:520px;}
-.res-eyebrow{font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:10px;text-shadow:0 0 12px rgba(227,30,36,.3);}
-
-.res-main-bubble{backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 1px 0 rgba(255,255,255,.07) inset,0 16px 48px rgba(0,0,0,.4);}
-.res-bubble-top{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.06);}
-.res-bubble-label{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle);margin-bottom:10px;}
-.res-bubble-precio{font-family:'Clash Display',sans-serif;font-size:62px;font-weight:700;color:var(--white);letter-spacing:-.04em;line-height:1;margin-bottom:8px;text-align:center;text-shadow:0 0 40px rgba(255,255,255,.08);}
-.res-bubble-rango{font-size:11px;color:var(--subtle);line-height:1.65;text-align:center;}
-.res-bubble-rango strong{color:var(--text);}
-.res-bubble-bottom{padding:16px 20px;display:flex;align-items:center;gap:16px;}
-.res-smi-block{text-align:center;flex-shrink:0;}
-.res-smi-num{font-family:'Clash Display',sans-serif;font-size:30px;font-weight:700;color:var(--white);}
-.res-smi-label{font-size:9px;color:var(--subtle);margin-top:2px;}
-.res-divider-v{width:1px;background:rgba(255,255,255,.08);align-self:stretch;flex-shrink:0;}
-.res-contraste-block{flex:1;}
-.res-contraste-diff{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;margin-bottom:4px;}
-.res-contraste-text{font-size:10px;color:var(--subtle);line-height:1.5;}
-
-.res-elite-msg{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:var(--green-dim);border:1px solid var(--green-border);border-radius:12px;padding:14px 16px;margin-bottom:12px;display:none;}
-.res-elite-title{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:6px;}
-.res-elite-text{font-size:12px;color:#4ADE80;line-height:1.6;}
-.res-elite-text strong{color:var(--green);}
-
-.res-motivacion{backdrop-filter:blur(16px);background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 1px 0 var(--glass-shine) inset;}
-.res-motivacion-counter{font-size:9px;font-weight:700;color:var(--red);margin-bottom:4px;text-shadow:0 0 8px rgba(227,30,36,.3);}
-.res-motivacion-title{font-family:'Clash Display',sans-serif;font-size:16px;font-weight:600;color:var(--white);margin-bottom:4px;}
-.res-motivacion-text{font-size:12px;color:var(--subtle);line-height:1.6;}
-
-.res-nota{backdrop-filter:blur(12px);background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;margin-bottom:20px;font-size:11px;color:var(--muted);line-height:1.65;}
-.res-nota strong{color:var(--subtle);}
-
-.btn-siguiente{width:100%;padding:16px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(227,30,36,.8);border:1px solid rgba(255,100,100,.2);border-radius:12px;color:#fff;font-family:'Clash Display',sans-serif;font-size:14px;font-weight:600;letter-spacing:.04em;cursor:pointer;box-shadow:0 1px 0 rgba(255,150,150,.12) inset,0 8px 24px rgba(227,30,36,.18);transition:all .18s;margin-bottom:8px;}
-.btn-siguiente:hover{box-shadow:0 1px 0 rgba(255,150,150,.12) inset,0 12px 32px rgba(227,30,36,.3);}
-
-.tf-footer{padding:14px 20px;border-top:1px solid rgba(255,255,255,.04);display:flex;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(5,5,5,.5);}
-.tf-footer span{font-size:10px;color:rgba(255,255,255,.08);}
-
-@media(min-width:768px){
-  .tf-main{padding-top:60px;}
-  #resultSection{padding-top:60px;}
-}
+.c-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.c-block{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;}
+.c-block-lbl{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.c-block-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;}
+.c-brow{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.03);}
+.c-brow:last-child{border-bottom:none;}
+.c-bkey{font-size:9px;color:var(--s);}
+.c-bval{font-size:9px;font-weight:600;color:var(--t);text-align:right;}
+.c-bval.hl{color:var(--w);font-size:12px;font-family:'Clash Display',sans-serif;font-weight:700;}
+.c-bval.red{color:var(--red);}
+.c-bval.green{color:var(--green);}
+.c-bval.orange{color:#F97316;}
+.c-bval.gold{color:var(--gold);}
+.c-bval.purple{color:var(--purple);}
 </style>
 </head>
 <body>
+<div class="bg"><div class="blob b1"></div><div class="blob b2"></div></div>
 
-<!-- Fondo animado -->
-
-<!-- ── SPLASH ── -->
-<div id="splashScreen">
-  <div class="splash-logo">
-    <div class="splash-mark">
-      <svg width="20" height="20" viewBox="0 0 14 14" fill="none">
-        <path d="M2 12L7 2L12 12" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M3.5 9H10.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <span class="splash-name">Legacy</span>
-  </div>
-  <div class="splash-sub">Calculator</div>
-  <div class="splash-dot"></div>
-</div>
-
-<div class="bg-wrap">
-  <div class="bg-blob b1"></div>
-  <div class="bg-blob b2"></div>
-  <div class="bg-blob b3"></div>
-</div>
-
-<!-- Spinner de cálculo -->
-<div id="spinnerOverlay">
-  <div class="spinner"></div>
-  <div class="spinner-text clash" id="spinnerText">Calculando tu precio justo</div>
-  <div class="spinner-sub">Un momento…</div>
-</div>
-
-<!-- ══ ACCESO ══ -->
-<div id="accesoScreen">
-<div class="acc-wrap">
-
-  <!-- Lista de espera -->
-  <div id="accesoWait" style="width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;">
-    <!-- Selector idioma en acceso -->
-    <div class="lang-cards" id="langCardsAcceso">
-      <div class="lang-card active" onclick="setLang('es',this,'acceso')"><div class="lang-card-flag">🇪🇸</div><div class="lang-card-name">ES</div></div>
-      <div class="lang-card" onclick="setLang('en',this,'acceso')"><div class="lang-card-flag">🇬🇧</div><div class="lang-card-name">EN</div></div>
-      <div class="lang-card" onclick="setLang('pt',this,'acceso')"><div class="lang-card-flag">🇧🇷</div><div class="lang-card-name">PT</div></div>
-    </div>
-    <div class="logo-row" style="justify-content:center;">
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-wrap">
+    <div class="logo-row">
       <div class="logo-mark"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12L7 2L12 12" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 9H10.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
       <span class="logo-text">Legacy</span>
     </div>
-    <div class="badge badge-lock">Acceso por invitación</div>
-    <p class="acc-title clash">Something's<br>coming.</p>
-    <p class="acc-sub">Legacy está en fase de acceso anticipado. Solo puedes entrar con <strong style="color:rgba(255,255,255,.75)">código de invitación</strong> de un profesional élite.</p>
-    <input id="codigoInput" type="text" class="glass-input" placeholder="Código de invitación" style="text-align:center;letter-spacing:.12em;font-size:15px;font-weight:600;">
-    <div id="codigoError" class="err-msg"></div>
-    <button class="btn-red" onclick="verificarCodigo()">Acceder →</button>
-    <div class="or-div"><span>o apúntate a la lista de espera</span></div>
-    <input id="esperaEmail" type="email" class="glass-input" placeholder="Tu correo electrónico">
-    <input id="esperaIg" type="text" class="glass-input" placeholder="Tu Instagram @">
-    <button class="btn-outline" onclick="apuntarseEspera()">Quiero acceso anticipado</button>
-    <div id="esperaMsg" style="display:none;margin-top:12px;font-size:11px;text-align:center;padding:8px 14px;background:rgba(34,197,94,.08);border-radius:8px;border:1px solid rgba(34,197,94,.2);color:var(--green);width:100%;"></div>
-  </div>
-
-  <!-- Contador -->
-  <div id="accesoContador" style="display:none;text-align:center;">
-    <div id="countdownDisplay" style="font-size:22px;font-weight:300;letter-spacing:.12em;color:var(--white);font-variant-numeric:tabular-nums;font-family:'Inter',monospace;">999:999</div>
-    <p style="font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.08);margin-top:12px;">Something's coming.</p>
-  </div>
-
-  <!-- VIP -->
-  <div id="accesoVIP" style="display:none;width:100%;text-align:center;">
-    <div class="badge badge-purple">Acceso VIP</div>
-    <div class="inv-row" style="text-align:left">
-      <div class="inv-av" id="accesoVIPavatar">B</div>
-      <div><div style="font-size:12px;font-weight:600;color:var(--white)" id="accesoVIPnombre">Invitado por Blake</div><div style="font-size:10px;color:var(--subtle)">Acceso anticipado exclusivo</div></div>
-      <span style="font-size:16px;margin-left:auto;color:var(--purple)">✓</span>
-    </div>
-    <div class="acc-card acc-card-purple">
-      <div style="font-size:14px;font-weight:700;font-family:'Clash Display',sans-serif;color:var(--purple);margin-bottom:4px">Acceso concedido</div>
-      <div style="font-size:11px;color:var(--subtle);line-height:1.5">Estás entre los primeros en entrar.<br>Bienvenido a Legacy Calculator.</div>
-    </div>
-    <h2 class="clash" style="font-size:22px;font-weight:700;color:var(--white);line-height:1.2;margin-bottom:8px">Descubre cuánto<br>deberías cobrar.</h2>
-    <p style="font-size:12px;color:var(--subtle);margin-bottom:24px">Herramienta de pricing profesional. <strong style="color:var(--text)">Acceso VIP anticipado.</strong></p>
-    <button class="btn-purple" onclick="entrarApp()">Empezar ahora →</button>
-  </div>
-
-  <!-- Élite -->
-  <div id="accesoElite" style="display:none;width:100%;text-align:center;">
-    <div class="badge badge-gold">Acceso Fundador Élite</div>
-    <div class="acc-card acc-card-gold">
-      <div style="font-size:14px;font-weight:700;font-family:'Clash Display',sans-serif;color:var(--gold);margin-bottom:6px">Bienvenido, Fundador</div>
-      <div style="font-size:11px;color:rgba(201,168,76,.5);line-height:1.55">Tienes acceso permanente y gratuito. Tu opinión dará forma a esta herramienta.</div>
-    </div>
-    <h2 class="clash" style="font-size:22px;font-weight:700;color:var(--white);line-height:1.2;margin-bottom:8px">Descubre cuánto<br><span style="color:var(--gold)">realmente</span> deberías cobrar.</h2>
-    <p style="font-size:12px;color:var(--subtle);margin-bottom:24px">Acceso ilimitado · Gratuito permanente · <strong style="color:var(--gold)">Fundador Élite</strong></p>
-    <button class="btn-gold" onclick="entrarApp()">Empezar ahora →</button>
-  </div>
-
-</div>
-</div>
-
-<!-- ══ APP PRINCIPAL ══ -->
-<div id="mainContent">
-  <div class="tf-header">
-    <div class="tf-logo">
-      <div class="logo-mark" style="width:24px;height:24px;border-radius:7px;"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 12L7 2L12 12" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 9H10.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
-      <span class="tf-logo-text">Legacy</span>
-    </div>
-    <span class="tf-step-counter" id="stepCounter">Paso 1 de 13</span>
-    <div class="lang-selector" id="langSelectorHeader">
-      <div class="lang-btn active" onclick="setLang('es',this,'header')"><span class="lang-flag">🇪🇸</span>ES</div>
-      <div class="lang-btn" onclick="setLang('en',this,'header')"><span class="lang-flag">🇬🇧</span>EN</div>
-      <div class="lang-btn" onclick="setLang('pt',this,'header')"><span class="lang-flag">🇧🇷</span>PT</div>
-    </div>
-  </div>
-  <div class="tf-progress"><div class="tf-progress-fill" id="tfBar" style="width:8%"></div></div>
-
-  <div class="tf-main" id="tfMainArea">
-  <div class="tf-card">
-
-    <!-- 01 EMAIL -->
-    <div class="tf-step active" id="s1">
-      <div class="tf-eyebrow" id="i_ey1">01 — Bienvenida</div>
-      <div class="tf-q clash" id="i_q1">¿Cuál es tu correo electrónico?</div>
-      <div class="tf-sub">Para guardarte los resultados. <strong>Sin spam, sin newsletter.</strong></div>
-      <input class="tf-input" type="email" id="f_email" placeholder="tu@email.com" autocomplete="email" oninput="checkBtn(1)">
-      <div class="tf-hint">Tu correo se guarda de forma segura y nunca se comparte.</div>
-      <div class="tf-error" id="err1">Introduce un correo válido.</div>
-      <div class="tf-nav">
-        <button class="tf-btn-next" id="btn1" disabled onclick="validarYAvanzar(1,2)">Continuar →</button>
-        <span class="tf-enter">pulsa Enter ↵</span>
-      </div>
-    </div>
-
-    <!-- 02 INSTAGRAM -->
-    <div class="tf-step" id="s2">
-      <div class="tf-eyebrow" id="i_ey2">02 — Tu perfil</div>
-      <div class="tf-q clash" id="i_q2">¿Tu usuario de Instagram?</div>
-      <div class="tf-sub">Nos ayuda a entender el mercado real de profesionales.</div>
-      <input class="tf-input" type="text" id="f_ig" placeholder="@tuusuario">
-      <div class="tf-nav">
-        <button class="tf-btn-back" onclick="goBack(1)">←</button>
-        <button class="tf-btn-next" onclick="go(3)">Continuar →</button>
-      </div>
-    </div>
-
-    <!-- 03 PAÍS -->
-    <div class="tf-step" id="s3">
-      <div class="tf-eyebrow" id="i_ey3">03 — Ubicación</div>
-      <div class="tf-q clash" id="i_q3">¿En qué país trabajas?</div>
-      <div class="tf-sub">El sistema ajustará los precios al mercado real de tu zona.</div>
-      <select class="tf-select" id="f_pais" onchange="updateRegiones()">
-        <option value="" disabled selected>Selecciona tu país…</option>
-        <option value="es">🇪🇸 España</option>
-        <option value="us">🇺🇸 Estados Unidos</option>
-        <option value="mx">🇲🇽 México</option>
-        <option value="co">🇨🇴 Colombia</option>
-        <option value="do">🇩🇴 República Dominicana</option>
-        <option value="ar">🇦🇷 Argentina</option>
-        <option value="gb">🇬🇧 Reino Unido</option>
-        <option value="fr">🇫🇷 Francia</option>
-        <option value="de">🇩🇪 Alemania</option>
-        <option value="ca">🇨🇦 Canadá</option>
-        <option value="au">🇦🇺 Australia</option>
-        <option value="ng">🇳🇬 Nigeria</option>
-        <option value="cl">🇨🇱 Chile</option>
-        <option value="pe">🇵🇪 Perú</option>
-        <option value="other">🌍 Otro país</option>
-      </select>
-      <div class="tf-error" id="err3">Selecciona tu país.</div>
-      <div class="tf-nav">
-        <button class="tf-btn-back" onclick="goBack(2)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(3,4)">Continuar →</button>
-      </div>
-    </div>
-
-    <!-- 04 CIUDAD -->
-    <div class="tf-step" id="s4">
-      <div class="tf-eyebrow">04 — Ubicación</div>
-      <div class="tf-q clash">¿En qué ciudad trabajas?</div>
-      <div class="tf-sub">Selecciona tu región y ciudad para usar el salario real de tu zona.</div>
-      <select class="tf-select" id="f_region" onchange="updateCiudades()">
-        <option value="" disabled selected>Selecciona tu región…</option>
-      </select>
-      <select class="tf-select" id="f_ciudad" style="margin-top:10px" onchange="onCiudadChange()">
-        <option value="" disabled selected>Selecciona tu ciudad…</option>
-      </select>
-      <div id="smiPillsWrap" style="display:none;margin-top:16px">
-        <div class="smi-pills">
-          <div class="smi-pill active" id="pillSME" onclick="selectSMI('sme')">
-            <div class="smi-pill-label">Salario Medio</div>
-            <div class="smi-pill-val" id="smeVal">—</div>
-            <div class="smi-pill-desc">SME</div>
-          </div>
-          <div class="smi-pill" id="pillSMI" onclick="selectSMI('smi')">
-            <div class="smi-pill-label">Salario Mínimo</div>
-            <div class="smi-pill-val" id="smiVal">—</div>
-            <div class="smi-pill-desc">SMI</div>
-          </div>
-        </div>
-        <div class="tf-chip" onclick="var b=this.nextElementSibling;b.classList.toggle('open');this.querySelector('span').textContent=b.classList.contains('open')?'▲ Cerrar':'💡 ¿Cuál elijo?'">
-          <span>💡 ¿Cuál elijo?</span>
-        </div>
-        <div class="tf-chip-body">
-          <strong>Salario Medio (SME)</strong> — lo que gana de media la gente en tu ciudad. Es la base más justa.<br><br>
-          <strong>Salario Mínimo (SMI)</strong> — el mínimo legal del país. Precios más conservadores.<br><br>
-          Si dudas, elige el <strong>Salario Medio</strong>.
-        </div>
-        <input type="hidden" id="f_smi">
-      </div>
-      <div class="tf-error" id="err4">Selecciona tu región y ciudad.</div>
-      <div class="tf-nav">
-        <button class="tf-btn-back" onclick="goBack(3)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(4,5)">Continuar →</button>
-      </div>
-    </div>
-
-    <!-- 05 ZONA -->
-    <div class="tf-step" id="s5">
-      <div class="tf-eyebrow">05 — Tu zona</div>
-      <div class="tf-q clash">¿En qué tipo de zona trabajas?</div>
-      <div class="tf-sub">Ajusta el precio según el poder adquisitivo de tus clientes.</div>
-      <div class="tf-opts" id="zonaOpts">
-        <div class="tf-opt opt-gold" onclick="selOpt(this,'f_zona','premium');go(6)"><div><div class="tf-opt-name">Zona cara</div><div class="tf-opt-sub">Centro, barrio exclusivo, zona de lujo</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_zona','media');go(6)"><div><div class="tf-opt-name">Zona normal</div><div class="tf-opt-sub">Barrio estándar, periferia</div></div></div>
-        <div class="tf-opt opt-subtle" onclick="selOpt(this,'f_zona','baja');go(6)"><div><div class="tf-opt-name">Zona económica</div><div class="tf-opt-sub">Pueblo, zona rural, área de menor renta</div></div></div>
-      </div>
-      <input type="hidden" id="f_zona">
-      <div class="tf-error" id="err5">Selecciona el tipo de zona.</div>
-      <div class="tf-nav"><button class="tf-btn-back" onclick="goBack(4)">←</button></div>
-    </div>
-
-    <!-- 06 NIVEL -->
-    <div class="tf-step" id="s6">
-      <div class="tf-eyebrow">06 — Tu perfil profesional</div>
-      <div class="tf-q clash">¿Cuál es tu nivel técnico?</div>
-      <div class="tf-sub">Si dudas entre dos, elige el más bajo — el sistema te dirá si puedes cobrar más.</div>
-      <div class="tf-opts" id="nivelOpts">
-        <div class="tf-opt opt-subtle" onclick="selOpt(this,'f_nivel','junior')"><div><div class="tf-opt-name">Junior</div><div class="tf-opt-sub">Aprendiendo, primeros servicios reales</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_nivel','intermedio')" style="--before-color:#3B82F6"><div><div class="tf-opt-name" style="color:#93C5FD">Intermedio</div><div class="tf-opt-sub">Técnica sólida, 1-2 años de experiencia</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_nivel','avanzado')"><div><div class="tf-opt-name" style="color:#F87171">Avanzado</div><div class="tf-opt-sub">Experiencia consolidada, clientela fija</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_nivel','profesional')" style="--c:var(--purple)"><div><div class="tf-opt-name" style="color:#C4B5FD">Profesional</div><div class="tf-opt-sub">Referente local, agenda siempre llena</div></div></div>
-        <div class="tf-opt opt-gold" onclick="selOpt(this,'f_nivel','elite')"><div><div class="tf-opt-name">Élite</div><div class="tf-opt-sub">Referente del sector, lista de espera</div></div></div>
-      </div>
-      <div class="tf-sublabel first">¿Trabajas en casa o en salón?</div>
-      <div class="tf-opts" id="estructuraOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_estructura','casa')"><div><div class="tf-opt-name">En casa</div></div></div>
-        <div class="tf-opt opt-green" onclick="selOpt(this,'f_estructura','salon')"><div><div class="tf-opt-name">En salón</div><div class="tf-opt-sub">Incremento por estructura profesional</div></div></div>
-      </div>
-      <input type="hidden" id="f_nivel">
-      <input type="hidden" id="f_estructura">
-      <div class="tf-error" id="err6">Selecciona tu nivel y dónde trabajas.</div>
-      <div class="tf-nav">
-        <button class="tf-btn-back" onclick="goBack(5)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(6,13)">Continuar →</button>
-      </div>
-    </div>
-
-    <!-- 13 REPUTACIÓN -->
-    <div class="tf-step" id="s13">
-      <div class="tf-eyebrow">Tu presencia</div>
-      <div class="tf-q clash">¿Cuál es tu nivel de reputación en el sector?</div>
-      <div class="tf-sub">No cambia tu precio base — te muestra el techo al que puedes aspirar con tu posicionamiento real.</div>
-      <div class="tf-opts" id="repOpts">
-        <div class="tf-opt r-grey" onclick="selOpt(this,'f_reputacion','construyendo')"><div><div class="tf-opt-name">Construyendo</div><div class="tf-opt-sub">Menos de 1K seguidores, clientela local</div></div></div>
-        <div class="tf-opt r-red" onclick="selOpt(this,'f_reputacion','activa')"><div><div class="tf-opt-name">Presencia activa</div><div class="tf-opt-sub">1K – 10K seguidores, comunidad en crecimiento</div></div></div>
-        <div class="tf-opt r-blue" onclick="selOpt(this,'f_reputacion','local')"><div><div class="tf-opt-name">Referente local</div><div class="tf-opt-sub">10K – 50K seguidores, agenda con lista de espera</div></div></div>
-        <div class="tf-opt r-purple" onclick="selOpt(this,'f_reputacion','nacional')"><div><div class="tf-opt-name">Referente nacional</div><div class="tf-opt-sub">50K – 200K seguidores, clientes de alto perfil</div></div></div>
-        <div class="tf-opt r-gold" onclick="selOpt(this,'f_reputacion','internacional')"><div><div class="tf-opt-name">Referente internacional</div><div class="tf-opt-sub">200K+, ha trabajado con artistas</div></div></div>
-      </div>
-      <input type="hidden" id="f_reputacion">
-      <div class="tf-error" id="err13">Selecciona tu nivel de reputación.</div>
-      <div class="tf-nav">
-        <button class="tf-btn-back" onclick="goBack(6)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(13,7)">Continuar →</button>
-      </div>
-    </div>
-
-    <!-- 07 TIPO -->
-    <div class="tf-step" id="s7">
-      <div class="tf-eyebrow" id="i_ey7">07 — El servicio</div>
-      <div class="tf-q clash" id="i_q7">¿Qué tipo de trenzado vas a calcular?</div>
-      <div class="tf-sub">Este sistema <strong>no calcula por número de trenzas</strong> — te ayuda a descubrir el valor real de tu hora de trabajo.</div>
-      <div class="tf-opts" id="tipoOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','pegadas');go(8)"><div><div class="tf-opt-name">Pegadas</div><div class="tf-opt-sub">Cornrows · Twist · Barrel Twist</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','sueltas');go(9)"><div><div class="tf-opt-name">Sueltas</div><div class="tf-opt-sub">Box Braids · Knotless · Goddess · Bohemian…</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','fulani');go(10)"><div><div class="tf-opt-name">Fulani Braids</div><div class="tf-opt-sub">Combinación de pegadas y sueltas</div></div></div>
-      </div>
-      <input type="hidden" id="f_tipo">
-      <div class="tf-nav"><button class="tf-btn-back" onclick="goBack(13)">←</button></div>
-    </div>
-
-    <!-- 08 PEGADAS -->
-    <div class="tf-step" id="s8">
-      <div class="tf-eyebrow">08 — Pegadas</div>
-      <div class="tf-q clash">Cuéntame sobre las pegadas.</div>
-      <div class="tf-sub">Cada detalle afina el precio final.</div>
-      <div class="tf-sublabel first">Tipo de pegadas</div>
-      <div class="tf-opts" id="tipoPegOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','cornrows')"><div><div class="tf-opt-name">Cornrows</div><div class="tf-opt-sub">El tipo base de pegadas</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','twist')"><div><div class="tf-opt-name">Twist</div><div class="tf-opt-sub">Flat Twist o Senegalese Twist pegados</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','barrel_twist')"><div><div class="tf-opt-name">Barrel Twist</div><div class="tf-opt-sub">Técnica más compleja, acabado redondeado</div></div></div>
-      </div>
-      <div class="tf-sublabel">Complejidad del diseño</div>
-      <div class="tf-opts" id="compPegOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_comppeg','basico')"><div><div class="tf-opt-name">Básico</div><div class="tf-opt-sub">Líneas rectas, sin diseño especial</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_comppeg','con_disenos')"><div><div class="tf-opt-name">Con diseño</div><div class="tf-opt-sub">Curvas, cruces, radial, zigzag…</div></div></div>
-      </div>
-      <div class="tf-sublabel">¿Llevan extensiones?</div>
-      <div class="tf-opts" id="extPegOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','con');showBoho('peg',true);updateLargoExtField()"><div><div class="tf-opt-name">Con extensiones</div><div class="tf-opt-sub">Extensión estándar añadida trenza a trenza</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','feedin');showBoho('peg',true);updateLargoExtField()"><div><div class="tf-opt-name">Feed-in / Camuflaje completo</div><div class="tf-opt-sub">Extensión progresiva por capas</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','sin');showBoho('peg',false);updateLargoExtField()"><div><div class="tf-opt-name">Sin extensiones</div></div></div>
-      </div>
-      <div class="tf-subfield" id="bohoPegField">
-        <div class="tf-sublabel first">¿Añades efecto Boho?</div>
-        <div class="tf-opts" id="bohoPegOpts">
-          <div class="tf-opt" onclick="selOpt(this,'f_bohopeg','si')"><div><div class="tf-opt-name">Sí — con Boho</div><div class="tf-opt-sub">Rizos en las puntas</div></div></div>
-          <div class="tf-opt" onclick="selOpt(this,'f_bohopeg','no')"><div><div class="tf-opt-name">No — sin Boho</div></div></div>
-        </div>
-      </div>
-      <input type="hidden" id="f_tipopeg"><input type="hidden" id="f_comppeg"><input type="hidden" id="f_extpeg"><input type="hidden" id="f_bohopeg">
-      <div class="tf-error" id="err8">Selecciona el tipo, complejidad y extensiones.</div>
-      <div class="tf-nav">
-        <button class="tf-btn-back" onclick="goBack(7)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(8,11)">Continuar →</button>
-      </div>
-    </div>
-
-    <!-- 09 SUELTAS -->
-    <div class="tf-step" id="s9">
-      <div class="tf-eyebrow">09 — Sueltas</div>
-      <div class="tf-q clash">Cuéntame sobre las sueltas.</div>
-      <div class="tf-sub">Tamaño, técnica, extensiones y acabado.</div>
-      <div class="tf-sublabel first">Tamaño</div>
-      <div class="tf-pills" id="tamanoSueltasPills">
-        <div class="tf-pill" onclick="selPill(this,'f_tamano','jumbo')">Jumbo</div>
-        <div class="tf-pill" onclick="selPill(this,'f_tamano','large')">Large</div>
-        <div class="tf-pill" onclick="selPill(this,'f_tamano','lardium')">Lardium</div>
-        <div class="tf-pill" onclick="selPill(this,'f_tamano','medium')">Medium</div>
-        <div class="tf-pill" onclick="selPill(this,'f_tamano','smedium')">Smedium</div>
-        <div class="tf-pill" onclick="selPill(this,'f_tamano','small')">Small</div>
-        <div class="tf-pill" onclick="selPill(this,'f_tamano','xs_small')">XS Small</div>
-      </div>
-      <div class="tf-sublabel">Técnica</div>
-      <div class="tf-opts" id="tipoSueltasOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_tiposueltas','normales')"><div><div class="tf-opt-name">Normales (Knotless / Box Braids)</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tiposueltas','twist')"><div><div class="tf-opt-name">Twist (Senegalese / Marley)</div></div></div>
-      </div>
-      <div class="tf-sublabel">¿Llevan extensiones?</div>
-      <div class="tf-opts" id="extSueltasOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_extsueltas','con');showBoho('sue',true);updateLargoExtField()"><div><div class="tf-opt-name">Con extensiones</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_extsueltas','sin');showBoho('sue',false);updateLargoExtField()"><div><div class="tf-opt-name">Sin extensiones</div></div></div>
-      </div>
-      <div class="tf-subfield visible" id="bohoSueField">
-        <div class="tf-sublabel first">¿Añades efecto Boho / Goddess / Bohemian?</div>
-        <div class="tf-opts" id="bohoSueOpts">
-          <div class="tf-opt" onclick="selOpt(this,'f_bohosueltas','si')"><div><div class="tf-opt-name">Sí — con Boho</div><div class="tf-opt-sub">Rizos en las puntas</div></div></div>
-          <div class="tf-opt" onclick="selOpt(this,'f_bohosueltas','no')"><div><div class="tf-opt-name">No — sin Boho</div></div></div>
-        </div>
-      </div>
-      <input type="hidden" id="f_tamano"><input type="hidden" id="f_tiposueltas"><input type="hidden" id="f_extsueltas"><input type="hidden" id="f_bohosueltas">
-      <div class="tf-error" id="err9">Selecciona tamaño, técnica y extensiones.</div>
-      <div class="tf-nav">
-        <button class="tf-btn-back" onclick="goBack(7)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(9,11)">Continuar →</button>
-      </div>
-    </div>
-
-    <!-- 10 FULANI -->
-    <div class="tf-step" id="s10">
-      <div class="tf-eyebrow">10 — Fulani Braids</div>
-      <div class="tf-q clash">Cuéntame sobre las Fulani.</div>
-      <div class="tf-sub">Parte trasera (sueltas) y parte delantera (pegadas).</div>
-      <div class="tf-sublabel first">Tamaño parte trasera</div>
-      <div class="tf-pills" id="tamanoFulaniPills">
-        <div class="tf-pill" onclick="selPill(this,'f_tamanofulsueltas','jumbo')">Jumbo</div>
-        <div class="tf-pill" onclick="selPill(this,'f_tamanofulsueltas','large')">Large</div>
-        <div class="tf-pill" onclick="selPill(this,'f_tamanofulsueltas','lardium')">Lardium</div>
-        <div class="tf-pill" onclick="selPill(this,'f_tamanofulsueltas','medium')">Medium</div>
-        <div class="tf-pill" onclick="selPill(this,'f_tamanofulsueltas','smedium')">Smedium</div>
-        <div class="tf-pill" onclick="selPill(this,'f_tamanofulsueltas','small')">Small</div>
-        <div class="tf-pill" onclick="selPill(this,'f_tamanofulsueltas','xs_small')">XS Small</div>
-      </div>
-      <div class="tf-sublabel">Complejidad parte delantera</div>
-      <div class="tf-opts" id="compFulOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_compfuldelante','simples')"><div><div class="tf-opt-name">Simples</div><div class="tf-opt-sub">Pocas trenzas, sin adornos</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_compfuldelante','medias')"><div><div class="tf-opt-name">Medias</div><div class="tf-opt-sub">Diseño definido con accesorios</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_compfuldelante','elaboradas')"><div><div class="tf-opt-name">Elaboradas</div><div class="tf-opt-sub">Diseño intrincado, múltiples trenzas</div></div></div>
-      </div>
-      <div class="tf-sublabel">¿Llevan extensiones?</div>
-      <div class="tf-opts" id="extFulOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_extfulani','con');showBoho('ful',true);updateLargoExtField()"><div><div class="tf-opt-name">Con extensiones</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_extfulani','sin');showBoho('ful',false);updateLargoExtField()"><div><div class="tf-opt-name">Sin extensiones</div></div></div>
-      </div>
-      <div class="tf-subfield visible" id="bohoFulField">
-        <div class="tf-sublabel first">¿Añades efecto Boho?</div>
-        <div class="tf-opts" id="bohoFulOpts">
-          <div class="tf-opt" onclick="selOpt(this,'f_bohofulsueltas','si')"><div><div class="tf-opt-name">Sí — con Boho</div><div class="tf-opt-sub">Rizos en las sueltas traseras</div></div></div>
-          <div class="tf-opt" onclick="selOpt(this,'f_bohofulsueltas','no')"><div><div class="tf-opt-name">No — sin Boho</div></div></div>
-        </div>
-      </div>
-      <input type="hidden" id="f_tamanofulsueltas"><input type="hidden" id="f_compfuldelante"><input type="hidden" id="f_extfulani"><input type="hidden" id="f_bohofulsueltas">
-      <div class="tf-error" id="err10">Selecciona tamaño, complejidad y extensiones.</div>
-      <div class="tf-nav">
-        <button class="tf-btn-back" onclick="goBack(7)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(10,11)">Continuar →</button>
-      </div>
-    </div>
-
-    <!-- 11 LARGO -->
-    <div class="tf-step" id="s11">
-      <div class="tf-eyebrow">11 — Cabello</div>
-      <div class="tf-q clash">¿Cómo es el cabello del cliente?</div>
-      <div class="tf-sub">El largo afecta el tiempo real de preparación y trabajo.</div>
-      <div class="tf-opts" id="largoCabOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','muy_corto')"><div><div class="tf-opt-name">Muy corto</div><div class="tf-opt-sub">Solo tupé, hasta 4 cm</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','corto')"><div><div class="tf-opt-name">Corto</div><div class="tf-opt-sub">Unos 10 cm</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','nuca_hombros')"><div><div class="tf-opt-name">Normal</div><div class="tf-opt-sub">Nuca o hombros</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','media_espalda')"><div><div class="tf-opt-name">Largo</div><div class="tf-opt-sub">Media espalda</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','caderas')"><div><div class="tf-opt-name">Muy largo</div><div class="tf-opt-sub">Caderas o más</div></div></div>
-      </div>
-      <input type="hidden" id="f_largocab">
-      <div class="tf-error" id="err11">Selecciona el largo del cabello.</div>
-      <div id="largoExtField" style="display:none">
-        <div class="tf-sublabel">Largo final de las extensiones</div>
-        <div class="tf-pills" id="largoExtPills">
-          <div class="tf-pill" onclick="selPill(this,'f_largoext','nuca')">Nuca</div>
-          <div class="tf-pill" onclick="selPill(this,'f_largoext','hombros')">Hombros</div>
-          <div class="tf-pill" onclick="selPill(this,'f_largoext','media_espalda')">Media espalda</div>
-          <div class="tf-pill" onclick="selPill(this,'f_largoext','caderas')">Caderas</div>
-          <div class="tf-pill" onclick="selPill(this,'f_largoext','mas_largo')">Más largo</div>
-        </div>
-      </div>
-      <input type="hidden" id="f_largoext">
-      <div class="tf-nav">
-        <button class="tf-btn-back" id="backBtn11" onclick="go(7)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(11,12)">Continuar →</button>
-      </div>
-    </div>
-
-    <!-- 12 TIEMPO -->
-    <div class="tf-step" id="s12">
-      <div class="tf-eyebrow">12 — Último paso</div>
-      <div class="tf-q clash">Tiempo y materiales</div>
-      <div class="tf-sub">Tres datos más y calculamos tu precio justo.</div>
-      <div class="tf-sublabel first">Horas que tardas en este servicio</div>
-      <input class="tf-input" type="number" id="f_horas" placeholder="Ej: 4" min="0.5" step="0.5" style="font-size:26px" oninput="checkBtn(12)">
-      <div class="tf-hint">Tus horas reales. <strong>No te compares</strong> — el sistema ya ajusta el valor según tu nivel.</div>
-      <div class="tf-sublabel">Gasto en producto</div>
-      <input class="tf-input" type="number" id="f_materiales" placeholder="Ej: 8" min="0" step="1" style="font-size:26px">
-      <div class="tf-hint" style="margin-bottom:20px">Solo la parte proporcional de este servicio.</div>
-      <div class="tf-sublabel">¿Cuánto cobras actualmente?</div>
-      <input class="tf-input" type="number" id="f_precioactual" placeholder="0 si es servicio nuevo" min="0" style="font-size:26px">
-      <div class="tf-chip" onclick="var b=this.nextElementSibling;b.classList.toggle('open');this.querySelector('span').textContent=b.classList.contains('open')?'▲ Cerrar':'💡 ¿Para qué sirve este dato?'">
-        <span>💡 ¿Para qué sirve este dato?</span>
-      </div>
-      <div class="tf-chip-body">Con este dato el sistema te muestra si estás cobrando <strong>por encima o por debajo</strong> del precio justo. Si es servicio nuevo, pon <strong>0</strong>.</div>
-      <div class="tf-sublabel">¿Cómo quieres llamar a este servicio?</div>
-      <input class="tf-input" type="text" id="f_nombre" placeholder="Ej: Knotless Medium con Boho" style="font-size:16px" maxlength="80">
-      <div class="tf-hint">Opcional — para identificar el resultado.</div>
-      <div class="tf-error" id="err12">Introduce las horas del servicio.</div>
-      <div class="tf-nav" style="margin-top:20px">
-        <button class="tf-btn-back" onclick="goBack(11)">←</button>
-        <button class="tf-btn-next" id="btn12" id="calcBtn" onclick="calcular()">Ver mi precio →</button>
-      </div>
-      <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:14px">No hay respuestas incorrectas — el sistema se adapta a lo que pongas.</p>
-    </div>
-
-  </div>
-  </div>
-
-  <!-- ── RESULTADO ── -->
-  <div id="resultSection" style="flex-direction:column;align-items:center;">
-  <div class="res-card">
-    <div class="res-eyebrow" id="resEyebrow">Tu precio justo</div>
-    <div class="res-main-bubble">
-      <div class="res-bubble-top">
-        <div class="res-bubble-label">Tu precio justo</div>
-        <div class="res-bubble-precio" id="resTotal">—</div>
-        <div class="res-bubble-rango" id="resRango"></div>
-      </div>
-      <div class="res-bubble-bottom">
-        <div class="res-smi-block">
-          <div class="res-smi-num" id="resSMIval">—</div>
-          <div class="res-smi-label">veces el SMI/hora</div>
-        </div>
-        <div class="res-divider-v"></div>
-        <div class="res-contraste-block">
-          <div class="res-contraste-diff" id="contrasteDiff">—</div>
-          <div class="res-contraste-text" id="contrasteText"></div>
-        </div>
-      </div>
-    </div>
-    <div class="res-elite-msg" id="eliteMsg">
-      <div class="res-elite-title">Por encima del mercado</div>
-      <div class="res-elite-text">Tu precio supera la referencia del sistema. Señal de <strong>posicionamiento sólido</strong> — visibilidad en redes, clientes de alto perfil o años de reputación construida. Sigue así.</div>
-    </div>
-    <div id="repPotBlock" style="display:none;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:14px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.06) inset;">
-      <div id="repPotTopLine" style="position:absolute;top:0;left:0;right:0;height:1px;"></div>
-      <div id="repPotLabel" style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Tu precio potencial</div>
-      <div id="repPotPrecio" style="font-family:'Clash Display',sans-serif;font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1;margin-bottom:6px">—</div>
-      <div id="repPotDesc" style="font-size:11px;line-height:1.6"></div>
-      <div style="margin-top:10px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-          <span id="potBaseLabel" style="font-size:9px"></span>
-          <strong id="potMaxLabel" style="font-size:9px;font-weight:700"></strong>
-        </div>
-        <div style="height:2px;border-radius:2px;background:rgba(255,255,255,.05)">
-          <div id="potFillBar" style="height:100%;border-radius:2px;transition:width .6s ease"></div>
-        </div>
-      </div>
-    </div>
-    <div class="res-motivacion">
-      <div class="res-motivacion-counter" id="motivacionCounter">Consulta #1</div>
-      <div class="res-motivacion-title clash" id="motivacionTitle"></div>
-      <div class="res-motivacion-text" id="motivacionText"></div>
-    </div>
-    <div class="res-nota"><strong>Nota de Realidad Legacy —</strong> Este precio es una estimación calculada en base a los datos que has introducido. El precio real que puedes cobrar depende también de tu posicionamiento en redes, tu público objetivo, la imagen que transmites y cómo te manejas profesionalmente. Úsalo como referencia, no como precio definitivo.</div>
-    <!-- Botón compartir -->
-    <button id="btnCompartir" onclick="abrirModalCompartir()" style="width:100%;padding:14px;margin-bottom:10px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.28);border-radius:12px;color:#C4B5FD;font-family:'Clash Display',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
-      <span id="btnCompartirTxt">Compartir resultado</span>
-    </button>
-    <button class="btn-siguiente" onclick="siguienteConsulta()"><span data-i="siguiente">¿Cuánto cobro por mi siguiente servicio? →</span></button>
-  </div>
-  </div>
-
-<!-- Modal compartir -->
-<div id="shareModal">
-  <div class="share-modal-inner">
-    <div class="share-modal-title clash" data-i="share_title">Elige tu tarjeta</div>
-    <div class="share-modal-sub" data-i="share_sub">Descarga la imagen y súbela a tus Stories.</div>
-    <div class="share-opts">
-      <div class="share-opt selected" id="shareOptA" onclick="selectShareOpt('A')">
-        <div class="share-opt-icon" style="background:rgba(227,30,36,.1);border:1px solid rgba(227,30,36,.2);">🎴</div>
-        <div>
-          <div class="share-opt-title" data-i="share_opt_a">Tarjeta al pie</div>
-          <div class="share-opt-sub" data-i="share_opt_a_sub">Horizontal, abajo. Se ve la foto detrás.</div>
-        </div>
-      </div>
-      <div class="share-opt" id="shareOptB" onclick="selectShareOpt('B')">
-        <div class="share-opt-icon" style="background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);">✦</div>
-        <div>
-          <div class="share-opt-title" data-i="share_opt_b">Sticker central</div>
-          <div class="share-opt-sub" data-i="share_opt_b_sub">En el centro de la Story.</div>
-        </div>
-      </div>
-    </div>
-    <button class="share-btn-dl" onclick="descargarTarjeta()"><span data-i="share_dl">Descargar imagen →</span></button>
-    <button class="share-btn-cancel" onclick="cerrarModalCompartir()"><span data-i="share_cancel">Cancelar</span></button>
+    <div style="text-align:center;margin-bottom:20px"><div class="admin-badge">⚡ Panel de Administración</div></div>
+    <div class="login-title">Acceso restringido</div>
+    <div class="login-sub">Solo para Blake. Introduce la contraseña para continuar.</div>
+    <div class="err" id="loginErr">Contraseña incorrecta.</div>
+    <input class="inp" type="password" id="pwdInput" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn" onclick="doLogin()">Entrar al panel →</button>
+    <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--m)">Esta URL no es pública. No la compartas.</div>
   </div>
 </div>
 
-<!-- Canvas oculto para PNG -->
-<canvas id="shareCanvas" width="1080" height="1080" style="display:none"></canvas>
-
-  <div class="tf-footer">
-    <span>Legacy Calculator · Acceso anticipado</span>
-    <span>© 2026</span>
-  </div>
-</div>
-
-<!-- ══ PANEL ADMIN ══ -->
+<!-- ADMIN PANEL -->
 <div id="adminPanel">
-  <div class="tf-header">
-    <div class="tf-logo">
-      <div class="logo-mark" style="width:24px;height:24px;border-radius:7px;"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 12L7 2L12 12" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 9H10.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
-      <span class="tf-logo-text">Legacy</span>
-      <span style="font-size:9px;font-weight:700;padding:2px 7px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);border-radius:7px;color:var(--gold);margin-left:6px;">ADMIN</span>
+  <div class="app-header">
+    <div class="app-logo">
+      <div class="app-mark"><svg width="10" height="10" viewBox="0 0 14 14" fill="none"><path d="M2 12L7 2L12 12" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 9H10.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <span class="app-name">Legacy</span>
+      <span class="admin-tag">ADMIN</span>
     </div>
-    <div class="admin-tabs">
-      <button class="admin-tab on" id="tabCalc" onclick="adminTab('calc')">🧮 Calcular</button>
-      <button class="admin-tab red" id="tabDash" onclick="adminTab('dash')">⚡ Dashboard</button>
+    <div class="tab-bar">
+      <button class="tab-btn on" id="tabDash" onclick="setTab('dash')">⚡ Dashboard</button>
+      <button class="tab-btn gold" id="tabCalc" onclick="setTab('calc')">🧮 Calculadora</button>
     </div>
+    <div style="font-size:11px;color:var(--s);">Blake · Admin</div>
   </div>
 
-  <!-- TAB CALCULAR -->
-  <div id="adminTabCalc">
-    <!-- Aquí va el formulario completo reutilizado — se muestra al entrar como admin -->
-    <div style="padding:24px 20px;text-align:center;max-width:500px;margin:0 auto;">
-      <div style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:10px;">Modo Admin · Calcular</div>
-      <div style="font-family:'Clash Display',sans-serif;font-size:22px;font-weight:700;color:var(--white);margin-bottom:8px;">Calcular un precio</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.38);margin-bottom:24px;">Accedes como administrador con plan Élite. El cálculo funciona igual que para cualquier usuario.</div>
-      <button onclick="abrirCalcDesdeAdmin()" style="width:100%;padding:14px;backdrop-filter:blur(20px);background:rgba(227,30,36,.85);border:1px solid rgba(255,100,100,.2);border-radius:10px;color:#fff;font-family:'Clash Display',sans-serif;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 6px 20px rgba(227,30,36,.2);">Abrir formulario de cálculo →</button>
-    </div>
-  </div>
-
-  <!-- TAB DASHBOARD -->
-  <div id="adminTabDash" style="display:none;">
-    <div class="admin-layout">
-      <!-- Sidebar -->
-      <div class="admin-sidebar">
-        <div class="admin-user-card">
-          <div class="admin-av">B</div>
-          <div>
-            <div style="font-size:11px;font-weight:700;color:var(--white);">Blake</div>
-            <div style="font-size:9px;font-weight:600;color:var(--gold);">Administrador</div>
-          </div>
+  <!-- DASHBOARD TAB -->
+  <div id="tabDashContent">
+    <div class="dash-layout">
+      <div class="sidebar">
+        <div class="sb-user">
+          <div class="sb-av">B</div>
+          <div><div class="sb-name">Blake</div><div class="sb-role">Administrador</div></div>
         </div>
-        <div class="admin-sec">Dashboard</div>
-        <div class="admin-sb-item on" onclick="adminShow('a-overview')"><div class="admin-sb-dot" style="background:var(--red)"></div><span class="admin-sb-lbl">Visión general</span></div>
-        <div class="admin-sb-item" onclick="adminShow('a-accesos')"><div class="admin-sb-dot" style="background:var(--purple)"></div><span class="admin-sb-lbl">Accesos</span></div>
-        <div class="admin-sb-item" onclick="adminShow('a-codigos')"><div class="admin-sb-dot" style="background:var(--gold)"></div><span class="admin-sb-lbl">Códigos</span></div>
-        <div class="admin-sb-item" onclick="adminShow('a-espera')"><div class="admin-sb-dot" style="background:#22C55E)"></div><span class="admin-sb-lbl">Lista de espera</span></div>
-        <div class="admin-sb-item" onclick="adminShow('a-consultas')"><div class="admin-sb-dot" style="background:var(--blue)"></div><span class="admin-sb-lbl">Consultas</span></div>
+        <div class="sb-sec">Dashboard</div>
+        <div class="sb-item on" onclick="showScreen('s-overview')"><div class="sb-dot" style="background:var(--red)"></div><span class="sb-lbl">Visión general</span></div>
+        <div class="sb-item" onclick="showScreen('s-accesos')"><div class="sb-dot" style="background:var(--purple)"></div><span class="sb-lbl">Accesos</span></div>
+        <div class="sb-item" onclick="showScreen('s-codigos')"><div class="sb-dot" style="background:var(--gold)"></div><span class="sb-lbl">Códigos</span></div>
+        <div class="sb-item" onclick="showScreen('s-espera')"><div class="sb-dot" style="background:var(--green)"></div><span class="sb-lbl">Lista de espera</span></div>
+        <div class="sb-item" onclick="showScreen('s-consultas')"><div class="sb-dot" style="background:var(--purple)"></div><span class="sb-lbl">Consultas</span></div>
+        <div class="sb-logout" onclick="doLogout()">Cerrar sesión</div>
       </div>
 
-      <!-- Main -->
-      <div class="admin-main">
+      <div class="main">
 
         <!-- OVERVIEW -->
-        <div class="admin-screen on" id="a-overview">
-          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:4px;">Visión general</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.38);margin-bottom:16px;">Datos en tiempo real de Supabase.</div>
-          <div class="a-g4" id="adminStats">
-            <div class="a-stat asr"><div class="a-sn" id="statAccesos">—</div><div class="a-sl">Accesos totales</div></div>
-            <div class="a-stat asp"><div class="a-sn" id="statCodigos">—</div><div class="a-sl">Códigos activos</div></div>
-            <div class="a-stat asgn"><div class="a-sn" id="statEspera">—</div><div class="a-sl">Lista de espera</div></div>
-            <div class="a-stat asgo"><div class="a-sn" id="statConsultas">—</div><div class="a-sl">Consultas totales</div></div>
+        <div class="screen on" id="s-overview">
+          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--w);margin-bottom:4px;">Visión general</div>
+          <div style="font-size:12px;color:var(--s);margin-bottom:16px;">Datos en tiempo real de Supabase.</div>
+          <div class="g4">
+            <div class="stat sr"><div class="sn" id="statAccesos">—</div><div class="sl">Accesos totales</div></div>
+            <div class="stat sp"><div class="sn" id="statCodigos">—</div><div class="sl">Códigos activos</div></div>
+            <div class="stat sgn"><div class="sn" id="statEspera">—</div><div class="sl">Lista de espera</div></div>
+            <div class="stat sgo"><div class="sn" id="statConsultas">—</div><div class="sl">Consultas</div></div>
           </div>
-          <div class="a-g2">
-            <div class="a-card">
-              <div class="a-card-h"><span class="a-card-t">Últimos accesos</span><span style="font-size:10px;color:var(--purple);cursor:pointer" onclick="adminShow('a-accesos')">Ver todos →</span></div>
-              <div id="overviewAccesos" class="a-loading">Cargando…</div>
+          <div class="g2">
+            <div class="card">
+              <div class="ch"><span class="ct">Últimos accesos</span><span style="font-size:10px;color:var(--purple);cursor:pointer" onclick="showScreen('s-accesos')">Ver todos →</span></div>
+              <div id="overviewAccesos"><div class="loading">Cargando…</div></div>
             </div>
-            <div class="a-card">
-              <div class="a-card-h"><span class="a-card-t">Distribución por tipo</span></div>
-              <div id="overviewDist" class="a-card-b a-loading">Cargando…</div>
+            <div class="card">
+              <div class="ch"><span class="ct">Distribución</span></div>
+              <div class="cb" id="overviewDist"><div class="loading">Cargando…</div></div>
             </div>
           </div>
         </div>
 
         <!-- ACCESOS -->
-        <div class="admin-screen" id="a-accesos">
-          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:16px;">Accesos</div>
-          <div class="a-card">
-            <div class="a-card-h"><span class="a-card-t">Todos los accesos registrados</span><button onclick="loadAccesos()" style="font-size:9px;color:rgba(255,255,255,.38);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:3px 8px;cursor:pointer;">↻ Actualizar</button></div>
-            <div id="tablaAccesos" class="a-loading">Cargando…</div>
+        <div class="screen" id="s-accesos">
+          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--w);margin-bottom:16px;">Accesos registrados</div>
+          <div class="card">
+            <div class="ch"><span class="ct">Todos los accesos</span><button class="refresh-btn" onclick="loadAccesos()">↻ Actualizar</button></div>
+            <div id="tablaAccesos"><div class="loading">Cargando…</div></div>
           </div>
         </div>
 
         <!-- CÓDIGOS -->
-        <div class="admin-screen" id="a-codigos">
-          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:16px;">Códigos de acceso</div>
-          <div class="a-card">
-            <div class="a-card-h"><span class="a-card-t">Todos los códigos</span><button onclick="loadCodigos()" style="font-size:9px;color:rgba(255,255,255,.38);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:3px 8px;cursor:pointer;">↻ Actualizar</button></div>
-            <div id="tablaCodigos" class="a-loading">Cargando…</div>
+        <div class="screen" id="s-codigos">
+          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--w);margin-bottom:16px;">Códigos de acceso</div>
+          <div class="card">
+            <div class="ch"><span class="ct">Todos los códigos</span><button class="refresh-btn" onclick="loadCodigos()">↻ Actualizar</button></div>
+            <div id="tablaCodigos"><div class="loading">Cargando…</div></div>
           </div>
         </div>
 
         <!-- LISTA ESPERA -->
-        <div class="admin-screen" id="a-espera">
-          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:16px;">Lista de espera</div>
-          <div class="a-card">
-            <div class="a-card-h"><span class="a-card-t">Personas en lista de espera</span><button onclick="loadEspera()" style="font-size:9px;color:rgba(255,255,255,.38);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:3px 8px;cursor:pointer;">↻ Actualizar</button></div>
-            <div id="tablaEspera" class="a-loading">Cargando…</div>
+        <div class="screen" id="s-espera">
+          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--w);margin-bottom:16px;">Lista de espera</div>
+          <div class="card">
+            <div class="ch"><span class="ct">Personas apuntadas</span><button class="refresh-btn" onclick="loadEspera()">↻ Actualizar</button></div>
+            <div id="tablaEspera"><div class="loading">Cargando…</div></div>
           </div>
         </div>
 
         <!-- CONSULTAS -->
-        <div class="admin-screen" id="a-consultas">
-          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:16px;">Consultas realizadas</div>
-          <div class="a-card">
-            <div class="a-card-h"><span class="a-card-t">Historial de cálculos</span><button onclick="loadConsultas()" style="font-size:9px;color:rgba(255,255,255,.38);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:3px 8px;cursor:pointer;">↻ Actualizar</button></div>
-            <div id="tablaConsultas" class="a-loading">Cargando…</div>
+        <div class="screen" id="s-consultas">
+          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--w);margin-bottom:16px;">Consultas realizadas</div>
+          <div class="card">
+            <div class="ch"><span class="ct">Historial de cálculos</span><button class="refresh-btn" onclick="loadConsultas()">↻ Actualizar</button></div>
+            <div id="tablaConsultas"><div class="loading">Cargando…</div></div>
           </div>
         </div>
 
       </div>
     </div>
   </div>
+
+  <!-- CALCULADORA TAB -->
+  <div id="tabCalcContent" style="display:none;">
+    <div style="padding:40px 20px;text-align:center;max-width:480px;margin:0 auto;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Modo Admin · Calcular</div>
+      <div style="font-family:'Clash Display',sans-serif;font-size:24px;font-weight:700;color:var(--w);margin-bottom:8px;">Calcular un precio</div>
+      <div style="font-size:13px;color:var(--s);margin-bottom:28px;line-height:1.7;">Accedes con plan Élite. El resultado es idéntico al que vería un usuario de pago.</div>
+      <a href="/" style="display:block;width:100%;padding:14px;backdrop-filter:blur(20px);background:rgba(227,30,36,.85);border:1px solid rgba(255,100,100,.2);border-radius:10px;color:#fff;font-family:'Clash Display',sans-serif;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 6px 20px rgba(227,30,36,.2);">Ir a la calculadora →</a>
+      <div style="margin-top:12px;font-size:11px;color:var(--m)">Se abre en la página principal. Vuelve aquí con el botón atrás.</div>
+    </div>
+  </div>
 </div>
 
 <script>
-// ── ADMIN ──
-var SUPA_URL = '', SUPA_KEY = '';
+// Token de sesión — se obtiene del backend tras login correcto
+var SESSION_TOKEN = null;
+var PWD_HASH = 'b3a6ab1c0ea8be884c49b7d64de93c805339f8bb6b85e7465ba39c91077d6743';
 
-function mostrarAdmin(tipo, nombreElite, supaUrl, supaKey){
-  SUPA_URL = supaUrl;
-  SUPA_KEY = supaKey;
-  document.getElementById('accesoScreen').classList.remove('visible');
-  document.getElementById('mainContent').classList.remove('visible');
-  document.getElementById('adminPanel').classList.add('visible');
-  // Si es admin entra al dashboard directo
-  if(tipo === 'admin'){
-    adminTab('dash');
-    loadOverview();
+// ── LOGIN ──
+async function sha256(msg){
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// Rate limiting login — máx 5 intentos
+var loginAttempts = 0;
+var loginBlocked = false;
+
+async function doLogin(){
+  if(loginBlocked){
+    var err = document.getElementById('loginErr');
+    err.textContent = 'Demasiados intentos. Espera 60 segundos.';
+    err.style.display='block';
+    return;
+  }
+  var pwd = document.getElementById('pwdInput').value;
+  if(!pwd) return;
+  var hash = await sha256(pwd);
+  if(hash === PWD_HASH){
+    // Login correcto — obtener token de sesión del backend
+    try {
+      var res = await fetch('/api/admin-session', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ hash })
+      });
+      var data = await res.json();
+      if(data.token){
+        SESSION_TOKEN = data.token;
+        sessionStorage.setItem('legacy_admin','1');
+        sessionStorage.setItem('legacy_session', SESSION_TOKEN);
+        loginAttempts = 0;
+        document.getElementById('loginScreen').style.display='none';
+        document.getElementById('adminPanel').classList.add('on');
+        loadOverview();
+      } else {
+        throw new Error('Sin token');
+      }
+    } catch(e) {
+      var err = document.getElementById('loginErr');
+      err.textContent = 'Error de conexión. Inténtalo de nuevo.';
+      err.style.display='block';
+      setTimeout(()=>err.style.display='none',3000);
+    }
+  } else {
+    loginAttempts++;
+    if(loginAttempts >= 5){
+      loginBlocked = true;
+      var err = document.getElementById('loginErr');
+      err.textContent = 'Demasiados intentos. Bloqueado 60 segundos.';
+      err.style.display='block';
+      setTimeout(()=>{loginBlocked=false;loginAttempts=0;err.style.display='none';},60000);
+    } else {
+      var err = document.getElementById('loginErr');
+      err.textContent = 'Contraseña incorrecta. Intento '+loginAttempts+' de 5.';
+      err.style.display='block';
+      setTimeout(()=>err.style.display='none',3000);
+    }
+    document.getElementById('pwdInput').value='';
   }
 }
 
-function adminTab(tab){
-  document.getElementById('adminTabCalc').style.display = tab==='calc'?'block':'none';
-  document.getElementById('adminTabDash').style.display = tab==='dash'?'block':'none';
-  document.getElementById('tabCalc').classList.toggle('on', tab==='calc');
+function doLogout(){
+  SESSION_TOKEN = null;
+  sessionStorage.removeItem('legacy_admin');
+  sessionStorage.removeItem('legacy_session');
+  document.getElementById('adminPanel').classList.remove('on');
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('pwdInput').value='';
+}
+
+// Comprobar sesión al cargar
+window.addEventListener('load',function(){
+  if(sessionStorage.getItem('legacy_admin')==='1'){
+    SESSION_TOKEN = sessionStorage.getItem('legacy_session');
+    if(SESSION_TOKEN){
+      document.getElementById('loginScreen').style.display='none';
+      document.getElementById('adminPanel').classList.add('on');
+      loadOverview();
+    } else {
+      sessionStorage.removeItem('legacy_admin');
+    }
+  }
+});
+
+// ── TABS ──
+function setTab(tab){
+  document.getElementById('tabDashContent').style.display = tab==='dash'?'block':'none';
+  document.getElementById('tabCalcContent').style.display = tab==='calc'?'block':'none';
   document.getElementById('tabDash').classList.toggle('on', tab==='dash');
+  document.getElementById('tabCalc').classList.toggle('on', tab==='calc');
   if(tab==='dash') loadOverview();
 }
 
-function adminShow(id){
-  document.querySelectorAll('.admin-screen').forEach(s=>s.classList.remove('on'));
+// ── SCREENS ──
+var screenMap = {'s-overview':0,'s-accesos':1,'s-codigos':2,'s-espera':3,'s-consultas':4};
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
   var s=document.getElementById(id);if(s)s.classList.add('on');
-  document.querySelectorAll('.admin-sb-item').forEach(i=>i.classList.remove('on'));
-  var map={'a-overview':0,'a-accesos':1,'a-codigos':2,'a-espera':3,'a-consultas':4};
-  var items=document.querySelectorAll('.admin-sb-item');
-  if(map[id]!==undefined&&items[map[id]])items[map[id]].classList.add('on');
-  if(id==='a-accesos')loadAccesos();
-  if(id==='a-codigos')loadCodigos();
-  if(id==='a-espera')loadEspera();
-  if(id==='a-consultas')loadConsultas();
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));
+  var items=document.querySelectorAll('.sb-item');
+  if(screenMap[id]!==undefined&&items[screenMap[id]])items[screenMap[id]].classList.add('on');
+  if(id==='s-accesos')loadAccesos();
+  if(id==='s-codigos')loadCodigos();
+  if(id==='s-espera')loadEspera();
+  if(id==='s-consultas')loadConsultas();
 }
 
-function abrirCalcDesdeAdmin(){
-  document.getElementById('adminPanel').classList.remove('visible');
-  document.getElementById('adminTabCalc').style.display='block';
-  document.getElementById('adminTabDash').style.display='none';
-  showMainContent();
-}
-
-// ── FETCH SUPABASE ──
-async function supaFetch(tabla, params){
-  var base = SUPA_URL.replace(/\/rest\/v1\/?$/,'');
-  var url = base+'/rest/v1/'+tabla+'?'+params+'&order=created_at.desc';
-  var res = await fetch(url,{
-    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'}
+// ── FETCH VÍA ENDPOINT SEGURO ──
+async function supa(tabla, filtros){
+  var res = await fetch('/api/admin-data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Admin-Token': SESSION_TOKEN || ''
+    },
+    body: JSON.stringify({ tabla, filtros: filtros || null })
   });
-  return await res.json();
+  if(res.status === 401){
+    // Sesión expirada — forzar logout
+    doLogout();
+    throw new Error('Sesión expirada. Vuelve a entrar.');
+  }
+  if(!res.ok){
+    var err = await res.json().catch(()=>({error:'Error desconocido'}));
+    throw new Error(err.detalle || err.error || 'Error '+res.status);
+  }
+  var json = await res.json();
+  return json.data || [];
 }
 
+// ── OVERVIEW ──
 async function loadOverview(){
   try{
-    var accesos=await supaFetch('accesos','select=*&limit=1000');
-    var codigos=await supaFetch('codigos','select=*&activo=eq.true');
-    var espera=await supaFetch('accesos','tipo_acceso=eq.espera&select=*');
-    var consultas=await supaFetch('legacy_data','select=*&limit=1000');
+    var [accesos, codigos, consultas] = await Promise.all([
+      supa('accesos'),
+      supa('codigos'),
+      supa('legacy_data')
+    ]);
 
-    // Stats
-    document.getElementById('statAccesos').textContent=Array.isArray(accesos)?accesos.filter(a=>a.tipo_acceso!=='espera').length:'—';
-    document.getElementById('statCodigos').textContent=Array.isArray(codigos)?codigos.length:'—';
-    document.getElementById('statEspera').textContent=Array.isArray(espera)?espera.length:'—';
-    document.getElementById('statConsultas').textContent=Array.isArray(consultas)?consultas.length:'—';
+    var reales  = Array.isArray(accesos)?accesos.filter(a=>a.codigo_usado!=='ESPERA'):[];
+    var espera  = Array.isArray(accesos)?accesos.filter(a=>a.codigo_usado==='ESPERA'):[];
+    var codigosActivos = Array.isArray(codigos)?codigos.filter(r=>r.activo&&r.usos_actuales>0):[];
 
-    // Últimos accesos
-    var acc=Array.isArray(accesos)?accesos.filter(a=>a.tipo_acceso!=='espera').slice(0,5):[];
-    var html=acc.length?'<div style="padding:8px">'+acc.map(a=>`
-      <div class="a-row-item">
-        <div style="flex:1">
-          <div style="font-size:12px;font-weight:700;color:var(--white)">${a.email||'—'}</div>
-          <div style="font-size:10px;color:rgba(255,255,255,.38)">${a.nombre_elite||''} · ${new Date(a.created_at).toLocaleDateString('es-ES')}</div>
-        </div>
-        <span class="a-badge ${a.tipo_acceso==='elite'?'ab-elite':a.tipo_acceso==='admin'?'ab-admin':'ab-inv'}">${a.tipo_acceso||'—'}</span>
-      </div>`).join('')+'</div>':'<div class="a-loading">Sin accesos todavía.</div>';
-    document.getElementById('overviewAccesos').innerHTML=html;
+    document.getElementById('statAccesos').textContent   = reales.length;
+    document.getElementById('statCodigos').textContent   = codigosActivos.length;
+    document.getElementById('statEspera').textContent    = espera.length;
+    document.getElementById('statConsultas').textContent = Array.isArray(consultas)?consultas.length:'—';
+
+    // Últimos 5 accesos
+    var ult = reales.slice(0,5);
+    document.getElementById('overviewAccesos').innerHTML = ult.length
+      ? '<div style="padding:8px">'+ult.map(a=>`
+          <div class="row-item">
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:700;color:var(--w)">${a.email||'—'}</div>
+              <div style="font-size:10px;color:var(--s)">${a.tipo_acceso||''} · ${getDate(a)?fmtDate(getDate(a)):'—'}</div>
+            </div>
+            <span class="badge ${tipoBadge(a.tipo_acceso)}">${a.tipo_acceso||'—'}</span>
+          </div>`).join('')+'</div>'
+      : '<div class="loading">Sin accesos todavía.</div>';
 
     // Distribución
-    if(Array.isArray(accesos)){
-      var dist={elite:0,invitado:0,admin:0};
-      accesos.filter(a=>a.tipo_acceso!=='espera').forEach(a=>{if(dist[a.tipo_acceso]!==undefined)dist[a.tipo_acceso]++;});
-      var total=Object.values(dist).reduce((s,v)=>s+v,0)||1;
-      document.getElementById('overviewDist').innerHTML=`
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:rgba(255,255,255,.38)">Élite</span><span style="font-size:11px;font-weight:700;color:var(--red)">${dist.elite}</span></div><div style="height:4px;background:rgba(255,255,255,.05);border-radius:4px"><div style="width:${Math.round(dist.elite/total*100)}%;height:100%;background:var(--red);border-radius:4px"></div></div></div>
-          <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:rgba(255,255,255,.38)">Invitado</span><span style="font-size:11px;font-weight:700;color:var(--purple)">${dist.invitado}</span></div><div style="height:4px;background:rgba(255,255,255,.05);border-radius:4px"><div style="width:${Math.round(dist.invitado/total*100)}%;height:100%;background:var(--purple);border-radius:4px"></div></div></div>
-          <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:rgba(255,255,255,.38)">Admin</span><span style="font-size:11px;font-weight:700;color:var(--gold)">${dist.admin}</span></div><div style="height:4px;background:rgba(255,255,255,.05);border-radius:4px"><div style="width:${Math.round(dist.admin/total*100)}%;height:100%;background:var(--gold);border-radius:4px"></div></div></div>
-        </div>`;
-    }
-  }catch(e){console.error('Admin overview error:',e);}
+    var dist={elite:0,invitado:0,admin:0};
+    reales.forEach(a=>{var t=a.tipo_acceso||'invitado';if(dist[t]!==undefined)dist[t]++;});
+    var tot=reales.length||1;
+    document.getElementById('overviewDist').innerHTML=`
+      <div style="display:flex;flex-direction:column;gap:9px">
+        ${barDist('Élite',dist.elite,tot,'var(--red)')}
+        ${barDist('Invitado',dist.invitado,tot,'var(--purple)')}
+        ${barDist('Admin',dist.admin,tot,'var(--gold)')}
+        ${barDist('Lista espera',espera.length,(reales.length+espera.length)||1,'#22C55E')}
+      </div>`;
+
+  }catch(e){console.error('Overview error:',e);}
 }
 
+function barDist(label,val,tot,color){
+  var pct=Math.round(val/tot*100);
+  return `<div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+      <span style="font-size:11px;color:var(--s)">${label}</span>
+      <span style="font-size:11px;font-weight:700;color:${color}">${val}</span>
+    </div>
+    <div style="height:4px;background:rgba(255,255,255,.05);border-radius:4px">
+      <div style="width:${pct}%;height:100%;background:${color};border-radius:4px"></div>
+    </div>
+  </div>`;
+}
+
+function tipoBadge(tipo){
+  return tipo==='elite'?'b-elite':tipo==='admin'?'b-admin':tipo==='espera'?'b-esp':'b-inv';
+}
+
+function fmtDate(d){return d?new Date(d).toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';}
+
+// Helper para obtener fecha de un registro (soporta timestamp y created_at)
+function getDate(r){return r.fecha||r.timestamp||r.creado_en||r.created_at||null;}
+
+// ── ACCESOS ──
 async function loadAccesos(){
-  document.getElementById('tablaAccesos').innerHTML='<div class="a-loading">Cargando…</div>';
+  document.getElementById('tablaAccesos').innerHTML='<div class="loading">Cargando…</div>';
   try{
-    var data=await supaFetch('accesos','select=*&tipo_acceso=neq.espera');
-    if(!Array.isArray(data)||data.length===0){document.getElementById('tablaAccesos').innerHTML='<div class="a-loading">Sin datos.</div>';return;}
-    var html='<div style="overflow-x:auto"><table class="a-tbl"><thead><tr><th>Email</th><th>Código</th><th>Nombre élite</th><th>Tipo</th><th>Fecha</th></tr></thead><tbody>';
-    html+=data.map(r=>`<tr>
-      <td style="color:var(--white);font-weight:600">${r.email||'—'}</td>
-      <td style="font-family:monospace;font-size:10px">${r.codigo_usado||'—'}</td>
-      <td>${r.nombre_elite||'—'}</td>
-      <td><span class="a-badge ${r.tipo_acceso==='elite'?'ab-elite':r.tipo_acceso==='admin'?'ab-admin':'ab-inv'}">${r.tipo_acceso||'—'}</span></td>
-      <td style="color:rgba(255,255,255,.38);font-size:10px">${r.created_at?new Date(r.created_at).toLocaleString('es-ES'):'—'}</td>
-    </tr>`).join('');
-    html+='</tbody></table></div>';
-    document.getElementById('tablaAccesos').innerHTML=html;
-  }catch(e){document.getElementById('tablaAccesos').innerHTML='<div class="a-err">Error al cargar.</div>';}
+    var data=(await supa('accesos')).filter(a=>a.codigo_usado!=='ESPERA');
+    if(!data.length){document.getElementById('tablaAccesos').innerHTML='<div class="loading">Sin accesos.</div>';return;}
+    document.getElementById('tablaAccesos').innerHTML=`
+      <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr><th>Email</th><th>Código usado</th><th>Tipo</th><th>Fecha</th></tr></thead>
+        <tbody>${data.map(r=>`<tr>
+          <td style="color:var(--w);font-weight:600">${r.email||'—'}</td>
+          <td style="font-family:monospace;font-size:10px;letter-spacing:.06em">${r.codigo_usado||'—'}</td>
+          <td><span class="badge ${tipoBadge(r.tipo_acceso)}">${r.tipo_acceso||'—'}</span></td>
+          <td style="font-size:10px;color:var(--s)">${fmtDate(getDate(r))}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+  }catch(e){document.getElementById('tablaAccesos').innerHTML='<div class="err-box">Error al cargar accesos.</div>';}
 }
 
+// ── CÓDIGOS ──
 async function loadCodigos(){
-  document.getElementById('tablaCodigos').innerHTML='<div class="a-loading">Cargando…</div>';
+  document.getElementById('tablaCodigos').innerHTML='<div class="loading">Cargando…</div>';
   try{
-    var data=await supaFetch('codigos','select=*');
-    if(!Array.isArray(data)||data.length===0){document.getElementById('tablaCodigos').innerHTML='<div class="a-loading">Sin códigos.</div>';return;}
-    var html='<div style="overflow-x:auto"><table class="a-tbl"><thead><tr><th>Código</th><th>Tipo</th><th>Nombre élite</th><th>Usos</th><th>Estado</th></tr></thead><tbody>';
-    html+=data.map(r=>`<tr>
-      <td style="font-family:monospace;font-weight:700;color:var(--white);letter-spacing:.08em">${r.codigo||'—'}</td>
-      <td><span class="a-badge ${r.tipo==='elite'?'ab-elite':r.tipo==='admin'?'ab-admin':'ab-inv'}">${r.tipo||'—'}</span></td>
-      <td>${r.nombre_elite||'—'}</td>
-      <td style="color:rgba(255,255,255,.82)">${r.usos_actuales||0} / ${r.usos_permitidos||'∞'}</td>
-      <td><span class="a-badge ${r.activo?'ab-inv':'ab-esp'}">${r.activo?'Activo':'Inactivo'}</span></td>
-    </tr>`).join('');
-    html+='</tbody></table></div>';
-    document.getElementById('tablaCodigos').innerHTML=html;
-  }catch(e){document.getElementById('tablaCodigos').innerHTML='<div class="a-err">Error al cargar.</div>';}
+    var data=await supa('codigos');
+    if(!data.length){document.getElementById('tablaCodigos').innerHTML='<div class="loading">Sin códigos.</div>';return;}
+    document.getElementById('tablaCodigos').innerHTML=`
+      <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr><th>Código</th><th>Tipo</th><th>Nombre élite</th><th>Usos</th><th>Estado</th><th>Creado</th></tr></thead>
+        <tbody>${data.map(r=>`<tr>
+          <td style="font-family:monospace;font-weight:700;color:var(--w);letter-spacing:.08em">${r.codigo||'—'}</td>
+          <td><span class="badge ${tipoBadge(r.tipo)}">${r.tipo||'—'}</span></td>
+          <td>${r.nombre_elite||'—'}</td>
+          <td>${r.usos_actuales||0} / ${r.usos_permitidos||'∞'}</td>
+          <td><span class="badge ${r.activo?'b-on':'b-off'}">${r.activo?'Activo':'Inactivo'}</span></td>
+          <td style="font-size:10px;color:var(--s)">${fmtDate(getDate(r))}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+  }catch(e){document.getElementById('tablaCodigos').innerHTML='<div class="err-box">Error al cargar códigos.</div>';}
 }
 
+// ── LISTA ESPERA ──
 async function loadEspera(){
-  document.getElementById('tablaEspera').innerHTML='<div class="a-loading">Cargando…</div>';
+  document.getElementById('tablaEspera').innerHTML='<div class="loading">Cargando…</div>';
   try{
-    var data=await supaFetch('accesos','tipo_acceso=eq.espera&select=*');
-    if(!Array.isArray(data)||data.length===0){document.getElementById('tablaEspera').innerHTML='<div class="a-loading">Lista de espera vacía.</div>';return;}
-    var html='<div style="overflow-x:auto"><table class="a-tbl"><thead><tr><th>Email</th><th>Instagram</th><th>Fecha</th></tr></thead><tbody>';
-    html+=data.map(r=>`<tr>
-      <td style="color:var(--white);font-weight:600">${r.email||'—'}</td>
-      <td style="color:rgba(255,255,255,.38)">${r.nombre_elite||'—'}</td>
-      <td style="color:rgba(255,255,255,.38);font-size:10px">${r.created_at?new Date(r.created_at).toLocaleString('es-ES'):'—'}</td>
-    </tr>`).join('');
-    html+='</tbody></table></div>';
-    document.getElementById('tablaEspera').innerHTML=html;
-  }catch(e){document.getElementById('tablaEspera').innerHTML='<div class="a-err">Error al cargar.</div>';}
+    var data=(await supa('accesos')).filter(a=>a.codigo_usado==='ESPERA');
+    if(!data.length){document.getElementById('tablaEspera').innerHTML='<div class="loading">Lista de espera vacía.</div>';return;}
+    document.getElementById('tablaEspera').innerHTML=`
+      <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr><th>Email</th><th>Fecha</th></tr></thead>
+        <tbody>${data.map(r=>`<tr>
+          <td style="color:var(--w);font-weight:600">${r.email||'—'}</td>
+          <td style="font-size:10px;color:var(--s)">${fmtDate(getDate(r))}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+  }catch(e){document.getElementById('tablaEspera').innerHTML='<div class="err-box">Error al cargar lista de espera.</div>';}
 }
 
+// ── CONSULTAS ──
 async function loadConsultas(){
-  document.getElementById('tablaConsultas').innerHTML='<div class="a-loading">Cargando…</div>';
+  document.getElementById('tablaConsultas').innerHTML='<div class="loading">Cargando…</div>';
   try{
-    var data=await supaFetch('legacy_data','select=*&limit=200');
-    if(!Array.isArray(data)||data.length===0){document.getElementById('tablaConsultas').innerHTML='<div class="a-loading">Sin consultas todavía.</div>';return;}
-    var html='<div style="overflow-x:auto"><table class="a-tbl"><thead><tr><th>Email</th><th>Servicio</th><th>País</th><th>Precio</th><th>Nivel</th><th>Fecha</th></tr></thead><tbody>';
-    html+=data.map(r=>`<tr>
-      <td style="color:var(--white);font-weight:600">${r.email||'—'}</td>
-      <td>${r.nombre_servicio||r.tipo_trenzado||'—'}</td>
-      <td>${r.pais||'—'}</td>
-      <td style="font-weight:700;color:var(--white)">${r.precio_total?Math.round(r.precio_total)+'€':'—'}</td>
-      <td><span class="a-badge ${r.nivel==='elite'?'ab-elite':'ab-inv'}">${r.nivel||'—'}</span></td>
-      <td style="color:rgba(255,255,255,.38);font-size:10px">${r.created_at?new Date(r.created_at).toLocaleString('es-ES'):'—'}</td>
-    </tr>`).join('');
-    html+='</tbody></table></div>';
-    document.getElementById('tablaConsultas').innerHTML=html;
-  }catch(e){document.getElementById('tablaConsultas').innerHTML='<div class="a-err">Error al cargar datos.</div>';}
-}
-</script>
-<script>
-var LANG = 'es';
-var T = {
-  es:{
-    step:'Paso',of:'de',result:'Resultado',
-    continue:'Continuar →',back:'←',see_price:'Ver mi precio →',
-    enter:'pulsa Enter ↵',
-    s1_ey:'01 — Bienvenida',s1_q:'¿Cuál es tu correo electrónico?',s1_sub:'Para guardarte los resultados. Sin spam, sin newsletter.',s1_hint:'Tu correo se guarda de forma segura y nunca se comparte.',s1_ph:'tu@email.com',
-    s2_ey:'02 — Tu perfil',s2_q:'¿Tu usuario de Instagram?',s2_sub:'Nos ayuda a entender el mercado real de profesionales.',s2_ph:'@tuusuario',
-    s3_ey:'03 — Ubicación',s3_q:'¿En qué país trabajas?',s3_sub:'El sistema ajustará los precios al mercado real de tu zona.',s3_sel:'Selecciona tu país…',
-    s4_ey:'04 — Ubicación',s4_q:'¿En qué ciudad trabajas?',s4_sub:'Selecciona tu región y ciudad para usar el salario real de tu zona.',s4_r:'Selecciona tu región…',s4_c:'Selecciona tu ciudad…',s4_sme:'Salario Medio',s4_smi:'Salario Mínimo',s4_chip:'💡 ¿Cuál elijo?',s4_chip_close:'▲ Cerrar',
-    s5_ey:'05 — Tu zona',s5_q:'¿En qué tipo de zona trabajas?',s5_sub:'Ajusta el precio según el poder adquisitivo de tus clientes.',
-    zona_cara:'Zona cara',zona_cara_s:'Centro, barrio exclusivo, zona de lujo',zona_normal:'Zona normal',zona_normal_s:'Barrio estándar, periferia',zona_baja:'Zona económica',zona_baja_s:'Pueblo, zona rural',
-    s6_ey:'06 — Tu perfil profesional',s6_q:'¿Cuál es tu nivel técnico?',s6_sub:'Si dudas entre dos, elige el más bajo.',
-    n_junior:'Junior',n_junior_s:'Aprendiendo, primeros servicios reales',n_inter:'Intermedio',n_inter_s:'Técnica sólida, 1-2 años',n_avanz:'Avanzado',n_avanz_s:'Experiencia consolidada, clientela fija',n_prof:'Profesional',n_prof_s:'Referente local, agenda siempre llena',n_elite:'Élite',n_elite_s:'Referente del sector, lista de espera',
-    casa:'En casa',salon:'En salón',salon_s:'Incremento por estructura profesional',
-    s13_ey:'Tu presencia',s13_q:'¿Cuál es tu nivel de reputación en el sector?',s13_sub:'No cambia tu precio base — te muestra el techo al que puedes aspirar.',
-    rep_c:'Construyendo',rep_c_s:'Menos de 1K seguidores, clientela local',rep_a:'Presencia activa',rep_a_s:'1K – 10K seguidores',rep_l:'Referente local',rep_l_s:'10K – 50K seguidores, lista de espera',rep_n:'Referente nacional',rep_n_s:'50K – 200K seguidores, clientes de alto perfil',rep_i:'Referente internacional',rep_i_s:'200K+, ha trabajado con artistas',
-    s7_ey:'07 — El servicio',s7_q:'¿Qué tipo de trenzado vas a calcular?',s7_sub:'Este sistema no calcula por número de trenzas — te ayuda a descubrir el valor real de tu hora.',
-    pegadas:'Pegadas',pegadas_s:'Cornrows · Twist · Barrel Twist',sueltas:'Sueltas',sueltas_s:'Box Braids · Knotless · Goddess · Bohemian…',fulani:'Fulani Braids',fulani_s:'Combinación de pegadas y sueltas',
-    s8_ey:'08 — Pegadas',s8_q:'Cuéntame sobre las pegadas.',s8_sub:'Cada detalle afina el precio final.',
-    s9_ey:'09 — Sueltas',s9_q:'Cuéntame sobre las sueltas.',s9_sub:'Tamaño, técnica, extensiones y acabado.',
-    s10_ey:'10 — Fulani Braids',s10_q:'Cuéntame sobre las Fulani.',s10_sub:'Parte trasera (sueltas) y parte delantera (pegadas).',
-    s11_ey:'11 — Cabello',s11_q:'¿Cómo es el cabello del cliente?',s11_sub:'El largo afecta el tiempo real de preparación y trabajo.',
-    s12_ey:'12 — Último paso',s12_q:'Tiempo y materiales',s12_sub:'Tres datos más y calculamos tu precio justo.',
-    h_hours:'Horas que tardas en este servicio',h_hours_hint:'Tus horas reales. No te compares — el sistema ya ajusta el valor según tu nivel.',
-    h_mats:'Gasto en producto',h_mats_hint:'Solo la parte proporcional de este servicio.',
-    h_actual:'¿Cuánto cobras actualmente?',h_nombre:'¿Cómo quieres llamar a este servicio?',h_nombre_ph:'Ej: Knotless Medium con Boho',h_nombre_hint:'Opcional — para identificar el resultado.',
-    precio_ref:'Precio de referencia',precio_ref_t:'Primera vez calculando este servicio. Guarda este número.',
-    siguiente:'¿Cuánto cobro por mi siguiente servicio? →',
-    compartir:'Compartir resultado',
-    share_title:'Elige tu tarjeta',share_sub:'Descarga la imagen y súbela a tus Stories.',
-    share_opt_a:'Tarjeta al pie',share_opt_a_sub:'Horizontal, abajo. Se ve la foto detrás.',
-    share_opt_b:'Sticker central',share_opt_b_sub:'En el centro de la Story.',
-    share_dl:'Descargar imagen →',share_cancel:'Cancelar',
-    calc_loading:'Calculando tu precio justo',access_badge:'Acceso por invitación',
-    acc_sub:'Solo puedes entrar con código de invitación de un profesional élite.',
-    acc_btn:'Acceder →',acc_wait:'o apúntate a la lista de espera',acc_email_ph:'Tu correo electrónico',acc_ig_ph:'Tu Instagram @',acc_join:'Quiero acceso anticipado',
-    nivel_label:'Nivel'
-  },
-  en:{
-    step:'Step',of:'of',result:'Result',
-    continue:'Continue →',back:'←',see_price:'See my price →',
-    enter:'press Enter ↵',
-    s1_ey:'01 — Welcome',s1_q:'What is your email address?',s1_sub:'To save your results. No spam, no newsletter.',s1_hint:'Your email is stored securely and never shared.',s1_ph:'your@email.com',
-    s2_ey:'02 — Your profile',s2_q:'Your Instagram username?',s2_sub:'Helps us understand the real market of professionals.',s2_ph:'@yourusername',
-    s3_ey:'03 — Location',s3_q:'Which country do you work in?',s3_sub:'The system will adjust prices to your local market.',s3_sel:'Select your country…',
-    s4_ey:'04 — Location',s4_q:'Which city do you work in?',s4_sub:'Select your region and city to use the real salary for your area.',s4_r:'Select your region…',s4_c:'Select your city…',s4_sme:'Average Salary',s4_smi:'Minimum Wage',s4_chip:'💡 Which one do I choose?',s4_chip_close:'▲ Close',
-    s5_ey:'05 — Your area',s5_q:'What type of area do you work in?',s5_sub:'Adjust the price based on your clients\' purchasing power.',
-    zona_cara:'Expensive area',zona_cara_s:'City centre, exclusive neighbourhood',zona_normal:'Standard area',zona_normal_s:'Regular neighbourhood, suburbs',zona_baja:'Budget area',zona_baja_s:'Small town, rural area',
-    s6_ey:'06 — Your professional profile',s6_q:'What is your technical level?',s6_sub:'If you\'re between two, choose the lower one.',
-    n_junior:'Junior',n_junior_s:'Learning, first real services',n_inter:'Intermediate',n_inter_s:'Solid technique, 1-2 years',n_avanz:'Advanced',n_avanz_s:'Consolidated experience, regular clients',n_prof:'Professional',n_prof_s:'Local reference, always fully booked',n_elite:'Elite',n_elite_s:'Industry reference, waiting list',
-    casa:'At home',salon:'In a salon',salon_s:'Increase for professional structure',
-    s13_ey:'Your presence',s13_q:'What is your reputation level in the industry?',s13_sub:'Does not change your base price — shows your ceiling potential.',
-    rep_c:'Building',rep_c_s:'Less than 1K followers, local clientele',rep_a:'Active presence',rep_a_s:'1K – 10K followers',rep_l:'Local reference',rep_l_s:'10K – 50K followers, waiting list',rep_n:'National reference',rep_n_s:'50K – 200K followers, high-profile clients',rep_i:'International reference',rep_i_s:'200K+, has worked with artists',
-    s7_ey:'07 — The service',s7_q:'What type of braiding are you calculating?',s7_sub:'This system does not calculate by number of braids — it helps you discover the real value of your hour.',
-    pegadas:'Cornrows & Flat styles',pegadas_s:'Cornrows · Twist · Barrel Twist',sueltas:'Box & Knotless styles',sueltas_s:'Box Braids · Knotless · Goddess · Bohemian…',fulani:'Fulani Braids',fulani_s:'Combination of flat and loose styles',
-    s8_ey:'08 — Flat styles',s8_q:'Tell me about the flat braids.',s8_sub:'Every detail refines the final price.',
-    s9_ey:'09 — Loose styles',s9_q:'Tell me about the loose braids.',s9_sub:'Size, technique, extensions and finish.',
-    s10_ey:'10 — Fulani Braids',s10_q:'Tell me about the Fulani.',s10_sub:'Back section (loose) and front section (flat).',
-    s11_ey:'11 — Hair',s11_q:'What is the client\'s hair like?',s11_sub:'Length affects actual preparation and working time.',
-    s12_ey:'12 — Last step',s12_q:'Time and materials',s12_sub:'Three more pieces of data and we calculate your fair price.',
-    h_hours:'Hours you spend on this service',h_hours_hint:'Your real hours. Don\'t compare yourself — the system already adjusts the value for your level.',
-    h_mats:'Product expenses',h_mats_hint:'Only the proportional part used for this service.',
-    h_actual:'How much are you currently charging?',h_nombre:'What do you want to call this service?',h_nombre_ph:'e.g. Medium Knotless with Boho',h_nombre_hint:'Optional — to identify the result.',
-    precio_ref:'Reference price',precio_ref_t:'First time calculating this service. Save this number.',
-    siguiente:'Calculate my next service → ',
-    compartir:'Share result',
-    share_title:'Choose your card',share_sub:'Download the image and share it to your Stories.',
-    share_opt_a:'Footer card',share_opt_a_sub:'Horizontal, at the bottom. Photo visible behind.',
-    share_opt_b:'Central sticker',share_opt_b_sub:'In the centre of the Story.',
-    share_dl:'Download image →',share_cancel:'Cancel',
-    calc_loading:'Calculating your fair price',access_badge:'Invitation only',
-    acc_sub:'You can only enter with an invitation code from an elite professional.',
-    acc_btn:'Enter →',acc_wait:'or join the waiting list',acc_email_ph:'Your email address',acc_ig_ph:'Your Instagram @',acc_join:'I want early access',
-    nivel_label:'Level'
-  },
-  pt:{
-    step:'Passo',of:'de',result:'Resultado',
-    continue:'Continuar →',back:'←',see_price:'Ver meu preço →',
-    enter:'pressione Enter ↵',
-    s1_ey:'01 — Boas-vindas',s1_q:'Qual é o seu endereço de email?',s1_sub:'Para guardar os seus resultados. Sem spam, sem newsletter.',s1_hint:'O seu email é guardado de forma segura e nunca é partilhado.',s1_ph:'seu@email.com',
-    s2_ey:'02 — O seu perfil',s2_q:'O seu utilizador do Instagram?',s2_sub:'Ajuda-nos a entender o mercado real de profissionais.',s2_ph:'@seuusuario',
-    s3_ey:'03 — Localização',s3_q:'Em que país trabalha?',s3_sub:'O sistema ajustará os preços ao mercado real da sua zona.',s3_sel:'Selecione o seu país…',
-    s4_ey:'04 — Localização',s4_q:'Em que cidade trabalha?',s4_sub:'Selecione a sua região e cidade para usar o salário real da sua área.',s4_r:'Selecione a sua região…',s4_c:'Selecione a sua cidade…',s4_sme:'Salário Médio',s4_smi:'Salário Mínimo',s4_chip:'💡 Qual escolho?',s4_chip_close:'▲ Fechar',
-    s5_ey:'05 — A sua zona',s5_q:'Em que tipo de zona trabalha?',s5_sub:'Ajuste o preço com base no poder de compra dos seus clientes.',
-    zona_cara:'Zona cara',zona_cara_s:'Centro, bairro exclusivo, zona de luxo',zona_normal:'Zona normal',zona_normal_s:'Bairro padrão, periferia',zona_baja:'Zona económica',zona_baja_s:'Cidade pequena, zona rural',
-    s6_ey:'06 — O seu perfil profissional',s6_q:'Qual é o seu nível técnico?',s6_sub:'Se tiver dúvidas entre dois, escolha o mais baixo.',
-    n_junior:'Júnior',n_junior_s:'Aprendendo, primeiros serviços reais',n_inter:'Intermédio',n_inter_s:'Técnica sólida, 1-2 anos',n_avanz:'Avançado',n_avanz_s:'Experiência consolidada, clientes fixos',n_prof:'Profissional',n_prof_s:'Referência local, agenda sempre cheia',n_elite:'Elite',n_elite_s:'Referência do setor, lista de espera',
-    casa:'Em casa',salon:'Em salão',salon_s:'Incremento por estrutura profissional',
-    s13_ey:'A sua presença',s13_q:'Qual é o seu nível de reputação no setor?',s13_sub:'Não muda o seu preço base — mostra o teto a que pode aspirar.',
-    rep_c:'Construindo',rep_c_s:'Menos de 1K seguidores, clientela local',rep_a:'Presença ativa',rep_a_s:'1K – 10K seguidores',rep_l:'Referência local',rep_l_s:'10K – 50K seguidores, lista de espera',rep_n:'Referência nacional',rep_n_s:'50K – 200K seguidores, clientes de alto perfil',rep_i:'Referência internacional',rep_i_s:'200K+, trabalhou com artistas',
-    s7_ey:'07 — O serviço',s7_q:'Que tipo de tranças vai calcular?',s7_sub:'Este sistema não calcula pelo número de tranças — ajuda-o a descobrir o valor real da sua hora.',
-    pegadas:'Tranças coladas',pegadas_s:'Cornrows · Twist · Barrel Twist',sueltas:'Tranças soltas',sueltas_s:'Box Braids · Knotless · Goddess · Bohemian…',fulani:'Fulani Braids',fulani_s:'Combinação de tranças coladas e soltas',
-    s8_ey:'08 — Tranças coladas',s8_q:'Conte-me sobre as tranças coladas.',s8_sub:'Cada detalhe afina o preço final.',
-    s9_ey:'09 — Tranças soltas',s9_q:'Conte-me sobre as tranças soltas.',s9_sub:'Tamanho, técnica, extensões e acabamento.',
-    s10_ey:'10 — Fulani Braids',s10_q:'Conte-me sobre as Fulani.',s10_sub:'Parte traseira (soltas) e parte dianteira (coladas).',
-    s11_ey:'11 — Cabelo',s11_q:'Como é o cabelo do cliente?',s11_sub:'O comprimento afeta o tempo real de preparação e trabalho.',
-    s12_ey:'12 — Último passo',s12_q:'Tempo e materiais',s12_sub:'Mais três dados e calculamos o seu preço justo.',
-    h_hours:'Horas que demora neste serviço',h_hours_hint:'As suas horas reais. Não se compare — o sistema já ajusta o valor para o seu nível.',
-    h_mats:'Gasto em produtos',h_mats_hint:'Apenas a parte proporcional usada neste serviço.',
-    h_actual:'Quanto cobra atualmente?',h_nombre:'Como quer chamar a este serviço?',h_nombre_ph:'Ex: Knotless Medium com Boho',h_nombre_hint:'Opcional — para identificar o resultado.',
-    precio_ref:'Preço de referência',precio_ref_t:'Primeira vez a calcular este serviço. Guarde este número.',
-    siguiente:'Quanto cobro pelo meu próximo serviço? →',
-    compartir:'Partilhar resultado',
-    share_title:'Escolha o seu cartão',share_sub:'Descarregue a imagem e partilhe-a nos seus Stories.',
-    share_opt_a:'Cartão em baixo',share_opt_a_sub:'Horizontal, em baixo. Foto visível atrás.',
-    share_opt_b:'Sticker central',share_opt_b_sub:'No centro do Story.',
-    share_dl:'Descarregar imagem →',share_cancel:'Cancelar',
-    calc_loading:'A calcular o seu preço justo',access_badge:'Acesso por convite',
-    acc_sub:'Só pode entrar com código de convite de um profissional elite.',
-    acc_btn:'Entrar →',acc_wait:'ou inscreva-se na lista de espera',acc_email_ph:'O seu endereço de email',acc_ig_ph:'O seu Instagram @',acc_join:'Quero acesso antecipado',
-    nivel_label:'Nível'
-  }
-};
+    var data=await supa('legacy_data');
+    if(!data.length){document.getElementById('tablaConsultas').innerHTML='<div class="loading">Sin consultas todavía.</div>';return;}
 
-function t(key){return(T[LANG]&&T[LANG][key])||T['es'][key]||key;}
+    // Cabecera de columnas
+    var header=`<div style="display:flex;align-items:center;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.06);">
+      <div class="c-col-email" style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);">Email</div>
+      <div class="c-col-servicio" style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);">Servicio</div>
+      <div class="c-col-pais" style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);">País</div>
+      <div class="c-col-precio" style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);text-align:right;">Precio calc.</div>
+      <div class="c-col-nivel" style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);text-align:center;">Nivel</div>
+      <div class="c-col-fecha" style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);text-align:right;">Fecha</div>
+      <div class="c-col-arrow"></div>
+    </div>`;
 
-function setLang(lang, el, source){
-  LANG = lang;
-  // Actualizar botones en acceso
-  document.querySelectorAll('#langCardsAcceso .lang-card').forEach(c=>c.classList.remove('active'));
-  document.querySelectorAll('#langSelectorHeader .lang-btn').forEach(b=>b.classList.remove('active'));
-  if(source==='acceso'){
-    el.classList.add('active');
-    // Sincronizar header
-    var idx = ['es','en','pt'].indexOf(lang);
-    var hbtns = document.querySelectorAll('#langSelectorHeader .lang-btn');
-    if(hbtns[idx]) hbtns[idx].classList.add('active');
-  } else {
-    el.classList.add('active');
-    // Sincronizar acceso
-    var idx = ['es','en','pt'].indexOf(lang);
-    var acards = document.querySelectorAll('#langCardsAcceso .lang-card');
-    if(acards[idx]) acards[idx].classList.add('active');
-  }
-  applyTranslations();
-}
+    var rows=data.map(function(r,i){
+      var id='cq'+i;
+      var pc=r.precio_calculado?Math.round(r.precio_calculado):null;
+      var pa=r.precio_actual?Math.round(r.precio_actual):null;
+      var diff=pc&&pa?Math.round(pc-pa):null;
+      var isBelow=diff!==null&&diff>0;
+      var isAbove=diff!==null&&diff<0;
+      var sim=r.pais&&['españa','spain','es'].includes((r.pais||'').toLowerCase())?'€':r.pais&&['argentina','ar'].includes((r.pais||'').toLowerCase())?'ARS':r.pais&&['colombia','co'].includes((r.pais||'').toLowerCase())?'COP':r.pais&&['mexico','méxico','mx'].includes((r.pais||'').toLowerCase())?'MXN':r.pais&&['usa','united states','us','estados unidos'].includes((r.pais||'').toLowerCase())?'$':'';
+      var fmtP=function(v){return v?(sim==='€'?v+'€':sim==='$'?'$'+v:v+' '+sim):null;};
+      var rMin=pc?Math.round(pc*0.9):null;
+      var rMax=pc?Math.round(pc*1.1):null;
+      var smiRel=r.relacion_smi?parseFloat(r.relacion_smi).toFixed(1)+'×':null;
+      var modRep={'construyendo':0,'activo':0.05,'local':0.10,'nacional':0.15,'internacional':0.25};
+      var repKey=(r.reputacion||'').toLowerCase();
+      var pot=pc&&modRep[repKey]!==undefined?Math.round(pc*(1+modRep[repKey])):null;
+      var repLabel={'construyendo':'Construyendo','activo':'Presencia activa','local':'Referente local','nacional':'Referente nacional','internacional':'Referente internacional'}[repKey]||r.reputacion||null;
 
-function applyTranslations(){
-  // Pasos eyebrow y preguntas
-  var map = {
-    'ey1':t('s1_ey'),'q1':t('s1_q'),'sub1':t('s1_sub'),'hint1':t('s1_hint'),
-    'ey2':t('s2_ey'),'q2':t('s2_q'),'sub2':t('s2_sub'),
-    'ey3':t('s3_ey'),'q3':t('s3_q'),'sub3':t('s3_sub'),
-    'ey4':t('s4_ey'),'q4':t('s4_q'),'sub4':t('s4_sub'),
-    'ey5':t('s5_ey'),'q5':t('s5_q'),'sub5':t('s5_sub'),
-    'ey6':t('s6_ey'),'q6':t('s6_q'),'sub6':t('s6_sub'),
-    'ey13':t('s13_ey'),'q13':t('s13_q'),'sub13':t('s13_sub'),
-    'ey7':t('s7_ey'),'q7':t('s7_q'),'sub7':t('s7_sub'),
-    'ey8':t('s8_ey'),'q8':t('s8_q'),'sub8':t('s8_sub'),
-    'ey9':t('s9_ey'),'q9':t('s9_q'),'sub9':t('s9_sub'),
-    'ey10':t('s10_ey'),'q10':t('s10_q'),'sub10':t('s10_sub'),
-    'ey11':t('s11_ey'),'q11':t('s11_q'),'sub11':t('s11_sub'),
-    'ey12':t('s12_ey'),'q12':t('s12_q'),'sub12':t('s12_sub'),
-  };
-  Object.keys(map).forEach(function(id){
-    var el=document.getElementById('i_'+id);if(el)el.textContent=map[id];
-  });
-  // Botón compartir
-  var bc=document.getElementById('btnCompartirTxt');if(bc)bc.textContent=t('compartir');
-  // Modal
-  document.querySelectorAll('[data-i]').forEach(function(el){
-    var key=el.getAttribute('data-i');
-    if(T[LANG]&&T[LANG][key])el.textContent=T[LANG][key];
-  });
-  // Spinner
-  var sp=document.getElementById('spinnerText');if(sp)sp.textContent=t('calc_loading');
-  // Placeholder email
-  var em=document.getElementById('f_email');if(em)em.placeholder=t('s1_ph');
-  var ig=document.getElementById('f_ig');if(ig)ig.placeholder=t('s2_ph');
+      var diffLabel=isBelow?'Cobra por debajo':isAbove?'Cobra por encima':null;
+      var diffNum=diff!==null?(isBelow?'+'+fmtP(Math.abs(diff)):fmtP(Math.abs(diff))):null;
+      var diffPct=pc&&pa?Math.round(Math.abs(diff)/pc*100):null;
+      var diffSub=pa?'Cobraba '+fmtP(pa)+(diffPct?' · '+(isBelow?diffPct+'% menos':diffPct+'% más'):''):'';
+
+      // Detalles del servicio
+      var tipoServ='—';
+      if(r.tipo_trenzado==='pegadas'){
+        tipoServ=(r.tipo_pegadas||'Pegadas');
+        if(r.complejidad_pegadas)tipoServ+=' · '+(r.complejidad_pegadas==='basico'?'Básico':'Con diseño');
+        if(r.extensiones_pegadas)tipoServ+=' · '+(r.extensiones_pegadas==='feedin'?'Feed-in':r.extensiones_pegadas==='con'?'Con ext.':'Sin ext.');
+      }else if(r.tipo_trenzado==='sueltas'){
+        tipoServ=(r.tamano_sueltas?r.tamano_sueltas.charAt(0).toUpperCase()+r.tamano_sueltas.slice(1):'')+' '+(r.tipo_sueltas||'');
+        if(r.boho_sueltas==='si'||r.boho_sueltas===true)tipoServ+=' · Boho';
+      }else if(r.tipo_trenzado==='fulani'){
+        tipoServ='Fulani';
+      }
+
+      var flagMap={'españa':'🇪🇸','spain':'🇪🇸','argentina':'🇦🇷','colombia':'🇨🇴','mexico':'🇲🇽','méxico':'🇲🇽','usa':'🇺🇸','estados unidos':'🇺🇸','dominicana':'🇩🇴','república dominicana':'🇩🇴','chile':'🇨🇱','perú':'🇵🇪','peru':'🇵🇪','uk':'🇬🇧','nigeria':'🇳🇬','italia':'🇮🇹','france':'🇫🇷','alemania':'🇩🇪'};
+      var flag=flagMap[(r.pais||'').toLowerCase()]||'';
+
+      return `<div class="c-row-wrap">
+        <div class="c-row-main" id="main-${id}" onclick="toggleCQ('${id}')">
+          <div class="c-col-email">
+            <div class="c-cell-p">${r.email||'—'}</div>
+            <div class="c-cell-s">${r.instagram?'@'+r.instagram.replace('@',''):''}</div>
+          </div>
+          <div class="c-col-servicio">
+            <div class="c-cell-p">${r.nombre_servicio||tipoServ||'—'}</div>
+            <div class="c-cell-s">${r.tipo_trenzado?r.tipo_trenzado.charAt(0).toUpperCase()+r.tipo_trenzado.slice(1):''}${r.horas?' · '+r.horas+'h':''}</div>
+          </div>
+          <div class="c-col-pais">
+            <div class="c-cell-p">${flag} ${r.pais||'—'}</div>
+            <div class="c-cell-s">${r.ciudad||''}</div>
+          </div>
+          <div class="c-col-precio">
+            <div class="c-cell-p" style="text-align:right">${fmtP(pc)||'—'}</div>
+            <div class="c-cell-s" style="text-align:right;color:${isBelow?'#F97316':isAbove?'#22C55E':'var(--s)'}">${isBelow?'↓ por debajo':isAbove?'↑ por encima':pa?'Cobra '+fmtP(pa):''}</div>
+          </div>
+          <div class="c-col-nivel" style="text-align:center">
+            <span class="badge ${r.nivel==='elite'?'b-elite':'b-inv'}">${r.nivel||'—'}</span>
+          </div>
+          <div class="c-col-fecha" style="text-align:right">
+            <div class="c-cell-p">${fmtDate(getDate(r))}</div>
+          </div>
+          <div class="c-col-arrow"><span class="c-arrow" id="arrow-${id}">▶</span></div>
+        </div>
+
+        <div class="c-detail" id="detail-${id}">
+          <div class="c-precio-hero">
+            <div class="c-precio-central">
+              <div class="c-precio-lbl">Precio justo calculado</div>
+              <div class="c-precio-num">${fmtP(pc)||'—'}</div>
+              ${rMin&&rMax?`<div class="c-precio-rango">Rango: <strong>${fmtP(rMin)} – ${fmtP(rMax)}</strong></div>`:''}
+            </div>
+            ${smiRel?`<div class="c-smi-box"><div class="c-smi-num">${smiRel}</div><div class="c-smi-lbl">el SMI/hora</div></div>`:''}
+            ${diffLabel?`<div class="c-diff-box ${isBelow?'below':'above'}">
+              <div class="c-diff-lbl">${diffLabel}</div>
+              <div class="c-diff-num">${isBelow?'+':'-'}${fmtP(Math.abs(diff))}</div>
+              <div class="c-diff-sub">${diffSub}</div>
+            </div>`:''}
+          </div>
+
+          ${pot&&repLabel?`<div class="c-pot">
+            <div><div class="c-pot-lbl">Precio potencial · ${repLabel}</div><div class="c-pot-sub">Con su nivel de reputación puede aspirar a:</div></div>
+            <div class="c-pot-num">${fmtP(pot)}</div>
+          </div>`:''}
+
+          <div class="c-grid">
+            <div class="c-block">
+              <div class="c-block-lbl"><div class="c-block-dot" style="background:var(--purple)"></div>Ubicación</div>
+              <div class="c-brow"><span class="c-bkey">País</span><span class="c-bval">${flag} ${r.pais||'—'}</span></div>
+              ${r.provincia?`<div class="c-brow"><span class="c-bkey">Provincia</span><span class="c-bval">${r.provincia}</span></div>`:''}
+              ${r.ciudad?`<div class="c-brow"><span class="c-bkey">Ciudad</span><span class="c-bval">${r.ciudad}</span></div>`:''}
+              <div class="c-brow"><span class="c-bkey">Zona</span><span class="c-bval">${r.zona||'—'}</span></div>
+              ${r.smi?`<div class="c-brow"><span class="c-bkey">SME/SMI usado</span><span class="c-bval">${r.smi}</span></div>`:''}
+            </div>
+            <div class="c-block">
+              <div class="c-block-lbl"><div class="c-block-dot" style="background:var(--gold)"></div>Perfil profesional</div>
+              <div class="c-brow"><span class="c-bkey">Nivel</span><span class="c-bval"><span class="badge ${r.nivel==='elite'?'b-elite':'b-inv'}">${r.nivel||'—'} ${r.nivel==='elite'?'×3.5':r.nivel==='profesional'?'×3.0':r.nivel==='avanzado'?'×2.5':r.nivel==='intermedio'?'×2.0':'×1.5'}</span></span></div>
+              <div class="c-brow"><span class="c-bkey">Estructura</span><span class="c-bval">${r.estructura==='salon'?'En salón':'En casa'}</span></div>
+              ${repLabel?`<div class="c-brow"><span class="c-bkey">Reputación</span><span class="c-bval purple">${repLabel}</span></div>`:''}
+              ${r.instagram?`<div class="c-brow"><span class="c-bkey">Instagram</span><span class="c-bval">@${r.instagram.replace('@','')}</span></div>`:''}
+              <div class="c-brow"><span class="c-bkey">Email</span><span class="c-bval">${r.email||'—'}</span></div>
+            </div>
+            <div class="c-block">
+              <div class="c-block-lbl"><div class="c-block-dot" style="background:var(--red)"></div>Servicio</div>
+              <div class="c-brow"><span class="c-bkey">Tipo</span><span class="c-bval">${r.tipo_trenzado||'—'}</span></div>
+              ${r.tipo_pegadas?`<div class="c-brow"><span class="c-bkey">Subtipo</span><span class="c-bval">${r.tipo_pegadas}</span></div>`:''}
+              ${r.tamano_sueltas?`<div class="c-brow"><span class="c-bkey">Tamaño</span><span class="c-bval">${r.tamano_sueltas}</span></div>`:''}
+              ${r.complejidad_pegadas?`<div class="c-brow"><span class="c-bkey">Complejidad</span><span class="c-bval">${r.complejidad_pegadas}</span></div>`:''}
+              ${r.extensiones_pegadas?`<div class="c-brow"><span class="c-bkey">Extensiones</span><span class="c-bval ${r.extensiones_pegadas==='feedin'?'red':''}">${r.extensiones_pegadas==='feedin'?'Feed-in ×1.65':r.extensiones_pegadas==='con'?'Con ext. ×1.08':'Sin ext.'}</span></div>`:''}
+              ${r.boho_sueltas==='si'||r.boho_sueltas===true?`<div class="c-brow"><span class="c-bkey">Boho</span><span class="c-bval red">Con Boho</span></div>`:''}
+              ${r.largo_cabello?`<div class="c-brow"><span class="c-bkey">Largo cabello</span><span class="c-bval">${r.largo_cabello}</span></div>`:''}
+              ${r.largo_extensiones?`<div class="c-brow"><span class="c-bkey">Largo ext.</span><span class="c-bval">${r.largo_extensiones}</span></div>`:''}
+              ${r.nombre_servicio?`<div class="c-brow"><span class="c-bkey">Nombre</span><span class="c-bval">${r.nombre_servicio}</span></div>`:''}
+            </div>
+            <div class="c-block">
+              <div class="c-block-lbl"><div class="c-block-dot" style="background:var(--green)"></div>Tiempo y materiales</div>
+              <div class="c-brow"><span class="c-bkey">Horas</span><span class="c-bval">${r.horas||'—'}h</span></div>
+              <div class="c-brow"><span class="c-bkey">Materiales</span><span class="c-bval">${fmtP(r.materiales)||'—'}</span></div>
+              <div class="c-brow"><span class="c-bkey">Cobraba antes</span><span class="c-bval ${isBelow?'orange':isAbove?'green':''}">${fmtP(pa)||'—'}</span></div>
+              ${r.tarifa_hora?`<div class="c-brow"><span class="c-bkey">Tarifa/hora</span><span class="c-bval">${fmtP(Math.round(r.tarifa_hora))}</span></div>`:''}
+            </div>
+            <div class="c-block">
+              <div class="c-block-lbl"><div class="c-block-dot" style="background:var(--gold)"></div>Desglose del cálculo</div>
+              ${r.valor_conocimiento?`<div class="c-brow"><span class="c-bkey">Valor conocimiento</span><span class="c-bval gold">${fmtP(Math.round(r.valor_conocimiento))}</span></div>`:''}
+              ${r.coste_tiempo?`<div class="c-brow"><span class="c-bkey">Coste de tiempo</span><span class="c-bval">${fmtP(Math.round(r.coste_tiempo))}</span></div>`:''}
+              ${r.materiales?`<div class="c-brow"><span class="c-bkey">Materiales</span><span class="c-bval">${fmtP(Math.round(r.materiales))}</span></div>`:''}
+              <div class="c-brow"><span class="c-bkey">Precio calculado</span><span class="c-bval hl">${fmtP(pc)||'—'}</span></div>
+              ${smiRel?`<div class="c-brow"><span class="c-bkey">Relación SMI</span><span class="c-bval">${smiRel}</span></div>`:''}
+            </div>
+            <div class="c-block">
+              <div class="c-block-lbl"><div class="c-block-dot" style="background:${isBelow?'#F97316':'#22C55E'}"></div>Diagnóstico Legacy</div>
+              ${diffLabel?`<div class="c-brow"><span class="c-bkey">Posición</span><span class="c-bval ${isBelow?'orange':'green'}">${diffLabel}</span></div>`:''}
+              ${diff!==null?`<div class="c-brow"><span class="c-bkey">Diferencia</span><span class="c-bval ${isBelow?'orange':'green'}">${isBelow?'+':'-'}${fmtP(Math.abs(diff))}</span></div>`:''}
+              ${diffPct?`<div class="c-brow"><span class="c-bkey">% diferencia</span><span class="c-bval ${isBelow?'orange':'green'}">${isBelow?'+':'−'}${diffPct}%</span></div>`:''}
+              ${rMin?`<div class="c-brow"><span class="c-bkey">Rango mínimo</span><span class="c-bval">${fmtP(rMin)}</span></div>`:''}
+              ${rMax?`<div class="c-brow"><span class="c-bkey">Rango máximo</span><span class="c-bval">${fmtP(rMax)}</span></div>`:''}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    document.getElementById('tablaConsultas').innerHTML=header+rows;
+  }catch(e){document.getElementById('tablaConsultas').innerHTML='<div class="err-box">Error al cargar consultas.</div>';}
 }
 
-// ── COMPARTIR ──
-var shareVariant = 'A';
-var shareData = {};
-
-function selectShareOpt(v){
-  shareVariant = v;
-  document.getElementById('shareOptA').classList.toggle('selected', v==='A');
-  document.getElementById('shareOptB').classList.toggle('selected', v==='B');
+function toggleCQ(id){
+  var detail=document.getElementById('detail-'+id);
+  var arrow=document.getElementById('arrow-'+id);
+  var main=document.getElementById('main-'+id);
+  var isOpen=detail.classList.contains('open');
+  // Cerrar todos
+  document.querySelectorAll('.c-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.c-arrow').forEach(a=>a.classList.remove('open'));
+  document.querySelectorAll('.c-row-main').forEach(m=>m.classList.remove('open'));
+  // Abrir el clicado si estaba cerrado
+  if(!isOpen){detail.classList.add('open');arrow.classList.add('open');main.classList.add('open');}
 }
-
-function abrirModalCompartir(){
-  document.getElementById('shareModal').classList.add('visible');
-}
-function cerrarModalCompartir(){
-  document.getElementById('shareModal').classList.remove('visible');
-}
-
-function descargarTarjeta(){
-  var canvas = document.getElementById('shareCanvas');
-  var ctx = canvas.getContext('2d');
-  var W = 1080, H = 1080;
-  canvas.width = W; canvas.height = H;
-
-  // Fondo oscuro con gradiente
-  var bg = ctx.createLinearGradient(0,0,W,H);
-  bg.addColorStop(0,'#0e0505');
-  bg.addColorStop(0.5,'#080310');
-  bg.addColorStop(1,'#050a05');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0,0,W,H);
-
-  // Blobs de color
-  function drawBlob(x,y,r,color){
-    var g=ctx.createRadialGradient(x,y,0,x,y,r);
-    g.addColorStop(0,color);g.addColorStop(1,'transparent');
-    ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
-  }
-  ctx.globalAlpha=0.15;
-  drawBlob(-100,-100,400,'#E31E24');
-  drawBlob(W+100,H+100,350,'#8B5CF6');
-  drawBlob(W*0.5,H*0.45,220,'#C9A84C');
-  ctx.globalAlpha=1;
-
-  var servicio = shareData.nombreServicio || 'Tu servicio';
-  var precio = shareData.precioFmt || '—';
-  var nivelLabel = t('nivel_label');
-  var nivelValor = shareData.nivel || '';
-  var niveles = {junior:'Junior',intermedio:'Intermedio',avanzado:'Avanzado',profesional:'Profesional',elite:'Élite'};
-  var nivelTexto = niveles[nivelValor] || nivelValor;
-  var calcText = t('compartir') === 'Compartir resultado' ? 'Calculado con Legacy' :
-                 t('compartir') === 'Share result' ? 'Calculated with Legacy' : 'Calculado com Legacy';
-
-  if(shareVariant === 'A'){
-    // ── VARIANTE A — tarjeta al pie ──
-    var cardH = 220, cardY = H - cardH - 40, cardX = 60, cardW = W - 120, radius = 32;
-
-    // Fondo glass de la tarjeta
-    ctx.save();
-    ctx.globalAlpha = 0.6;
-    ctx.fillStyle = '#08040a';
-    roundRect(ctx, cardX, cardY, cardW, cardH, radius);
-    ctx.fill();
-    ctx.restore();
-
-    // Borde sutil
-    ctx.save();
-    ctx.globalAlpha = 0.12;
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 1.5;
-    roundRect(ctx, cardX, cardY, cardW, cardH, radius);
-    ctx.stroke();
-    ctx.restore();
-
-    // Línea brillo superior
-    var shine = ctx.createLinearGradient(cardX+cardW*0.2,0,cardX+cardW*0.8,0);
-    shine.addColorStop(0,'transparent');shine.addColorStop(0.5,'rgba(255,255,255,0.12)');shine.addColorStop(1,'transparent');
-    ctx.save();ctx.globalAlpha=1;ctx.strokeStyle=shine;ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(cardX+cardW*0.15,cardY+1);ctx.lineTo(cardX+cardW*0.85,cardY+1);ctx.stroke();
-    ctx.restore();
-
-    // Hilo rojo izquierdo
-    var rg=ctx.createLinearGradient(0,cardY+20,0,cardY+cardH-20);
-    rg.addColorStop(0,'transparent');rg.addColorStop(0.5,'rgba(227,30,36,0.6)');rg.addColorStop(1,'transparent');
-    ctx.fillStyle=rg;ctx.fillRect(cardX+1,cardY+20,2,cardH-40);
-
-    // Servicio en rojo
-    ctx.font='600 28px -apple-system, Arial, sans-serif';
-    ctx.fillStyle='rgba(227,30,36,0.75)';
-    ctx.fillText(servicio, cardX+40, cardY+64);
-
-    // Nivel en gris
-    ctx.font='normal 22px -apple-system, Arial, sans-serif';
-    ctx.fillStyle='rgba(255,255,255,0.28)';
-    ctx.fillText(nivelLabel+' '+nivelTexto, cardX+40, cardY+96);
-
-    // Precio grande
-    ctx.font = 'bold 110px -apple-system, BlinkMacSystemFont, Arial, sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText(precio, cardX+40, cardY+185);
-
-    // Footer
-    ctx.save();ctx.globalAlpha=0.07;ctx.fillStyle='#fff';ctx.fillRect(cardX+30,cardY+cardH-48,cardW-60,1);ctx.restore();
-
-    // Logo mark
-    ctx.fillStyle='#E31E24';roundRectFill(ctx,cardX+40,cardY+cardH-36,18,18,4);
-    ctx.fillStyle='#fff';ctx.font='bold 11px -apple-system, Arial, sans-serif';ctx.fillText('L',cardX+44,cardY+cardH-23);
-
-    // "Calculado con Legacy"
-    ctx.font='500 20px -apple-system, Arial, sans-serif';ctx.fillStyle='rgba(255,255,255,0.25)';
-    ctx.fillText(calcText, cardX+68, cardY+cardH-21);
-
-  } else {
-    // ── VARIANTE B — sticker central ──
-    var cW=800,cH=400,cX=(W-cW)/2,cY=(H-cH)/2;
-
-    ctx.save();ctx.globalAlpha=0.55;ctx.fillStyle='#050308';
-    roundRect(ctx,cX,cY,cW,cH,36);ctx.fill();ctx.restore();
-
-    ctx.save();ctx.globalAlpha=0.1;ctx.strokeStyle='#fff';ctx.lineWidth=1.5;
-    roundRect(ctx,cX,cY,cW,cH,36);ctx.stroke();ctx.restore();
-
-    // Brillo superior
-    var sh2=ctx.createLinearGradient(cX+cW*0.15,0,cX+cW*0.85,0);
-    sh2.addColorStop(0,'transparent');sh2.addColorStop(0.5,'rgba(255,255,255,0.1)');sh2.addColorStop(1,'transparent');
-    ctx.save();ctx.strokeStyle=sh2;ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(cX+cW*0.1,cY+1);ctx.lineTo(cX+cW*0.9,cY+1);ctx.stroke();ctx.restore();
-
-    // Gradiente rojo esquina
-    var rCorner=ctx.createRadialGradient(cX+cW,cY,0,cX+cW,cY,200);
-    rCorner.addColorStop(0,'rgba(227,30,36,0.12)');rCorner.addColorStop(1,'transparent');
-    ctx.fillStyle=rCorner;ctx.fillRect(cX,cY,cW,cH);
-
-    // Logo
-    ctx.fillStyle='#E31E24';roundRectFill(ctx,cX+36,cY+32,22,22,6);
-    ctx.font='600 22px -apple-system, Arial, sans-serif';ctx.fillStyle='rgba(255,255,255,0.3)';ctx.fillText('Legacy',cX+68,cY+50);
-
-    // Punto pulsante (estático en PNG)
-    ctx.fillStyle='#E31E24';ctx.beginPath();ctx.arc(cX+cW-40,cY+43,6,0,Math.PI*2);ctx.fill();
-
-    // Servicio en rojo
-    ctx.font='600 26px -apple-system, Arial, sans-serif';ctx.fillStyle='rgba(227,30,36,0.7)';
-    ctx.fillText(servicio, cX+36, cY+110);
-
-    // Nivel
-    ctx.font='normal 22px -apple-system, Arial, sans-serif';ctx.fillStyle='rgba(255,255,255,0.25)';
-    ctx.fillText(nivelLabel+' '+nivelTexto, cX+36, cY+142);
-
-    // Precio enorme
-    ctx.font='bold 130px -apple-system, Arial, sans-serif';ctx.fillStyle='#ffffff';
-    ctx.fillText(precio, cX+36, cY+310);
-
-    // Footer
-    ctx.save();ctx.globalAlpha=0.06;ctx.fillStyle='#fff';ctx.fillRect(cX+30,cY+cH-52,cW-60,1);ctx.restore();
-    ctx.font='normal 19px -apple-system, Arial, sans-serif';ctx.fillStyle='rgba(255,255,255,0.22)';
-    ctx.fillText(calcText, cX+36, cY+cH-22);
-  }
-
-  // Actualizar precioFmt por si acaso
-  if(document.getElementById('resTotal'))shareData.precioFmt=document.getElementById('resTotal').textContent;
-  // Descargar — método robusto cross-browser
-  try {
-    canvas.toBlob(function(blob){
-      if(!blob){ alert('Error generando imagen.'); return; }
-      var url = URL.createObjectURL(blob);
-      var link = document.createElement('a');
-      link.download = 'legacy-precio.png';
-      link.href = url;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-    }, 'image/png');
-  } catch(e) {
-    // Fallback para Safari
-    var dataUrl = canvas.toDataURL('image/png');
-    var link = document.createElement('a');
-    link.download = 'legacy-precio.png';
-    link.href = dataUrl;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-  cerrarModalCompartir();
-}
-
-function roundRect(ctx,x,y,w,h,r){
-  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
-}
-function roundRectFill(ctx,x,y,w,h,r){roundRect(ctx,x,y,w,h,r);ctx.fill();}
-
-// ── SPLASH ──
-window.addEventListener('load', function(){
-  var splash = document.getElementById('splashScreen');
-  if(!splash) return;
-  setTimeout(function(){
-    splash.classList.add('fade-out');
-    setTimeout(function(){ splash.classList.add('hidden'); }, 650);
-  }, 1800);
-});
-
-// ── CONTADOR ANIMADO PRECIO ──
-function animarPrecio(elemento, valorFinal, simbolo, duracion){
-  if(!elemento) return;
-  var start = null;
-  var numFinal = parseInt(valorFinal.replace(/[^0-9]/g,'')) || 0;
-  elemento.classList.add('counting');
-  function step(timestamp){
-    if(!start) start = timestamp;
-    var progress = Math.min((timestamp - start) / duracion, 1);
-    var ease = 1 - Math.pow(1 - progress, 3); // ease out cubic
-    var current = Math.round(numFinal * ease);
-    elemento.textContent = simbolo + current.toLocaleString('es-ES');
-    if(progress < 1){
-      requestAnimationFrame(step);
-    } else {
-      elemento.textContent = valorFinal;
-      elemento.classList.remove('counting');
-      elemento.classList.add('pulse');
-      setTimeout(function(){ elemento.classList.remove('pulse'); }, 900);
-    }
-  }
-  requestAnimationFrame(step);
-}
-
-// ── GEO DATA (completo) ──
-const GEO={
-es:{nombre:'España',simbolo:'€',smiBase:1221,smeBase:1350,comunidades:{'Cataluña':{ciudades:{'Barcelona':{sme:1500,smi:1221},'Terrassa':{sme:1350,smi:1221},'Sabadell':{sme:1300,smi:1221},'L\'Hospitalet':{sme:1300,smi:1221},'Otra ciudad':{sme:1250,smi:1221}}},'Comunidad de Madrid':{ciudades:{'Madrid Capital':{sme:1500,smi:1221},'Alcalá de Henares':{sme:1300,smi:1221},'Getafe':{sme:1280,smi:1221},'Otra ciudad':{sme:1250,smi:1221}}},'Andalucía':{ciudades:{'Sevilla':{sme:1250,smi:1221},'Málaga':{sme:1280,smi:1221},'Granada':{sme:1230,smi:1221},'Otra ciudad':{sme:1230,smi:1221}}},'Comunitat Valenciana':{ciudades:{'Valencia':{sme:1280,smi:1221},'Alicante':{sme:1240,smi:1221},'Otra ciudad':{sme:1230,smi:1221}}},'País Vasco':{ciudades:{'Bilbao':{sme:1500,smi:1221},'San Sebastián':{sme:1550,smi:1221},'Otra ciudad':{sme:1400,smi:1221}}},'Otra comunidad':{ciudades:{'Mi ciudad':{sme:1250,smi:1221}}}}},
-us:{nombre:'Estados Unidos',simbolo:'$',smiBase:1257,smeBase:3200,comunidades:{'Florida':{ciudades:{'Miami Wynwood':{sme:3200,smi:1257},'Miami Beach':{sme:3500,smi:1257},'Orlando':{sme:2800,smi:1257},'Otra ciudad':{sme:2500,smi:1257}}},'Nueva York':{ciudades:{'Manhattan':{sme:4800,smi:1932},'Brooklyn':{sme:3800,smi:1932},'Queens':{sme:3200,smi:1932},'Otra zona':{sme:3000,smi:1932}}},'California':{ciudades:{'Los Ángeles':{sme:4200,smi:2080},'San Francisco':{sme:5000,smi:2080},'San Diego':{sme:3800,smi:2080},'Otra ciudad':{sme:3500,smi:2080}}},'Texas':{ciudades:{'Houston':{sme:3000,smi:1257},'Dallas':{sme:3200,smi:1257},'Otra ciudad':{sme:2800,smi:1257}}},'Otro estado':{ciudades:{'Mi ciudad':{sme:2500,smi:1257}}}}},
-mx:{nombre:'México',simbolo:'$',smiBase:9582,smeBase:18000,comunidades:{'Ciudad de México':{ciudades:{'Polanco / Santa Fe':{sme:32000,smi:9582},'Roma / Condesa':{sme:25000,smi:9582},'Centro / Sur':{sme:15000,smi:9582},'Otra zona':{sme:18000,smi:9582}}},'Jalisco':{ciudades:{'Guadalajara':{sme:18000,smi:9582},'Zapopan':{sme:20000,smi:9582},'Otra ciudad':{sme:15000,smi:9582}}},'Quintana Roo':{ciudades:{'Cancún':{sme:18000,smi:13410},'Tulum':{sme:18000,smi:13410},'Playa del Carmen':{sme:16000,smi:13410}}},'Nuevo León':{ciudades:{'Monterrey':{sme:22000,smi:9582},'San Pedro Garza':{sme:28000,smi:9582},'Otra ciudad':{sme:18000,smi:9582}}},'Otro estado':{ciudades:{'Mi ciudad':{sme:12000,smi:9582}}}}},
-co:{nombre:'Colombia',simbolo:'$',smiBase:1750905,smeBase:3500000,comunidades:{'Bogotá D.C.':{ciudades:{'Chapinero / Rosales':{sme:5300000,smi:1750905},'Usaquén':{sme:4800000,smi:1750905},'Centro / Sur':{sme:2500000,smi:1750905},'Otra zona':{sme:3000000,smi:1750905}}},'Antioquia':{ciudades:{'El Poblado (Medellín)':{sme:5300000,smi:1750905},'Laureles (Medellín)':{sme:3800000,smi:1750905},'Otra zona':{sme:2800000,smi:1750905}}},'Valle del Cauca':{ciudades:{'Cali':{sme:2800000,smi:1750905},'Otra ciudad':{sme:2400000,smi:1750905}}},'Atlántico':{ciudades:{'Barranquilla':{sme:3500000,smi:1750905},'Otra ciudad':{sme:2500000,smi:1750905}}},'Otro departamento':{ciudades:{'Mi ciudad':{sme:2200000,smi:1750905}}}}},
-do:{nombre:'República Dominicana',simbolo:'RD$',smiBase:29988,smeBase:55000,comunidades:{'Distrito Nacional':{ciudades:{'Santo Domingo':{sme:55000,smi:29988},'Naco / Piantini':{sme:65000,smi:29988},'Otra zona':{sme:45000,smi:29988}}},'La Altagracia':{ciudades:{'Punta Cana':{sme:90000,smi:29988},'Bávaro':{sme:80000,smi:29988},'Otra zona':{sme:50000,smi:29988}}},'Santiago':{ciudades:{'Santiago':{sme:45000,smi:29988},'Otra ciudad':{sme:38000,smi:29988}}},'Otra provincia':{ciudades:{'Mi ciudad':{sme:35000,smi:29988}}}}},
-ar:{nombre:'Argentina',simbolo:'$',smiBase:372400,smeBase:1000000,comunidades:{'CABA':{ciudades:{'Palermo / Recoleta':{sme:2000000,smi:372400},'CABA Centro':{sme:1783231,smi:372400},'Otra zona':{sme:1400000,smi:372400}}},'Buenos Aires (GBA)':{ciudades:{'Zona Norte (San Isidro/Vicente López)':{sme:1600000,smi:372400},'Zona Oeste':{sme:900000,smi:372400},'Otra zona':{sme:800000,smi:372400}}},'Córdoba':{ciudades:{'Córdoba Capital':{sme:900000,smi:372400},'Otra ciudad':{sme:700000,smi:372400}}},'Otra provincia':{ciudades:{'Mi ciudad':{sme:700000,smi:372400}}}}},
-gb:{nombre:'Reino Unido',simbolo:'£',smiBase:1600,smeBase:2800,comunidades:{'Londres':{ciudades:{'Central London':{sme:3800,smi:1600},'East London':{sme:3000,smi:1600},'South London':{sme:2800,smi:1600},'Otra zona':{sme:2600,smi:1600}}},'Manchester':{ciudades:{'Manchester City':{sme:2400,smi:1600},'Otra ciudad':{sme:2000,smi:1600}}},'Birmingham':{ciudades:{'Birmingham':{sme:2200,smi:1600},'Otra ciudad':{sme:1900,smi:1600}}},'Otra región':{ciudades:{'Mi ciudad':{sme:2000,smi:1600}}}}},
-fr:{nombre:'Francia',simbolo:'€',smiBase:1426,smeBase:2200,comunidades:{'Île-de-France':{ciudades:{'París':{sme:2800,smi:1426},'Banlieue Paris':{sme:2200,smi:1426},'Otra zona':{sme:2000,smi:1426}}},'Provence-Alpes':{ciudades:{'Marsella':{sme:2000,smi:1426},'Niza':{sme:2200,smi:1426},'Otra ciudad':{sme:1800,smi:1426}}},'Otra región':{ciudades:{'Mi ciudad':{sme:1900,smi:1426}}}}},
-de:{nombre:'Alemania',simbolo:'€',smiBase:1584,smeBase:2500,comunidades:{'Baviera':{ciudades:{'Múnich':{sme:3200,smi:1584},'Núremberg':{sme:2500,smi:1584},'Otra ciudad':{sme:2200,smi:1584}}},'Berlín':{ciudades:{'Berlín Centro':{sme:2800,smi:1584},'Otra zona':{sme:2400,smi:1584}}},'Otra región':{ciudades:{'Mi ciudad':{sme:2200,smi:1584}}}}},
-ca:{nombre:'Canadá',simbolo:'$CA',smiBase:1900,smeBase:3200,comunidades:{'Ontario':{ciudades:{'Toronto':{sme:4000,smi:2000},'Ottawa':{sme:3200,smi:2000},'Otra ciudad':{sme:2800,smi:2000}}},'Colombia Británica':{ciudades:{'Vancouver':{sme:3800,smi:1900},'Otra ciudad':{sme:3000,smi:1900}}},'Quebec':{ciudades:{'Montreal':{sme:3200,smi:1900},'Otra ciudad':{sme:2600,smi:1900}}},'Otra provincia':{ciudades:{'Mi ciudad':{sme:2600,smi:1900}}}}},
-au:{nombre:'Australia',simbolo:'$AU',smiBase:2400,smeBase:3800,comunidades:{'Nueva Gales del Sur':{ciudades:{'Sídney':{sme:4500,smi:2400},'Otra ciudad':{sme:3500,smi:2400}}},'Victoria':{ciudades:{'Melbourne':{sme:4200,smi:2400},'Otra ciudad':{sme:3300,smi:2400}}},'Otra región':{ciudades:{'Mi ciudad':{sme:3200,smi:2400}}}}},
-ng:{nombre:'Nigeria',simbolo:'₦',smiBase:70000,smeBase:150000,comunidades:{'Lagos':{ciudades:{'Lagos Island / VI':{sme:200000,smi:70000},'Lekki':{sme:180000,smi:70000},'Ikeja':{sme:150000,smi:70000},'Otra zona':{sme:120000,smi:70000}}},'Abuja (FCT)':{ciudades:{'Abuja Central':{sme:180000,smi:70000},'Otra zona':{sme:130000,smi:70000}}},'Otro estado':{ciudades:{'Mi ciudad':{sme:100000,smi:70000}}}}},
-cl:{nombre:'Chile',simbolo:'$',smiBase:539000,smeBase:1000000,comunidades:{'Metropolitana de Santiago':{ciudades:{'Las Condes / Vitacura':{sme:1800000,smi:539000},'Santiago Centro':{sme:1000000,smi:539000},'Providencia':{sme:1400000,smi:539000},'Otra zona':{sme:900000,smi:539000}}},'Valparaíso':{ciudades:{'Valparaíso':{sme:800000,smi:539000},'Viña del Mar':{sme:900000,smi:539000},'Otra ciudad':{sme:750000,smi:539000}}},'Otra región':{ciudades:{'Mi ciudad':{sme:700000,smi:539000}}}}},
-pe:{nombre:'Perú',simbolo:'S/',smiBase:1130,smeBase:3500,comunidades:{'Lima':{ciudades:{'Miraflores / San Isidro':{sme:6000,smi:1130},'Lima Centro':{sme:3500,smi:1130},'Lima Sur / Norte':{sme:2200,smi:1130},'Otra zona':{sme:2800,smi:1130}}},'Arequipa':{ciudades:{'Arequipa':{sme:2200,smi:1130},'Otra ciudad':{sme:1800,smi:1130}}},'Otra región':{ciudades:{'Mi ciudad':{sme:1800,smi:1130}}}}},
-other:{nombre:'Otro país',simbolo:'',smiBase:null,smeBase:null,comunidades:{'Mi región':{ciudades:{'Mi ciudad':{sme:null,smi:null}}}}}
-};
-
-// ── ESTADO ──
-let cur=1,smiMode='sme',consultaNum=0,currentCityData=null,goingBack=false;
-
-// ── INIT ──
-document.addEventListener('DOMContentLoaded',()=>{
-  const acc=localStorage.getItem('legacy_acceso');
-  if(acc){
-    try{const d=JSON.parse(acc);if(d.tipo&&d.codigo){showMainContent();return;}}catch(e){}
-  }
-  document.getElementById('accesoScreen').classList.add('visible');
-  const inp=document.getElementById('codigoInput');
-  if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')verificarCodigo();});
-  updateLargoExtField();
-  checkBtn(1);
-});
-
-function showMainContent(){
-  document.getElementById('accesoScreen').classList.remove('visible');
-  document.getElementById('mainContent').classList.add('visible');
-}
-
-// ── ACCESO ──
-async function verificarCodigo(){
-  const codigo=document.getElementById('codigoInput').value.trim();
-  const $err=document.getElementById('codigoError');
-  $err.style.display='none';
-  if(!codigo){$err.textContent='Introduce tu código.';$err.style.display='block';return;}
-  try{
-    const res=await fetch('/api/verificar-codigo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo})});
-    const data=await res.json();
-    if(!res.ok){$err.textContent=data.error||'Código no válido.';$err.style.display='block';return;}
-    localStorage.setItem('legacy_acceso',JSON.stringify({tipo:data.tipo,nombre_elite:data.nombre_elite,codigo:data.codigo}));
-    document.getElementById('accesoWait').style.display='none';
-    if(data.tipo==='admin'){
-      // Acceso admin — abrir panel de administración con Supabase directo
-      var supaUrl='https://crmpjtaczpmjfxxbujkb.supabase.co';
-      var supaKey='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNybXBqdGFjenBtamZ4eGJ1amtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMjczNDUsImV4cCI6MjA5NjcwMzM0NX0.F3tITqlOzqS7BMK-XDcFnoRXEwNSZvyrHQM4gfQsLk8';
-      mostrarAdmin(data.tipo,data.nombre_elite,supaUrl,supaKey);
-      return;
-    } else if(data.tipo==='elite'){document.getElementById('accesoElite').style.display='block';}
-    else{
-      const n=data.nombre_elite;
-      document.getElementById('accesoVIPavatar').textContent=n.charAt(0).toUpperCase();
-      document.getElementById('accesoVIPnombre').textContent='Invitado por '+n;
-      document.getElementById('accesoVIP').style.display='block';
-    }
-  }catch(e){$err.textContent='Error de conexión. Inténtalo de nuevo.';$err.style.display='block';}
-}
-
-function entrarApp(){document.getElementById('accesoScreen').classList.remove('visible');showMainContent();}
-
-async function apuntarseEspera(){
-  const email=document.getElementById('esperaEmail').value.trim();
-  const ig=document.getElementById('esperaIg').value.trim();
-  const $msg=document.getElementById('esperaMsg');
-  if(!email){$msg.textContent='Introduce tu correo.';$msg.style.color='#F87171';$msg.style.display='block';return;}
-  try{await fetch('/api/lista-espera',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,instagram:ig})});}catch(e){}
-  $msg.textContent='✓ Apuntado.';$msg.style.color='var(--green)';$msg.style.display='block';
-  document.getElementById('esperaEmail').value='';document.getElementById('esperaIg').value='';
-  setTimeout(()=>{
-    document.getElementById('accesoWait').style.display='none';
-    document.getElementById('accesoContador').style.display='block';
-    let a=999,b=999;
-    setInterval(()=>{b--;if(b<0){b=999;a--;}if(a<0){a=999;b=999;}document.getElementById('countdownDisplay').textContent=String(a).padStart(3,'0')+':'+String(b).padStart(3,'0');},80);
-  },800);
-}
-
-// ── NAVEGACIÓN CON TRANSICIÓN ──
-function go(n){
-  const curr=document.getElementById('s'+cur);
-  curr.classList.add('leaving');
-  setTimeout(()=>{
-    curr.classList.remove('active','leaving');
-    cur=n;
-    const next=document.getElementById('s'+n);
-    next.style.animation=goingBack?'slideInBack .3s cubic-bezier(.25,.46,.45,.94)':'slideIn .3s cubic-bezier(.25,.46,.45,.94)';
-    next.classList.add('active');
-    goingBack=false;
-    const pct=n>=12?92:Math.round((n-1)/12*100);
-    document.getElementById('tfBar').style.width=pct+'%';
-    document.getElementById('stepCounter').textContent='Paso '+n+' de 13';
-    if(n===11)updateLargoExtField();
-    if(n===11){const tipo=document.getElementById('f_tipo').value;const bb=document.getElementById('backBtn11');if(bb)bb.onclick=()=>goBack(tipo==='pegadas'?8:tipo==='sueltas'?9:10);}
-    window.scrollTo({top:0,behavior:'smooth'});
-  },200);
-}
-
-function goBack(n){goingBack=true;go(n);}
-
-// ── BOTÓN CONTINUAR INTELIGENTE ──
-function checkBtn(step){
-  if(step===1){
-    const v=document.getElementById('f_email').value.trim();
-    const btn=document.getElementById('btn1');
-    if(btn)btn.disabled=!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-  }
-  if(step===12){
-    const v=document.getElementById('f_horas').value;
-    const btn=document.getElementById('btn12');
-    if(btn)btn.disabled=!v||Number(v)<=0;
-  }
-}
-
-// ── VALIDACIONES ──
-function validarYAvanzar(step,next){
-  const errEl=document.getElementById('err'+step);
-  if(errEl)errEl.style.display='none';
-  if(step===1){const email=document.getElementById('f_email').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){if(errEl)errEl.style.display='block';return;}}
-  if(step===3){if(!document.getElementById('f_pais').value){if(errEl)errEl.style.display='block';return;}}
-  if(step===4){if(!document.getElementById('f_ciudad').value||!document.getElementById('f_smi').value){if(errEl)errEl.style.display='block';return;}}
-  if(step===6){if(!document.getElementById('f_nivel').value||!document.getElementById('f_estructura').value){if(errEl)errEl.style.display='block';return;}}
-  if(step===13){if(!document.getElementById('f_reputacion').value){if(errEl)errEl.style.display='block';return;}}
-  if(step===8){if(!document.getElementById('f_tipopeg').value||!document.getElementById('f_comppeg').value||!document.getElementById('f_extpeg').value){if(errEl)errEl.style.display='block';return;}updateLargoExtField();}
-  if(step===9){if(!document.getElementById('f_tamano').value||!document.getElementById('f_tiposueltas').value||!document.getElementById('f_extsueltas').value){if(errEl)errEl.style.display='block';return;}updateLargoExtField();}
-  if(step===10){if(!document.getElementById('f_tamanofulsueltas').value||!document.getElementById('f_compfuldelante').value||!document.getElementById('f_extfulani').value){if(errEl)errEl.style.display='block';return;}updateLargoExtField();}
-  if(step===11){if(!document.getElementById('f_largocab').value){if(errEl)errEl.style.display='block';return;}}
-  go(next);
-}
-
-// ── SELECTORES ──
-function selOpt(el,hiddenId,val){
-  el.closest('.tf-opts').querySelectorAll('.tf-opt').forEach(o=>o.classList.remove('active'));
-  el.classList.add('active');
-  if(hiddenId)document.getElementById(hiddenId).value=val;
-}
-function selPill(el,hiddenId,val){
-  el.closest('.tf-pills').querySelectorAll('.tf-pill').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-  if(hiddenId)document.getElementById(hiddenId).value=val;
-}
-function showBoho(tipo,show){
-  const ids={peg:'bohoPegField',sue:'bohoSueField',ful:'bohoFulField'};
-  const el=document.getElementById(ids[tipo]);
-  if(el)el.classList.toggle('visible',show);
-  updateLargoExtField();
-}
-function updateLargoExtField(){
-  const tipo=document.getElementById('f_tipo')?.value||'';
-  const extPeg=document.getElementById('f_extpeg')?.value;
-  const extSue=document.getElementById('f_extsueltas')?.value;
-  const extFul=document.getElementById('f_extfulani')?.value;
-  const tieneExt=(tipo==='pegadas'&&(extPeg==='con'||extPeg==='feedin'))||(tipo==='sueltas'&&extSue==='con')||(tipo==='fulani'&&extFul==='con')||extSue==='con'||extFul==='con';
-  const el=document.getElementById('largoExtField');
-  if(el)el.style.display=tieneExt?'block':'none';
-}
-
-// ── GEO ──
-function updateRegiones(){
-  const key=document.getElementById('f_pais').value;const geo=GEO[key];if(!geo)return;
-  const r=document.getElementById('f_region');r.innerHTML='<option value="" disabled selected>Selecciona tu región…</option>';
-  Object.keys(geo.comunidades).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;r.appendChild(o);});
-  document.getElementById('f_ciudad').innerHTML='<option value="" disabled selected>Selecciona tu ciudad…</option>';
-  document.getElementById('smiPillsWrap').style.display='none';document.getElementById('f_smi').value='';
-}
-function updateCiudades(){
-  const key=document.getElementById('f_pais').value;const geo=GEO[key];if(!geo)return;
-  const reg=document.getElementById('f_region').value;const cd=geo.comunidades[reg]?.ciudades;if(!cd)return;
-  const c=document.getElementById('f_ciudad');c.innerHTML='<option value="" disabled selected>Selecciona tu ciudad…</option>';
-  Object.entries(cd).forEach(([n,d])=>{const o=document.createElement('option');o.value=n;o.textContent=n;o.dataset.sme=d.sme||'';o.dataset.smi=d.smi||'';c.appendChild(o);});
-  document.getElementById('smiPillsWrap').style.display='none';document.getElementById('f_smi').value='';
-}
-function onCiudadChange(){
-  const sel=document.getElementById('f_ciudad');const opt=sel.options[sel.selectedIndex];
-  const key=document.getElementById('f_pais').value;const geo=GEO[key];if(!opt||!geo)return;
-  currentCityData={sme:Number(opt.dataset.sme)||0,smi:Number(opt.dataset.smi)||0};
-  const sim=geo.simbolo;
-  document.getElementById('smeVal').textContent=currentCityData.sme?currentCityData.sme.toLocaleString('es-ES')+' '+sim:'—';
-  document.getElementById('smiVal').textContent=currentCityData.smi?currentCityData.smi.toLocaleString('es-ES')+' '+sim:'—';
-  document.getElementById('smiPillsWrap').style.display='block';selectSMI(smiMode);
-}
-function selectSMI(mode){
-  smiMode=mode;
-  document.getElementById('pillSME').classList.toggle('active',mode==='sme');
-  document.getElementById('pillSMI').classList.toggle('active',mode==='smi');
-  if(!currentCityData)return;
-  document.getElementById('f_smi').value=mode==='sme'?currentCityData.sme:currentCityData.smi||'';
-}
-
-// ── CALCULAR ──
-async function calcular(){
-  const err12=document.getElementById('err12');err12.style.display='none';
-  const horas=Number(document.getElementById('f_horas').value);
-  if(!horas||horas<=0){err12.textContent='Introduce las horas del servicio.';err12.style.display='block';return;}
-  const smiVal=document.getElementById('f_smi').value;
-  if(!smiVal||Number(smiVal)<=0){err12.textContent='Selecciona tu ciudad en el paso 4 para continuar.';err12.style.display='block';return;}
-
-  // Mostrar spinner
-  document.getElementById('spinnerOverlay').classList.add('visible');
-
-  const tipo=document.getElementById('f_tipo').value;
-  const body={
-    email:document.getElementById('f_email').value.trim(),
-    instagram:document.getElementById('f_ig').value.trim(),
-    pais:document.getElementById('f_pais').value,
-    provincia:document.getElementById('f_region').value||'',
-    ciudad:document.getElementById('f_ciudad').value||'',
-    zona:document.getElementById('f_zona').value,
-    smi:smiVal,clienteTipo:'local',
-    nombreServicio:document.getElementById('f_nombre').value.trim(),
-    nivel:document.getElementById('f_nivel').value,
-    estructura:document.getElementById('f_estructura').value,
-    horas,materiales:Number(document.getElementById('f_materiales').value)||0,
-    precioActual:Number(document.getElementById('f_precioactual').value)||0,
-    tipoTrenzado:tipo,
-    tipoPegadas:document.getElementById('f_tipopeg').value||null,
-    complejidadPegadas:document.getElementById('f_comppeg').value||null,
-    extensionesPegadas:document.getElementById('f_extpeg').value||null,
-    bohoPegadas:document.getElementById('f_bohopeg').value||null,
-    tamanoSueltas:document.getElementById('f_tamano').value||null,
-    tipoSueltas:document.getElementById('f_tiposueltas').value||null,
-    extensionesSueltas:document.getElementById('f_extsueltas').value||null,
-    bohoSueltas:document.getElementById('f_bohosueltas').value||null,
-    tamanoFulaniAtras:document.getElementById('f_tamanofulsueltas').value||null,
-    complejidadFulaniDelante:document.getElementById('f_compfuldelante').value||null,
-    extensionesFulani:document.getElementById('f_extfulani').value||null,
-    bohoFulani:document.getElementById('f_bohofulsueltas').value||null,
-    largoCabello:document.getElementById('f_largocab').value||'nuca_hombros',
-    largoExtensiones:document.getElementById('f_largoext').value||'media_espalda',
-  };
-
-  try{
-    const res=await fetch('/api/calculate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const data=await res.json();
-    document.getElementById('spinnerOverlay').classList.remove('visible');
-    if(!res.ok){err12.textContent=data.error||'Error al calcular.';err12.style.display='block';return;}
-    renderResult(data);
-  }catch(e){
-    document.getElementById('spinnerOverlay').classList.remove('visible');
-    err12.textContent='Error de conexión. Inténtalo de nuevo.';err12.style.display='block';
-  }
-}
-
-function fmt(n){
-  const pais=document.getElementById('f_pais').value;const geo=GEO[pais];const sim=geo?geo.simbolo:'€';
-  return n>=1000?sim+Math.round(n).toLocaleString('es-ES'):sim+n.toFixed(0);
-}
-
-function renderResult(data){
-  consultaNum++;
-  // Guardar datos para compartir
-  var pais2=document.getElementById('f_pais').value;
-  var geo2=GEO[pais2];var sim2=geo2?geo2.simbolo:'€';
-  var precioNum=Math.round(data.precioTotal);
-  var precioFmtReal=precioNum>=1000?sim2+precioNum.toLocaleString('es-ES'):sim2+precioNum;
-  shareData = {
-    nombreServicio: data.nombreServicio || 'Tu servicio',
-    precioFmt: precioFmtReal,
-    precioNum: precioNum,
-    simbolo: sim2,
-    nivel: document.getElementById('f_nivel') ? document.getElementById('f_nivel').value : ''
-  };
-  document.getElementById('tfMainArea').style.display='none';
-  const rs=document.getElementById('resultSection');rs.style.display='flex';rs.classList.add('visible');
-  document.getElementById('stepCounter').textContent='Resultado';
-  document.getElementById('tfBar').style.width='100%';
-
-  const nombre=data.nombreServicio||'Tu servicio';
-  document.getElementById('resEyebrow').textContent=nombre;
-
-  const pais=document.getElementById('f_pais').value;const geo=GEO[pais];const sim=geo?geo.simbolo:'€';
-  const pf=data.precioTotal>=1000?sim+Math.round(data.precioTotal).toLocaleString('es-ES'):sim+Math.round(data.precioTotal);
-  var precioEl = document.getElementById('resTotal');
-  if(precioEl) animarPrecio(precioEl, pf, '', 900);
-  else document.getElementById('resTotal').textContent = pf;
-
-  const mn=Math.round(data.precioTotal*0.9),mx=Math.round(data.precioTotal*1.1);
-  const mf=mn>=1000?sim+mn.toLocaleString('es-ES'):sim+mn;
-  const xf=mx>=1000?sim+mx.toLocaleString('es-ES'):sim+mx;
-  document.getElementById('resRango').innerHTML='<strong>'+mf+' – '+xf+'</strong><br><span style="font-size:10px;color:var(--subtle)">Mínimo y máximo según tu posicionamiento real.</span>';
-
-  document.getElementById('resSMIval').textContent=data.relacionSMI+'x';
-
-  const diff=data.diferencia,pct=data.porcentajeDiferencia;
-  const eliteMsg=document.getElementById('eliteMsg');eliteMsg.style.display='none';
-  const cd=document.getElementById('contrasteDiff'),ct=document.getElementById('contrasteText');
-
-  if(!data.precioActual||data.precioActual===0){
-    cd.textContent='Precio de referencia';cd.style.color='var(--text)';ct.textContent='Primera vez calculando este servicio. Guarda este número.';
-  }else if(diff>0){
-    cd.textContent='Cobras '+sim+Math.round(Math.abs(diff))+' menos de lo que deberías';cd.style.color='var(--orange)';
-    ct.textContent='Tu precio de '+sim+data.precioActual+' está un '+Math.abs(pct)+'% por debajo del precio justo.';
-  }else if(diff<0){
-    cd.textContent='Cobras '+sim+Math.round(Math.abs(diff))+' por encima';cd.style.color='var(--green)';
-    ct.textContent='Tu precio de '+sim+data.precioActual+' supera la referencia en un '+Math.abs(pct)+'%.';
-    eliteMsg.style.display='block';
-  }else{
-    cd.textContent='Precio exacto';cd.style.color='var(--green)';ct.textContent='Tu precio coincide exactamente con la referencia. Bien calibrado.';
-  }
-
-  const repNivel=document.getElementById('f_reputacion').value||'construyendo';
-  const RC={
-    construyendo:{pct:0,color:'#9CA3AF',bg:'rgba(60,60,60,.15)',border:'rgba(60,60,60,.3)',top:'#3a3a3a'},
-    activa:{pct:5,color:'#F87171',bg:'rgba(227,30,36,.08)',border:'rgba(227,30,36,.25)',top:'#E31E24'},
-    local:{pct:10,color:'#93C5FD',bg:'rgba(59,130,246,.08)',border:'rgba(59,130,246,.25)',top:'#3B82F6'},
-    nacional:{pct:15,color:'#C4B5FD',bg:'rgba(139,92,246,.08)',border:'rgba(139,92,246,.25)',top:'#8B5CF6'},
-    internacional:{pct:25,color:'#C9A84C',bg:'rgba(201,168,76,.07)',border:'rgba(201,168,76,.22)',top:'#C9A84C'},
-  };
-  const rc=RC[repNivel]||RC.construyendo;
-  const rpb=document.getElementById('repPotBlock');
-  if(rc.pct>0){
-    const pot=Math.round(data.precioTotal*(1+rc.pct/100));
-    const potFmt=pot>=1000?sim+pot.toLocaleString('es-ES'):sim+pot;
-    rpb.style.display='block';rpb.style.background=rc.bg;rpb.style.border='1px solid '+rc.border;
-    document.getElementById('repPotTopLine').style.background='linear-gradient(90deg,transparent,'+rc.top+',transparent)';
-    document.getElementById('repPotLabel').style.color=rc.color;
-    document.getElementById('repPotPrecio').style.color=rc.color;document.getElementById('repPotPrecio').textContent=potFmt;
-    const descMap={activa:'Tu comunidad en crecimiento justifica ir algo por encima del precio base.',local:'Tu agenda con lista de espera te da margen real para subir.',nacional:'Tu posicionamiento como referente nacional justifica ir claramente más allá del precio base.',internacional:'Has trabajado con artistas o perfiles públicos. Tu nombre vale por encima del mercado estándar.'};
-    document.getElementById('repPotDesc').style.color='rgba(255,255,255,.35)';
-    document.getElementById('repPotDesc').textContent=descMap[repNivel]||'';
-    document.getElementById('potBaseLabel').style.color='rgba(255,255,255,.2)';document.getElementById('potBaseLabel').textContent='Precio base · '+pf;
-    document.getElementById('potMaxLabel').style.color=rc.color;document.getElementById('potMaxLabel').textContent='Potencial · '+potFmt;
-    document.getElementById('potFillBar').style.background=rc.top;
-    document.getElementById('potFillBar').style.width=Math.round(20+(rc.pct/25)*70)+'%';
-    document.getElementById('potFillBar').style.boxShadow='0 0 8px '+rc.top+'66';
-  }else{rpb.style.display='none';}
-
-  const motivos=[
-    {t:'Primera consulta.',tx:'Este número es tuyo. No lo que cobra la competencia ni lo que dicta Instagram. Lo que vale tu hora real en tu ciudad y tu nivel.'},
-    {t:'Segunda consulta.',tx:'Ya tienes dos referencias. Hay servicios donde estás bien calibrado y servicios donde dejas dinero sobre la mesa.'},
-    {t:'Construyendo tu tarifa.',tx:'Cada consulta es un dato más. Con 5-10 servicios calculados tendrás una imagen completa de tu pricing.'},
-    {t:'Dato real.',tx:'La mayoría de profesionales nunca se paran a calcular esto. Tú ya llevas '+consultaNum+' servicios analizados.'},
-  ];
-  const m=motivos[Math.min(consultaNum-1,motivos.length-1)];
-  document.getElementById('motivacionCounter').textContent='Consulta #'+consultaNum;
-  document.getElementById('motivacionTitle').textContent=m.t;
-  document.getElementById('motivacionText').textContent=m.tx;
-}
-
-function siguienteConsulta(){
-  document.getElementById('resultSection').style.display='none';
-  document.getElementById('resultSection').classList.remove('visible');
-  document.getElementById('tfMainArea').style.display='flex';
-  document.getElementById('f_reputacion').value='';
-  document.querySelectorAll('#repOpts .tf-opt').forEach(o=>o.classList.remove('active'));
-  document.getElementById('f_horas').value='';
-  document.getElementById('f_materiales').value='';
-  document.getElementById('f_precioactual').value='';
-  document.getElementById('f_nombre').value='';
-  document.getElementById('eliteMsg').style.display='none';
-  document.querySelectorAll('#s7 .tf-opt').forEach(o=>o.classList.remove('active'));
-  go(7);
-}
-
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'){const map={1:()=>validarYAvanzar(1,2),2:()=>go(3)};if(map[cur])map[cur]();}
-});
 </script>
 </body>
 </html>
