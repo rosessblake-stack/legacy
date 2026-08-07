@@ -1,12 +1,12 @@
 // api/admin-session.js — Legacy Calculator
-// Genera un token de sesión temporal tras verificar el hash de la contraseña.
-// El ADMIN_TOKEN nunca sale del servidor — el frontend nunca lo ve.
+// Genera token de sesión temporal tras verificar hash de contraseña.
 
-const SESSIONS = new Map(); // token → expiry (en memoria, se resetea con cada deploy)
+import { randomBytes } from 'crypto'; // Node.js nativo — más seguro que crypto.getRandomValues
+
+const SESSIONS = new Map();
 
 export default async function handler(req, res) {
 
-  // CORS restringido al dominio propio
   const origin = req.headers.origin || '';
   const allowed = ['https://legacy-rosy-rho.vercel.app', 'https://legacy-calculator.com'];
   if(origin && !allowed.includes(origin) && !origin.includes('localhost')){
@@ -19,22 +19,24 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido.' });
 
   const { hash } = req.body || {};
-  if (!hash) return res.status(400).json({ error: 'Hash requerido.' });
+  if (!hash || typeof hash !== 'string') {
+    return res.status(400).json({ error: 'Hash requerido.' });
+  }
 
   const ADMIN_HASH = process.env.ADMIN_PWD_HASH;
-  if (!ADMIN_HASH) return res.status(500).json({ error: 'Configuración incompleta.' });
+  if (!ADMIN_HASH) {
+    console.error('[admin-session] ADMIN_PWD_HASH no configurada en Vercel');
+    return res.status(500).json({ error: 'Configuración incompleta en el servidor.' });
+  }
 
-  // Verificar hash
-  if (hash !== ADMIN_HASH) {
+  if (hash.toLowerCase() !== ADMIN_HASH.toLowerCase()) {
     return res.status(401).json({ error: 'Contraseña incorrecta.' });
   }
 
-  // Generar token de sesión aleatorio (32 bytes hex)
-  const token = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-    .map(b => b.toString(16).padStart(2,'0')).join('');
+  // Token: 64 chars hex usando crypto de Node.js
+  const token = randomBytes(32).toString('hex');
 
-  // Guardar con expiración de 8 horas
-  const expiry = Date.now() + 8 * 60 * 60 * 1000;
+  const expiry = Date.now() + 8 * 60 * 60 * 1000; // 8 horas
   SESSIONS.set(token, expiry);
 
   // Limpiar tokens expirados
@@ -45,7 +47,6 @@ export default async function handler(req, res) {
   return res.status(200).json({ token });
 }
 
-// Exportar validador para usar en admin-data.js
 export function validateSession(token) {
   if(!token) return false;
   const expiry = SESSIONS.get(token);

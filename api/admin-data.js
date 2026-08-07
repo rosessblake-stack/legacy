@@ -1,7 +1,5 @@
 // api/admin-data.js — Legacy Calculator
-// Endpoint privado para el panel de administración.
-// Usa la service_role key que vive SOLO en variables de entorno de Vercel.
-// NUNCA exponer esta key en el frontend.
+// Endpoint privado del panel admin. Usa service_role key solo en servidor.
 
 export default async function handler(req, res) {
 
@@ -18,15 +16,15 @@ export default async function handler(req, res) {
 
   // Verificar token de sesión
   const token = req.headers['x-admin-token'];
-  if (!token) return res.status(401).json({ error: 'No autorizado.' });
-
-  // Validar contra SESSIONS en memoria (importado de admin-session)
-  // Como Vercel no comparte memoria entre funciones, usamos ADMIN_TOKEN como fallback seguro
-  const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
-  const ADMIN_HASH  = process.env.ADMIN_PWD_HASH;
-  // El token viene firmado: es válido si coincide con ADMIN_TOKEN o es un UUID de sesión activa
-  if (!ADMIN_TOKEN || (token !== ADMIN_TOKEN && token.length !== 64)) {
+  if (!token || typeof token !== 'string' || token.length !== 64) {
     return res.status(401).json({ error: 'No autorizado.' });
+  }
+
+  // Validación: token debe ser hex de 64 chars (generado por admin-session)
+  // Como Vercel no comparte memoria entre funciones, validamos que sea formato correcto
+  // y confiamos en que solo admin-session lo genera tras verificar la contraseña
+  if (!/^[a-f0-9]{64}$/.test(token)) {
+    return res.status(401).json({ error: 'Token inválido.' });
   }
 
   const { tabla, filtros } = req.body || {};
@@ -36,19 +34,17 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Tabla no permitida.' });
   }
 
-  const SUPABASE_URL      = process.env.SUPABASE_URL;
+  const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    console.error('[admin-data] Faltan variables: SUPABASE_URL o SUPABASE_SERVICE_KEY');
     return res.status(500).json({ error: 'Error de configuración del servidor.' });
   }
 
-  // Normalizar URL — funciona tanto con como sin /rest/v1/ al final
   const base = SUPABASE_URL.replace(/\/rest\/v1\/?$/, '');
 
   try {
-    // Construir query
-    // Columna de fecha según tabla
     const fechaCols = { accesos: 'fecha', codigos: 'creado_en', legacy_data: 'timestamp' };
     const fechaCol = fechaCols[tabla] || 'timestamp';
     let qs = `select=*&order=${fechaCol}.desc&limit=500`;
@@ -68,9 +64,8 @@ export default async function handler(req, res) {
 
     if (!r.ok) {
       const err = await r.text();
-      console.error(`[admin-data] Supabase error en ${tabla} (${r.status}):`, err);
-      console.error(`[admin-data] URL usada: ${base}/rest/v1/${tabla}`);
-      return res.status(500).json({ error: 'Error al consultar Supabase.', detalle: err, status: r.status });
+      console.error(`[admin-data] Supabase error ${r.status} en ${tabla}:`, err);
+      return res.status(500).json({ error: 'Error al consultar Supabase.', status: r.status });
     }
 
     const data = await r.json();

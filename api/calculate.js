@@ -1,3 +1,4 @@
+
 // Rate limiting simple en memoria
 const RATE_MAP = new Map();
 function rateLimit(ip, max=30, windowMs=60000){
