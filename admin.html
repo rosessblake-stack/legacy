@@ -118,6 +118,66 @@ body{height:100vh;background:#050505;font-family:'Inter',sans-serif;color:var(--
 
 /* Row items overview */
 .row-item{background:var(--g);border:1px solid var(--gb2);border-radius:9px;padding:10px 13px;display:flex;align-items:center;gap:11px;margin-bottom:7px;}
+
+/* ── CONSULTAS: filas expandibles ── */
+.c-row-wrap{border-bottom:1px solid rgba(255,255,255,.03);}
+.c-row-wrap:last-child{border-bottom:none;}
+.c-row-main{display:flex;align-items:center;padding:9px 14px;cursor:pointer;transition:background .15s;gap:0;}
+.c-row-main:hover,.c-row-main.open{background:rgba(255,255,255,.03);}
+.c-col-email{flex:2;min-width:0;}
+.c-col-servicio{flex:2;min-width:0;}
+.c-col-pais{flex:1;min-width:0;}
+.c-col-precio{flex:1.2;min-width:0;text-align:right;}
+.c-col-nivel{flex:.8;min-width:0;text-align:center;}
+.c-col-fecha{flex:1;min-width:0;text-align:right;}
+.c-col-arrow{width:26px;flex-shrink:0;text-align:center;}
+.c-cell-p{font-size:11px;font-weight:600;color:var(--w);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.c-cell-s{font-size:9px;color:var(--s);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.c-arrow{font-size:9px;color:var(--s);transition:transform .2s;display:inline-block;}
+.c-arrow.open{transform:rotate(90deg);color:var(--gold);}
+
+.c-detail{display:none;padding:0 14px 14px;border-top:1px solid rgba(255,255,255,.04);animation:fi .18s ease;}
+.c-detail.open{display:block;}
+
+.c-precio-hero{display:flex;align-items:stretch;gap:8px;margin:12px 0 8px;}
+.c-precio-central{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:12px;text-align:center;}
+.c-precio-lbl{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);margin-bottom:5px;}
+.c-precio-num{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;color:var(--w);line-height:1;}
+.c-precio-rango{font-size:9px;color:var(--s);margin-top:4px;}
+.c-precio-rango strong{color:var(--t);}
+.c-smi-box{width:80px;flex-shrink:0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;}
+.c-smi-num{font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--w);}
+.c-smi-lbl{font-size:8px;color:var(--s);margin-top:2px;text-align:center;}
+.c-diff-box{flex:1;border-radius:9px;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;}
+.c-diff-box.below{background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.25);}
+.c-diff-box.above{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);}
+.c-diff-lbl{font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;}
+.c-diff-box.below .c-diff-lbl{color:#F97316;}
+.c-diff-box.above .c-diff-lbl{color:var(--green);}
+.c-diff-num{font-family:'Clash Display',sans-serif;font-size:18px;font-weight:700;line-height:1;margin-bottom:2px;}
+.c-diff-box.below .c-diff-num{color:#F97316;}
+.c-diff-box.above .c-diff-num{color:var(--green);}
+.c-diff-sub{font-size:9px;color:var(--s);}
+
+.c-pot{background:var(--pd);border:1px solid var(--pb);border-radius:8px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.c-pot-lbl{font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);}
+.c-pot-sub{font-size:9px;color:rgba(139,92,246,.5);margin-top:1px;}
+.c-pot-num{font-family:'Clash Display',sans-serif;font-size:16px;font-weight:700;color:var(--purple);}
+
+.c-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.c-block{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;}
+.c-block-lbl{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.c-block-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;}
+.c-brow{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.03);}
+.c-brow:last-child{border-bottom:none;}
+.c-bkey{font-size:9px;color:var(--s);}
+.c-bval{font-size:9px;font-weight:600;color:var(--t);text-align:right;}
+.c-bval.hl{color:var(--w);font-size:12px;font-family:'Clash Display',sans-serif;font-weight:700;}
+.c-bval.red{color:var(--red);}
+.c-bval.green{color:var(--green);}
+.c-bval.orange{color:#F97316;}
+.c-bval.gold{color:var(--gold);}
+.c-bval.purple{color:var(--purple);}
 </style>
 </head>
 <body>
@@ -242,7 +302,7 @@ body{height:100vh;background:#050505;font-family:'Inter',sans-serif;color:var(--
       <div style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Modo Admin · Calcular</div>
       <div style="font-family:'Clash Display',sans-serif;font-size:24px;font-weight:700;color:var(--w);margin-bottom:8px;">Calcular un precio</div>
       <div style="font-size:13px;color:var(--s);margin-bottom:28px;line-height:1.7;">Accedes con plan Élite. El resultado es idéntico al que vería un usuario de pago.</div>
-      <a href="/" style="display:block;width:100%;padding:14px;backdrop-filter:blur(20px);background:rgba(227,30,36,.85);border:1px solid rgba(255,100,100,.2);border-radius:10px;color:#fff;font-family:'Clash Display',sans-serif;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 6px 20px rgba(227,30,36,.2);">Ir a la calculadora →</a>
+      <a href="/index.html" target="_blank" style="display:block;width:100%;padding:14px;backdrop-filter:blur(20px);background:rgba(227,30,36,.85);border:1px solid rgba(255,100,100,.2);border-radius:10px;color:#fff;font-family:'Clash Display',sans-serif;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 6px 20px rgba(227,30,36,.2);">Ir a la calculadora →</a>
       <div style="margin-top:12px;font-size:11px;color:var(--m)">Se abre en la página principal. Vuelve aquí con el botón atrás.</div>
     </div>
   </div>
@@ -520,21 +580,175 @@ async function loadConsultas(){
   try{
     var data=await supa('legacy_data');
     if(!data.length){document.getElementById('tablaConsultas').innerHTML='<div class="loading">Sin consultas todavía.</div>';return;}
-    document.getElementById('tablaConsultas').innerHTML=`
-      <div style="overflow-x:auto">
-      <table class="tbl">
-        <thead><tr><th>Email</th><th>Servicio</th><th>País</th><th>Precio calculado</th><th>Nivel</th><th>Horas</th><th>Fecha</th></tr></thead>
-        <tbody>${data.map(r=>`<tr>
-          <td style="color:var(--w);font-weight:600">${r.email||'—'}</td>
-          <td>${r.nombre_servicio||r.tipo_trenzado||'—'}</td>
-          <td>${r.pais||'—'}</td>
-          <td style="font-weight:700;color:var(--w)">${r.precio_calculado?Math.round(r.precio_calculado):'—'}</td>
-          <td><span class="badge ${r.nivel==='elite'?'b-elite':'b-inv'}">${r.nivel||'—'}</span></td>
-          <td>${r.horas||'—'}</td>
-          <td style="font-size:10px;color:var(--s)">${fmtDate(getDate(r))}</td>
-        </tr>`).join('')}</tbody>
-      </table></div>`;
+
+    // Cabecera de columnas
+    var header=`<div style="display:flex;align-items:center;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.06);">
+      <div class="c-col-email" style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);">Email</div>
+      <div class="c-col-servicio" style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);">Servicio</div>
+      <div class="c-col-pais" style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);">País</div>
+      <div class="c-col-precio" style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);text-align:right;">Precio calc.</div>
+      <div class="c-col-nivel" style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);text-align:center;">Nivel</div>
+      <div class="c-col-fecha" style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);text-align:right;">Fecha</div>
+      <div class="c-col-arrow"></div>
+    </div>`;
+
+    var rows=data.map(function(r,i){
+      var id='cq'+i;
+      var pc=r.precio_calculado?Math.round(r.precio_calculado):null;
+      var pa=r.precio_actual?Math.round(r.precio_actual):null;
+      var diff=pc&&pa?Math.round(pc-pa):null;
+      var isBelow=diff!==null&&diff>0;
+      var isAbove=diff!==null&&diff<0;
+      var sim=r.pais&&['españa','spain','es'].includes((r.pais||'').toLowerCase())?'€':r.pais&&['argentina','ar'].includes((r.pais||'').toLowerCase())?'ARS':r.pais&&['colombia','co'].includes((r.pais||'').toLowerCase())?'COP':r.pais&&['mexico','méxico','mx'].includes((r.pais||'').toLowerCase())?'MXN':r.pais&&['usa','united states','us','estados unidos'].includes((r.pais||'').toLowerCase())?'$':'';
+      var fmtP=function(v){return v?(sim==='€'?v+'€':sim==='$'?'$'+v:v+' '+sim):null;};
+      var rMin=pc?Math.round(pc*0.9):null;
+      var rMax=pc?Math.round(pc*1.1):null;
+      var smiRel=r.relacion_smi?parseFloat(r.relacion_smi).toFixed(1)+'×':null;
+      var modRep={'construyendo':0,'activo':0.05,'local':0.10,'nacional':0.15,'internacional':0.25};
+      var repKey=(r.reputacion||'').toLowerCase();
+      var pot=pc&&modRep[repKey]!==undefined?Math.round(pc*(1+modRep[repKey])):null;
+      var repLabel={'construyendo':'Construyendo','activo':'Presencia activa','local':'Referente local','nacional':'Referente nacional','internacional':'Referente internacional'}[repKey]||r.reputacion||null;
+
+      var diffLabel=isBelow?'Cobra por debajo':isAbove?'Cobra por encima':null;
+      var diffNum=diff!==null?(isBelow?'+'+fmtP(Math.abs(diff)):fmtP(Math.abs(diff))):null;
+      var diffPct=pc&&pa?Math.round(Math.abs(diff)/pc*100):null;
+      var diffSub=pa?'Cobraba '+fmtP(pa)+(diffPct?' · '+(isBelow?diffPct+'% menos':diffPct+'% más'):''):'';
+
+      // Detalles del servicio
+      var tipoServ='—';
+      if(r.tipo_trenzado==='pegadas'){
+        tipoServ=(r.tipo_pegadas||'Pegadas');
+        if(r.complejidad_pegadas)tipoServ+=' · '+(r.complejidad_pegadas==='basico'?'Básico':'Con diseño');
+        if(r.extensiones_pegadas)tipoServ+=' · '+(r.extensiones_pegadas==='feedin'?'Feed-in':r.extensiones_pegadas==='con'?'Con ext.':'Sin ext.');
+      }else if(r.tipo_trenzado==='sueltas'){
+        tipoServ=(r.tamano_sueltas?r.tamano_sueltas.charAt(0).toUpperCase()+r.tamano_sueltas.slice(1):'')+' '+(r.tipo_sueltas||'');
+        if(r.boho_sueltas==='si'||r.boho_sueltas===true)tipoServ+=' · Boho';
+      }else if(r.tipo_trenzado==='fulani'){
+        tipoServ='Fulani';
+      }
+
+      var flagMap={'españa':'🇪🇸','spain':'🇪🇸','argentina':'🇦🇷','colombia':'🇨🇴','mexico':'🇲🇽','méxico':'🇲🇽','usa':'🇺🇸','estados unidos':'🇺🇸','dominicana':'🇩🇴','república dominicana':'🇩🇴','chile':'🇨🇱','perú':'🇵🇪','peru':'🇵🇪','uk':'🇬🇧','nigeria':'🇳🇬','italia':'🇮🇹','france':'🇫🇷','alemania':'🇩🇪'};
+      var flag=flagMap[(r.pais||'').toLowerCase()]||'';
+
+      return `<div class="c-row-wrap">
+        <div class="c-row-main" id="main-${id}" onclick="toggleCQ('${id}')">
+          <div class="c-col-email">
+            <div class="c-cell-p">${r.email||'—'}</div>
+            <div class="c-cell-s">${r.instagram?'@'+r.instagram.replace('@',''):''}</div>
+          </div>
+          <div class="c-col-servicio">
+            <div class="c-cell-p">${r.nombre_servicio||tipoServ||'—'}</div>
+            <div class="c-cell-s">${r.tipo_trenzado?r.tipo_trenzado.charAt(0).toUpperCase()+r.tipo_trenzado.slice(1):''}${r.horas?' · '+r.horas+'h':''}</div>
+          </div>
+          <div class="c-col-pais">
+            <div class="c-cell-p">${flag} ${r.pais||'—'}</div>
+            <div class="c-cell-s">${r.ciudad||''}</div>
+          </div>
+          <div class="c-col-precio">
+            <div class="c-cell-p" style="text-align:right">${fmtP(pc)||'—'}</div>
+            <div class="c-cell-s" style="text-align:right;color:${isBelow?'#F97316':isAbove?'#22C55E':'var(--s)'}">${isBelow?'↓ por debajo':isAbove?'↑ por encima':pa?'Cobra '+fmtP(pa):''}</div>
+          </div>
+          <div class="c-col-nivel" style="text-align:center">
+            <span class="badge ${r.nivel==='elite'?'b-elite':'b-inv'}">${r.nivel||'—'}</span>
+          </div>
+          <div class="c-col-fecha" style="text-align:right">
+            <div class="c-cell-p">${fmtDate(getDate(r))}</div>
+          </div>
+          <div class="c-col-arrow"><span class="c-arrow" id="arrow-${id}">▶</span></div>
+        </div>
+
+        <div class="c-detail" id="detail-${id}">
+          <div class="c-precio-hero">
+            <div class="c-precio-central">
+              <div class="c-precio-lbl">Precio justo calculado</div>
+              <div class="c-precio-num">${fmtP(pc)||'—'}</div>
+              ${rMin&&rMax?`<div class="c-precio-rango">Rango: <strong>${fmtP(rMin)} – ${fmtP(rMax)}</strong></div>`:''}
+            </div>
+            ${smiRel?`<div class="c-smi-box"><div class="c-smi-num">${smiRel}</div><div class="c-smi-lbl">el SMI/hora</div></div>`:''}
+            ${diffLabel?`<div class="c-diff-box ${isBelow?'below':'above'}">
+              <div class="c-diff-lbl">${diffLabel}</div>
+              <div class="c-diff-num">${isBelow?'+':'-'}${fmtP(Math.abs(diff))}</div>
+              <div class="c-diff-sub">${diffSub}</div>
+            </div>`:''}
+          </div>
+
+          ${pot&&repLabel?`<div class="c-pot">
+            <div><div class="c-pot-lbl">Precio potencial · ${repLabel}</div><div class="c-pot-sub">Con su nivel de reputación puede aspirar a:</div></div>
+            <div class="c-pot-num">${fmtP(pot)}</div>
+          </div>`:''}
+
+          <div class="c-grid">
+            <div class="c-block">
+              <div class="c-block-lbl"><div class="c-block-dot" style="background:var(--purple)"></div>Ubicación</div>
+              <div class="c-brow"><span class="c-bkey">País</span><span class="c-bval">${flag} ${r.pais||'—'}</span></div>
+              ${r.provincia?`<div class="c-brow"><span class="c-bkey">Provincia</span><span class="c-bval">${r.provincia}</span></div>`:''}
+              ${r.ciudad?`<div class="c-brow"><span class="c-bkey">Ciudad</span><span class="c-bval">${r.ciudad}</span></div>`:''}
+              <div class="c-brow"><span class="c-bkey">Zona</span><span class="c-bval">${r.zona||'—'}</span></div>
+              ${r.smi?`<div class="c-brow"><span class="c-bkey">SME/SMI usado</span><span class="c-bval">${r.smi}</span></div>`:''}
+            </div>
+            <div class="c-block">
+              <div class="c-block-lbl"><div class="c-block-dot" style="background:var(--gold)"></div>Perfil profesional</div>
+              <div class="c-brow"><span class="c-bkey">Nivel</span><span class="c-bval"><span class="badge ${r.nivel==='elite'?'b-elite':'b-inv'}">${r.nivel||'—'} ${r.nivel==='elite'?'×3.5':r.nivel==='profesional'?'×3.0':r.nivel==='avanzado'?'×2.5':r.nivel==='intermedio'?'×2.0':'×1.5'}</span></span></div>
+              <div class="c-brow"><span class="c-bkey">Estructura</span><span class="c-bval">${r.estructura==='salon'?'En salón':'En casa'}</span></div>
+              ${repLabel?`<div class="c-brow"><span class="c-bkey">Reputación</span><span class="c-bval purple">${repLabel}</span></div>`:''}
+              ${r.instagram?`<div class="c-brow"><span class="c-bkey">Instagram</span><span class="c-bval">@${r.instagram.replace('@','')}</span></div>`:''}
+              <div class="c-brow"><span class="c-bkey">Email</span><span class="c-bval">${r.email||'—'}</span></div>
+            </div>
+            <div class="c-block">
+              <div class="c-block-lbl"><div class="c-block-dot" style="background:var(--red)"></div>Servicio</div>
+              <div class="c-brow"><span class="c-bkey">Tipo</span><span class="c-bval">${r.tipo_trenzado||'—'}</span></div>
+              ${r.tipo_pegadas?`<div class="c-brow"><span class="c-bkey">Subtipo</span><span class="c-bval">${r.tipo_pegadas}</span></div>`:''}
+              ${r.tamano_sueltas?`<div class="c-brow"><span class="c-bkey">Tamaño</span><span class="c-bval">${r.tamano_sueltas}</span></div>`:''}
+              ${r.complejidad_pegadas?`<div class="c-brow"><span class="c-bkey">Complejidad</span><span class="c-bval">${r.complejidad_pegadas}</span></div>`:''}
+              ${r.extensiones_pegadas?`<div class="c-brow"><span class="c-bkey">Extensiones</span><span class="c-bval ${r.extensiones_pegadas==='feedin'?'red':''}">${r.extensiones_pegadas==='feedin'?'Feed-in ×1.65':r.extensiones_pegadas==='con'?'Con ext. ×1.08':'Sin ext.'}</span></div>`:''}
+              ${r.boho_sueltas==='si'||r.boho_sueltas===true?`<div class="c-brow"><span class="c-bkey">Boho</span><span class="c-bval red">Con Boho</span></div>`:''}
+              ${r.largo_cabello?`<div class="c-brow"><span class="c-bkey">Largo cabello</span><span class="c-bval">${r.largo_cabello}</span></div>`:''}
+              ${r.largo_extensiones?`<div class="c-brow"><span class="c-bkey">Largo ext.</span><span class="c-bval">${r.largo_extensiones}</span></div>`:''}
+              ${r.nombre_servicio?`<div class="c-brow"><span class="c-bkey">Nombre</span><span class="c-bval">${r.nombre_servicio}</span></div>`:''}
+            </div>
+            <div class="c-block">
+              <div class="c-block-lbl"><div class="c-block-dot" style="background:var(--green)"></div>Tiempo y materiales</div>
+              <div class="c-brow"><span class="c-bkey">Horas</span><span class="c-bval">${r.horas||'—'}h</span></div>
+              <div class="c-brow"><span class="c-bkey">Materiales</span><span class="c-bval">${fmtP(r.materiales)||'—'}</span></div>
+              <div class="c-brow"><span class="c-bkey">Cobraba antes</span><span class="c-bval ${isBelow?'orange':isAbove?'green':''}">${fmtP(pa)||'—'}</span></div>
+              ${r.tarifa_hora?`<div class="c-brow"><span class="c-bkey">Tarifa/hora</span><span class="c-bval">${fmtP(Math.round(r.tarifa_hora))}</span></div>`:''}
+            </div>
+            <div class="c-block">
+              <div class="c-block-lbl"><div class="c-block-dot" style="background:var(--gold)"></div>Desglose del cálculo</div>
+              ${r.valor_conocimiento?`<div class="c-brow"><span class="c-bkey">Valor conocimiento</span><span class="c-bval gold">${fmtP(Math.round(r.valor_conocimiento))}</span></div>`:''}
+              ${r.coste_tiempo?`<div class="c-brow"><span class="c-bkey">Coste de tiempo</span><span class="c-bval">${fmtP(Math.round(r.coste_tiempo))}</span></div>`:''}
+              ${r.materiales?`<div class="c-brow"><span class="c-bkey">Materiales</span><span class="c-bval">${fmtP(Math.round(r.materiales))}</span></div>`:''}
+              <div class="c-brow"><span class="c-bkey">Precio calculado</span><span class="c-bval hl">${fmtP(pc)||'—'}</span></div>
+              ${smiRel?`<div class="c-brow"><span class="c-bkey">Relación SMI</span><span class="c-bval">${smiRel}</span></div>`:''}
+            </div>
+            <div class="c-block">
+              <div class="c-block-lbl"><div class="c-block-dot" style="background:${isBelow?'#F97316':'#22C55E'}"></div>Diagnóstico Legacy</div>
+              ${diffLabel?`<div class="c-brow"><span class="c-bkey">Posición</span><span class="c-bval ${isBelow?'orange':'green'}">${diffLabel}</span></div>`:''}
+              ${diff!==null?`<div class="c-brow"><span class="c-bkey">Diferencia</span><span class="c-bval ${isBelow?'orange':'green'}">${isBelow?'+':'-'}${fmtP(Math.abs(diff))}</span></div>`:''}
+              ${diffPct?`<div class="c-brow"><span class="c-bkey">% diferencia</span><span class="c-bval ${isBelow?'orange':'green'}">${isBelow?'+':'−'}${diffPct}%</span></div>`:''}
+              ${rMin?`<div class="c-brow"><span class="c-bkey">Rango mínimo</span><span class="c-bval">${fmtP(rMin)}</span></div>`:''}
+              ${rMax?`<div class="c-brow"><span class="c-bkey">Rango máximo</span><span class="c-bval">${fmtP(rMax)}</span></div>`:''}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    document.getElementById('tablaConsultas').innerHTML=header+rows;
   }catch(e){document.getElementById('tablaConsultas').innerHTML='<div class="err-box">Error al cargar consultas.</div>';}
+}
+
+function toggleCQ(id){
+  var detail=document.getElementById('detail-'+id);
+  var arrow=document.getElementById('arrow-'+id);
+  var main=document.getElementById('main-'+id);
+  var isOpen=detail.classList.contains('open');
+  // Cerrar todos
+  document.querySelectorAll('.c-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.c-arrow').forEach(a=>a.classList.remove('open'));
+  document.querySelectorAll('.c-row-main').forEach(m=>m.classList.remove('open'));
+  // Abrir el clicado si estaba cerrado
+  if(!isOpen){detail.classList.add('open');arrow.classList.add('open');main.classList.add('open');}
 }
 </script>
 </body>
