@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<meta name="robots" content="noindex,nofollow">
+<title>Legacy · Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E31E24;--rd:rgba(227,30,36,.1);--rb:rgba(227,30,36,.25);
+  --gold:#C9A84C;--gd:rgba(201,168,76,.08);--gb:rgba(201,168,76,.25);
+  --purple:#8B5CF6;--pd:rgba(139,92,246,.08);--pb:rgba(139,92,246,.25);
+  --green:#22C55E;--gnd:rgba(34,197,94,.08);--gnb:rgba(34,197,94,.25);
+  --w:#fff;--t:rgba(255,255,255,.82);--s:rgba(255,255,255,.38);--m:rgba(255,255,255,.15);
+  --g:rgba(255,255,255,.04);--gb2:rgba(255,255,255,.08);--gs:rgba(255,255,255,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{overflow:hidden;}
+body{height:100vh;background:#050505;font-family:'Inter',sans-serif;color:var(--t);overflow-y:auto;}
+
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:#050505;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.1;}
+.b1{width:500px;height:500px;background:var(--red);top:-150px;left:-150px;animation:d1 14s ease-in-out infinite alternate;}
+.b2{width:400px;height:400px;background:var(--gold);bottom:-120px;right:-120px;animation:d2 18s ease-in-out infinite alternate;}
+@keyframes d1{to{transform:translate(30px,20px) scale(1.1);}}
+@keyframes d2{to{transform:translate(-20px,30px) scale(1.08);}}
+
+/* LOGIN */
+#loginScreen{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.login-wrap{width:100%;max-width:340px;}
+.logo-row{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center;}
+.logo-mark{width:32px;height:32px;background:var(--red);border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(227,30,36,.3);}
+.logo-text{font-family:'Clash Display',sans-serif;font-size:18px;font-weight:700;color:var(--w);}
+.admin-badge{display:inline-flex;align-items:center;gap:5px;background:var(--gd);border:1px solid var(--gb);border-radius:16px;padding:4px 12px;font-size:9px;font-weight:700;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px;}
+.login-title{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;color:var(--w);text-align:center;margin-bottom:6px;letter-spacing:-.02em;}
+.login-sub{font-size:13px;color:var(--s);text-align:center;margin-bottom:28px;line-height:1.6;}
+.inp{width:100%;background:var(--g);border:1px solid var(--gb2);border-radius:10px;padding:13px 16px;color:var(--w);font-family:'Inter',sans-serif;font-size:14px;outline:none;margin-bottom:8px;transition:border-color .2s;box-shadow:0 1px 0 var(--gs) inset;}
+.inp:focus{border-color:rgba(227,30,36,.4);}
+.inp::placeholder{color:var(--m);}
+.btn{width:100%;padding:14px;backdrop-filter:blur(20px);background:linear-gradient(135deg,rgba(201,168,76,.8),rgba(232,201,106,.8));border:1px solid rgba(201,168,76,.3);border-radius:10px;color:#0a0805;font-family:'Clash Display',sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 1px 0 rgba(255,240,180,.15) inset,0 6px 20px rgba(201,168,76,.15);transition:all .18s;margin-bottom:8px;}
+.btn:hover{box-shadow:0 1px 0 rgba(255,240,180,.15) inset,0 10px 28px rgba(201,168,76,.25);}
+.err{background:rgba(227,30,36,.08);border:1px solid rgba(227,30,36,.2);border-radius:8px;padding:10px 14px;font-size:11px;color:#F87171;margin-bottom:10px;display:none;text-align:center;}
+
+/* ADMIN PANEL */
+#adminPanel{display:none;position:relative;z-index:1;min-height:100vh;flex-direction:column;}
+#adminPanel.on{display:flex;}
+
+.app-header{padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(30px);background:rgba(5,5,5,.75);border-bottom:1px solid var(--gb2);}
+.app-logo{display:flex;align-items:center;gap:8px;}
+.app-mark{width:24px;height:24px;background:var(--red);border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(227,30,36,.3);}
+.app-name{font-family:'Clash Display',sans-serif;font-size:14px;font-weight:700;color:var(--w);}
+.admin-tag{font-size:9px;font-weight:700;padding:2px 8px;background:var(--gd);border:1px solid var(--gb);border-radius:8px;color:var(--gold);margin-left:6px;letter-spacing:.06em;}
+
+.tab-bar{display:flex;gap:4px;background:var(--g);border:1px solid var(--gb2);border-radius:10px;padding:3px;}
+.tab-btn{padding:6px 18px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--s);transition:all .15s;}
+.tab-btn.on{background:rgba(255,255,255,.08);color:var(--w);}
+.tab-btn.gold.on{background:var(--gd);border:1px solid var(--gb);color:var(--gold);}
+
+/* LAYOUT */
+.dash-layout{display:flex;height:calc(100vh - 49px);overflow:hidden;}
+.sidebar{width:200px;flex-shrink:0;background:rgba(5,5,5,.75);border-right:1px solid var(--gb2);display:flex;flex-direction:column;overflow-y:auto;backdrop-filter:blur(20px);}
+.sb-user{padding:12px 14px;border-bottom:1px solid var(--gb2);display:flex;align-items:center;gap:9px;}
+.sb-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--gold));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;}
+.sb-name{font-size:11px;font-weight:700;color:var(--w);}
+.sb-role{font-size:9px;font-weight:600;color:var(--gold);}
+.sb-sec{padding:9px 12px 3px;font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.15);}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 10px;margin:1px 5px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;}
+.sb-item:hover{background:var(--g);}
+.sb-item.on{background:var(--g);border-color:var(--gb2);}
+.sb-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.sb-lbl{font-size:11px;font-weight:600;color:var(--s);}
+.sb-item.on .sb-lbl,.sb-item:hover .sb-lbl{color:var(--t);}
+.sb-logout{margin:auto 8px 12px;padding:8px 10px;background:var(--g);border:1px solid var(--gb2);border-radius:8px;cursor:pointer;font-size:11px;color:var(--s);text-align:center;transition:all .15s;}
+.sb-logout:hover{color:var(--red);border-color:var(--rb);}
+
+.main{flex:1;overflow-y:auto;padding:20px;}
+.screen{display:none;}
+.screen.on{display:block;animation:fi .2s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARDS */
+.card{backdrop-filter:blur(20px);background:var(--g);border:1px solid var(--gb2);border-radius:12px;overflow:hidden;margin-bottom:12px;}
+.ch{padding:12px 16px;border-bottom:1px solid var(--gb2);display:flex;align-items:center;justify-content:space-between;}
+.ct{font-size:12px;font-weight:700;color:var(--w);}
+.cb{padding:14px 16px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+
+.stat{background:var(--g);border:1px solid var(--gb2);border-radius:10px;padding:14px;position:relative;overflow:hidden;}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.sr::before{background:linear-gradient(90deg,transparent,var(--red),transparent);}
+.sp::before{background:linear-gradient(90deg,transparent,var(--purple),transparent);}
+.sgn::before{background:linear-gradient(90deg,transparent,var(--green),transparent);}
+.sgo::before{background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.sn{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;color:var(--w);line-height:1;margin-bottom:3px;}
+.sl{font-size:10px;color:var(--s);}
+
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{text-align:left;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--s);padding:7px 12px;border-bottom:1px solid var(--gb2);}
+.tbl td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;color:var(--t);}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(255,255,255,.02);}
+
+.badge{padding:2px 7px;border-radius:7px;font-size:9px;font-weight:700;letter-spacing:.04em;}
+.b-elite{background:var(--rd);border:1px solid var(--rb);color:var(--red);}
+.b-inv{background:var(--pd);border:1px solid var(--pb);color:var(--purple);}
+.b-esp{background:var(--g);border:1px solid var(--gb2);color:var(--s);}
+.b-admin{background:var(--gd);border:1px solid var(--gb);color:var(--gold);}
+.b-on{background:var(--gnd);border:1px solid var(--gnb);color:var(--green);}
+.b-off{background:var(--g);border:1px solid var(--gb2);color:var(--s);}
+
+.loading{text-align:center;padding:28px;font-size:12px;color:var(--s);}
+.err-box{background:var(--rd);border:1px solid var(--rb);border-radius:8px;padding:10px 14px;font-size:11px;color:#F87171;margin:8px 0;}
+.refresh-btn{font-size:9px;color:var(--s);background:var(--g);border:1px solid var(--gb2);border-radius:6px;padding:3px 9px;cursor:pointer;transition:all .15s;}
+.refresh-btn:hover{color:var(--t);}
+
+/* Row items overview */
+.row-item{background:var(--g);border:1px solid var(--gb2);border-radius:9px;padding:10px 13px;display:flex;align-items:center;gap:11px;margin-bottom:7px;}
+</style>
+</head>
+<body>
+<div class="bg"><div class="blob b1"></div><div class="blob b2"></div></div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-wrap">
+    <div class="logo-row">
+      <div class="logo-mark"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12L7 2L12 12" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 9H10.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <span class="logo-text">Legacy</span>
+    </div>
+    <div style="text-align:center;margin-bottom:20px"><div class="admin-badge">⚡ Panel de Administración</div></div>
+    <div class="login-title">Acceso restringido</div>
+    <div class="login-sub">Solo para Blake. Introduce la contraseña para continuar.</div>
+    <div class="err" id="loginErr">Contraseña incorrecta.</div>
+    <input class="inp" type="password" id="pwdInput" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn" onclick="doLogin()">Entrar al panel →</button>
+    <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--m)">Esta URL no es pública. No la compartas.</div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+  <div class="app-header">
+    <div class="app-logo">
+      <div class="app-mark"><svg width="10" height="10" viewBox="0 0 14 14" fill="none"><path d="M2 12L7 2L12 12" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 9H10.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <span class="app-name">Legacy</span>
+      <span class="admin-tag">ADMIN</span>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn on" id="tabDash" onclick="setTab('dash')">⚡ Dashboard</button>
+      <button class="tab-btn gold" id="tabCalc" onclick="setTab('calc')">🧮 Calculadora</button>
+    </div>
+    <div style="font-size:11px;color:var(--s);">Blake · Admin</div>
+  </div>
+
+  <!-- DASHBOARD TAB -->
+  <div id="tabDashContent">
+    <div class="dash-layout">
+      <div class="sidebar">
+        <div class="sb-user">
+          <div class="sb-av">B</div>
+          <div><div class="sb-name">Blake</div><div class="sb-role">Administrador</div></div>
+        </div>
+        <div class="sb-sec">Dashboard</div>
+        <div class="sb-item on" onclick="showScreen('s-overview')"><div class="sb-dot" style="background:var(--red)"></div><span class="sb-lbl">Visión general</span></div>
+        <div class="sb-item" onclick="showScreen('s-accesos')"><div class="sb-dot" style="background:var(--purple)"></div><span class="sb-lbl">Accesos</span></div>
+        <div class="sb-item" onclick="showScreen('s-codigos')"><div class="sb-dot" style="background:var(--gold)"></div><span class="sb-lbl">Códigos</span></div>
+        <div class="sb-item" onclick="showScreen('s-espera')"><div class="sb-dot" style="background:var(--green)"></div><span class="sb-lbl">Lista de espera</span></div>
+        <div class="sb-item" onclick="showScreen('s-consultas')"><div class="sb-dot" style="background:var(--purple)"></div><span class="sb-lbl">Consultas</span></div>
+        <div class="sb-logout" onclick="doLogout()">Cerrar sesión</div>
+      </div>
+
+      <div class="main">
+
+        <!-- OVERVIEW -->
+        <div class="screen on" id="s-overview">
+          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--w);margin-bottom:4px;">Visión general</div>
+          <div style="font-size:12px;color:var(--s);margin-bottom:16px;">Datos en tiempo real de Supabase.</div>
+          <div class="g4">
+            <div class="stat sr"><div class="sn" id="statAccesos">—</div><div class="sl">Accesos totales</div></div>
+            <div class="stat sp"><div class="sn" id="statCodigos">—</div><div class="sl">Códigos activos</div></div>
+            <div class="stat sgn"><div class="sn" id="statEspera">—</div><div class="sl">Lista de espera</div></div>
+            <div class="stat sgo"><div class="sn" id="statConsultas">—</div><div class="sl">Consultas</div></div>
+          </div>
+          <div class="g2">
+            <div class="card">
+              <div class="ch"><span class="ct">Últimos accesos</span><span style="font-size:10px;color:var(--purple);cursor:pointer" onclick="showScreen('s-accesos')">Ver todos →</span></div>
+              <div id="overviewAccesos"><div class="loading">Cargando…</div></div>
+            </div>
+            <div class="card">
+              <div class="ch"><span class="ct">Distribución</span></div>
+              <div class="cb" id="overviewDist"><div class="loading">Cargando…</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACCESOS -->
+        <div class="screen" id="s-accesos">
+          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--w);margin-bottom:16px;">Accesos registrados</div>
+          <div class="card">
+            <div class="ch"><span class="ct">Todos los accesos</span><button class="refresh-btn" onclick="loadAccesos()">↻ Actualizar</button></div>
+            <div id="tablaAccesos"><div class="loading">Cargando…</div></div>
+          </div>
+        </div>
+
+        <!-- CÓDIGOS -->
+        <div class="screen" id="s-codigos">
+          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--w);margin-bottom:16px;">Códigos de acceso</div>
+          <div class="card">
+            <div class="ch"><span class="ct">Todos los códigos</span><button class="refresh-btn" onclick="loadCodigos()">↻ Actualizar</button></div>
+            <div id="tablaCodigos"><div class="loading">Cargando…</div></div>
+          </div>
+        </div>
+
+        <!-- LISTA ESPERA -->
+        <div class="screen" id="s-espera">
+          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--w);margin-bottom:16px;">Lista de espera</div>
+          <div class="card">
+            <div class="ch"><span class="ct">Personas apuntadas</span><button class="refresh-btn" onclick="loadEspera()">↻ Actualizar</button></div>
+            <div id="tablaEspera"><div class="loading">Cargando…</div></div>
+          </div>
+        </div>
+
+        <!-- CONSULTAS -->
+        <div class="screen" id="s-consultas">
+          <div style="font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--w);margin-bottom:16px;">Consultas realizadas</div>
+          <div class="card">
+            <div class="ch"><span class="ct">Historial de cálculos</span><button class="refresh-btn" onclick="loadConsultas()">↻ Actualizar</button></div>
+            <div id="tablaConsultas"><div class="loading">Cargando…</div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CALCULADORA TAB -->
+  <div id="tabCalcContent" style="display:none;">
+    <div style="padding:40px 20px;text-align:center;max-width:480px;margin:0 auto;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Modo Admin · Calcular</div>
+      <div style="font-family:'Clash Display',sans-serif;font-size:24px;font-weight:700;color:var(--w);margin-bottom:8px;">Calcular un precio</div>
+      <div style="font-size:13px;color:var(--s);margin-bottom:28px;line-height:1.7;">Accedes con plan Élite. El resultado es idéntico al que vería un usuario de pago.</div>
+      <a href="/" style="display:block;width:100%;padding:14px;backdrop-filter:blur(20px);background:rgba(227,30,36,.85);border:1px solid rgba(255,100,100,.2);border-radius:10px;color:#fff;font-family:'Clash Display',sans-serif;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 6px 20px rgba(227,30,36,.2);">Ir a la calculadora →</a>
+      <div style="margin-top:12px;font-size:11px;color:var(--m)">Se abre en la página principal. Vuelve aquí con el botón atrás.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Token de sesión — se obtiene del backend tras login correcto
+var SESSION_TOKEN = null;
+var PWD_HASH = 'b3a6ab1c0ea8be884c49b7d64de93c805339f8bb6b85e7465ba39c91077d6743';
+
+// ── LOGIN ──
+async function sha256(msg){
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// Rate limiting login — máx 5 intentos
+var loginAttempts = 0;
+var loginBlocked = false;
+
+async function doLogin(){
+  if(loginBlocked){
+    var err = document.getElementById('loginErr');
+    err.textContent = 'Demasiados intentos. Espera 60 segundos.';
+    err.style.display='block';
+    return;
+  }
+  var pwd = document.getElementById('pwdInput').value;
+  if(!pwd) return;
+  var hash = await sha256(pwd);
+  if(hash === PWD_HASH){
+    // Login correcto — obtener token de sesión del backend
+    try {
+      var res = await fetch('/api/admin-session', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ hash })
+      });
+      var data = await res.json();
+      if(data.token){
+        SESSION_TOKEN = data.token;
+        sessionStorage.setItem('legacy_admin','1');
+        sessionStorage.setItem('legacy_session', SESSION_TOKEN);
+        loginAttempts = 0;
+        document.getElementById('loginScreen').style.display='none';
+        document.getElementById('adminPanel').classList.add('on');
+        loadOverview();
+      } else {
+        throw new Error('Sin token');
+      }
+    } catch(e) {
+      var err = document.getElementById('loginErr');
+      err.textContent = 'Error de conexión. Inténtalo de nuevo.';
+      err.style.display='block';
+      setTimeout(()=>err.style.display='none',3000);
+    }
+  } else {
+    loginAttempts++;
+    if(loginAttempts >= 5){
+      loginBlocked = true;
+      var err = document.getElementById('loginErr');
+      err.textContent = 'Demasiados intentos. Bloqueado 60 segundos.';
+      err.style.display='block';
+      setTimeout(()=>{loginBlocked=false;loginAttempts=0;err.style.display='none';},60000);
+    } else {
+      var err = document.getElementById('loginErr');
+      err.textContent = 'Contraseña incorrecta. Intento '+loginAttempts+' de 5.';
+      err.style.display='block';
+      setTimeout(()=>err.style.display='none',3000);
+    }
+    document.getElementById('pwdInput').value='';
+  }
+}
+
+function doLogout(){
+  SESSION_TOKEN = null;
+  sessionStorage.removeItem('legacy_admin');
+  sessionStorage.removeItem('legacy_session');
+  document.getElementById('adminPanel').classList.remove('on');
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('pwdInput').value='';
+}
+
+// Comprobar sesión al cargar
+window.addEventListener('load',function(){
+  if(sessionStorage.getItem('legacy_admin')==='1'){
+    SESSION_TOKEN = sessionStorage.getItem('legacy_session');
+    if(SESSION_TOKEN){
+      document.getElementById('loginScreen').style.display='none';
+      document.getElementById('adminPanel').classList.add('on');
+      loadOverview();
+    } else {
+      sessionStorage.removeItem('legacy_admin');
+    }
+  }
+});
+
+// ── TABS ──
+function setTab(tab){
+  document.getElementById('tabDashContent').style.display = tab==='dash'?'block':'none';
+  document.getElementById('tabCalcContent').style.display = tab==='calc'?'block':'none';
+  document.getElementById('tabDash').classList.toggle('on', tab==='dash');
+  document.getElementById('tabCalc').classList.toggle('on', tab==='calc');
+  if(tab==='dash') loadOverview();
+}
+
+// ── SCREENS ──
+var screenMap = {'s-overview':0,'s-accesos':1,'s-codigos':2,'s-espera':3,'s-consultas':4};
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  var s=document.getElementById(id);if(s)s.classList.add('on');
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));
+  var items=document.querySelectorAll('.sb-item');
+  if(screenMap[id]!==undefined&&items[screenMap[id]])items[screenMap[id]].classList.add('on');
+  if(id==='s-accesos')loadAccesos();
+  if(id==='s-codigos')loadCodigos();
+  if(id==='s-espera')loadEspera();
+  if(id==='s-consultas')loadConsultas();
+}
+
+// ── FETCH VÍA ENDPOINT SEGURO ──
+async function supa(tabla, filtros){
+  var res = await fetch('/api/admin-data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Admin-Token': SESSION_TOKEN || ''
+    },
+    body: JSON.stringify({ tabla, filtros: filtros || null })
+  });
+  if(res.status === 401){
+    // Sesión expirada — forzar logout
+    doLogout();
+    throw new Error('Sesión expirada. Vuelve a entrar.');
+  }
+  if(!res.ok){
+    var err = await res.json().catch(()=>({error:'Error desconocido'}));
+    throw new Error(err.detalle || err.error || 'Error '+res.status);
+  }
+  var json = await res.json();
+  return json.data || [];
+}
+
+// ── OVERVIEW ──
+async function loadOverview(){
+  try{
+    var [accesos, codigos, consultas] = await Promise.all([
+      supa('accesos'),
+      supa('codigos'),
+      supa('legacy_data')
+    ]);
+
+    var reales  = Array.isArray(accesos)?accesos.filter(a=>a.codigo_usado!=='ESPERA'):[];
+    var espera  = Array.isArray(accesos)?accesos.filter(a=>a.codigo_usado==='ESPERA'):[];
+    var codigosActivos = Array.isArray(codigos)?codigos.filter(r=>r.activo&&r.usos_actuales>0):[];
+
+    document.getElementById('statAccesos').textContent   = reales.length;
+    document.getElementById('statCodigos').textContent   = codigosActivos.length;
+    document.getElementById('statEspera').textContent    = espera.length;
+    document.getElementById('statConsultas').textContent = Array.isArray(consultas)?consultas.length:'—';
+
+    // Últimos 5 accesos
+    var ult = reales.slice(0,5);
+    document.getElementById('overviewAccesos').innerHTML = ult.length
+      ? '<div style="padding:8px">'+ult.map(a=>`
+          <div class="row-item">
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:700;color:var(--w)">${a.email||'—'}</div>
+              <div style="font-size:10px;color:var(--s)">${a.tipo_acceso||''} · ${getDate(a)?fmtDate(getDate(a)):'—'}</div>
+            </div>
+            <span class="badge ${tipoBadge(a.tipo_acceso)}">${a.tipo_acceso||'—'}</span>
+          </div>`).join('')+'</div>'
+      : '<div class="loading">Sin accesos todavía.</div>';
+
+    // Distribución
+    var dist={elite:0,invitado:0,admin:0};
+    reales.forEach(a=>{var t=a.tipo_acceso||'invitado';if(dist[t]!==undefined)dist[t]++;});
+    var tot=reales.length||1;
+    document.getElementById('overviewDist').innerHTML=`
+      <div style="display:flex;flex-direction:column;gap:9px">
+        ${barDist('Élite',dist.elite,tot,'var(--red)')}
+        ${barDist('Invitado',dist.invitado,tot,'var(--purple)')}
+        ${barDist('Admin',dist.admin,tot,'var(--gold)')}
+        ${barDist('Lista espera',espera.length,(reales.length+espera.length)||1,'#22C55E')}
+      </div>`;
+
+  }catch(e){console.error('Overview error:',e);}
+}
+
+function barDist(label,val,tot,color){
+  var pct=Math.round(val/tot*100);
+  return `<div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+      <span style="font-size:11px;color:var(--s)">${label}</span>
+      <span style="font-size:11px;font-weight:700;color:${color}">${val}</span>
+    </div>
+    <div style="height:4px;background:rgba(255,255,255,.05);border-radius:4px">
+      <div style="width:${pct}%;height:100%;background:${color};border-radius:4px"></div>
+    </div>
+  </div>`;
+}
+
+function tipoBadge(tipo){
+  return tipo==='elite'?'b-elite':tipo==='admin'?'b-admin':tipo==='espera'?'b-esp':'b-inv';
+}
+
+function fmtDate(d){return d?new Date(d).toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';}
+
+// Helper para obtener fecha de un registro (soporta timestamp y created_at)
+function getDate(r){return r.fecha||r.timestamp||r.creado_en||r.created_at||null;}
+
+// ── ACCESOS ──
+async function loadAccesos(){
+  document.getElementById('tablaAccesos').innerHTML='<div class="loading">Cargando…</div>';
+  try{
+    var data=(await supa('accesos')).filter(a=>a.codigo_usado!=='ESPERA');
+    if(!data.length){document.getElementById('tablaAccesos').innerHTML='<div class="loading">Sin accesos.</div>';return;}
+    document.getElementById('tablaAccesos').innerHTML=`
+      <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr><th>Email</th><th>Código usado</th><th>Tipo</th><th>Fecha</th></tr></thead>
+        <tbody>${data.map(r=>`<tr>
+          <td style="color:var(--w);font-weight:600">${r.email||'—'}</td>
+          <td style="font-family:monospace;font-size:10px;letter-spacing:.06em">${r.codigo_usado||'—'}</td>
+          <td><span class="badge ${tipoBadge(r.tipo_acceso)}">${r.tipo_acceso||'—'}</span></td>
+          <td style="font-size:10px;color:var(--s)">${fmtDate(getDate(r))}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+  }catch(e){document.getElementById('tablaAccesos').innerHTML='<div class="err-box">Error al cargar accesos.</div>';}
+}
+
+// ── CÓDIGOS ──
+async function loadCodigos(){
+  document.getElementById('tablaCodigos').innerHTML='<div class="loading">Cargando…</div>';
+  try{
+    var data=await supa('codigos');
+    if(!data.length){document.getElementById('tablaCodigos').innerHTML='<div class="loading">Sin códigos.</div>';return;}
+    document.getElementById('tablaCodigos').innerHTML=`
+      <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr><th>Código</th><th>Tipo</th><th>Nombre élite</th><th>Usos</th><th>Estado</th><th>Creado</th></tr></thead>
+        <tbody>${data.map(r=>`<tr>
+          <td style="font-family:monospace;font-weight:700;color:var(--w);letter-spacing:.08em">${r.codigo||'—'}</td>
+          <td><span class="badge ${tipoBadge(r.tipo)}">${r.tipo||'—'}</span></td>
+          <td>${r.nombre_elite||'—'}</td>
+          <td>${r.usos_actuales||0} / ${r.usos_permitidos||'∞'}</td>
+          <td><span class="badge ${r.activo?'b-on':'b-off'}">${r.activo?'Activo':'Inactivo'}</span></td>
+          <td style="font-size:10px;color:var(--s)">${fmtDate(getDate(r))}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+  }catch(e){document.getElementById('tablaCodigos').innerHTML='<div class="err-box">Error al cargar códigos.</div>';}
+}
+
+// ── LISTA ESPERA ──
+async function loadEspera(){
+  document.getElementById('tablaEspera').innerHTML='<div class="loading">Cargando…</div>';
+  try{
+    var data=(await supa('accesos')).filter(a=>a.codigo_usado==='ESPERA');
+    if(!data.length){document.getElementById('tablaEspera').innerHTML='<div class="loading">Lista de espera vacía.</div>';return;}
+    document.getElementById('tablaEspera').innerHTML=`
+      <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr><th>Email</th><th>Fecha</th></tr></thead>
+        <tbody>${data.map(r=>`<tr>
+          <td style="color:var(--w);font-weight:600">${r.email||'—'}</td>
+          <td style="font-size:10px;color:var(--s)">${fmtDate(getDate(r))}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+  }catch(e){document.getElementById('tablaEspera').innerHTML='<div class="err-box">Error al cargar lista de espera.</div>';}
+}
+
+// ── CONSULTAS ──
+async function loadConsultas(){
+  document.getElementById('tablaConsultas').innerHTML='<div class="loading">Cargando…</div>';
+  try{
+    var data=await supa('legacy_data');
+    if(!data.length){document.getElementById('tablaConsultas').innerHTML='<div class="loading">Sin consultas todavía.</div>';return;}
+    document.getElementById('tablaConsultas').innerHTML=`
+      <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr><th>Email</th><th>Servicio</th><th>País</th><th>Precio calculado</th><th>Nivel</th><th>Horas</th><th>Fecha</th></tr></thead>
+        <tbody>${data.map(r=>`<tr>
+          <td style="color:var(--w);font-weight:600">${r.email||'—'}</td>
+          <td>${r.nombre_servicio||r.tipo_trenzado||'—'}</td>
+          <td>${r.pais||'—'}</td>
+          <td style="font-weight:700;color:var(--w)">${r.precio_calculado?Math.round(r.precio_calculado):'—'}</td>
+          <td><span class="badge ${r.nivel==='elite'?'b-elite':'b-inv'}">${r.nivel||'—'}</span></td>
+          <td>${r.horas||'—'}</td>
+          <td style="font-size:10px;color:var(--s)">${fmtDate(getDate(r))}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+  }catch(e){document.getElementById('tablaConsultas').innerHTML='<div class="err-box">Error al cargar consultas.</div>';}
+}
+</script>
+</body>
+</html>
