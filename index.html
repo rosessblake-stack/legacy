@@ -289,6 +289,15 @@ option{background:#0d0d0d;color:#fff;}
 .smi-pill.active .smi-pill-label{color:var(--gold);}
 .smi-pill-val{font-size:14px;font-weight:700;color:var(--white);}
 .smi-pill-desc{font-size:9px;color:var(--subtle);}
+/* ── TOGGLE MONEDA LATAM ── */
+.currency-toggle-wrap{display:none;margin-top:14px;margin-bottom:4px;background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.2);border-radius:10px;padding:12px 14px;}
+.currency-toggle-wrap.visible{display:block;}
+.currency-toggle-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#F97316;margin-bottom:8px;}
+.currency-toggle-btns{display:flex;gap:6px;}
+.currency-btn{flex:1;padding:8px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:var(--subtle);text-align:center;transition:all .15s;}
+.currency-btn:hover{background:rgba(255,255,255,.08);color:var(--text);}
+.currency-btn.active{background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#F97316;}
+.currency-note{font-size:9px;color:rgba(249,115,22,.5);margin-top:7px;line-height:1.5;}
 
 /* Chip */
 .tf-chip{display:inline-flex;align-items:center;gap:5px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:16px;padding:4px 10px;cursor:pointer;margin-bottom:6px;}
@@ -584,6 +593,16 @@ option{background:#0d0d0d;color:#fff;}
           Si dudas, elige el <strong>Salario Medio</strong>.
         </div>
         <input type="hidden" id="f_smi">
+      
+        <!-- Toggle moneda LATAM -->
+        <div class="currency-toggle-wrap" id="currencyToggleWrap">
+          <div class="currency-toggle-label" id="i_currency_label">💱 ¿En qué moneda quieres trabajar?</div>
+          <div class="currency-toggle-btns">
+            <div class="currency-btn active" id="btnCurrencyLocal" onclick="setCurrency('local')" id="i_btn_local">Moneda local</div>
+            <div class="currency-btn" id="btnCurrencyUSD" onclick="setCurrency('usd')">Dólares USD</div>
+          </div>
+          <div class="currency-note" id="i_currency_note">Si materiales y precio actual los manejas en dólares, elige USD. El resultado saldrá en USD.</div>
+        </div>
       </div>
       <div class="tf-error" id="err4">Selecciona tu región y ciudad.</div>
       <div class="tf-nav">
@@ -598,9 +617,9 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-q clash">¿En qué tipo de zona trabajas?</div>
       <div class="tf-sub">Ajusta el precio según el poder adquisitivo de tus clientes.</div>
       <div class="tf-opts" id="zonaOpts">
-        <div class="tf-opt opt-gold" onclick="selOpt(this,'f_zona','premium');go(6)"><div><div class="tf-opt-name">Zona cara</div><div class="tf-opt-sub">Centro, barrio exclusivo, zona de lujo</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_zona','media');go(6)"><div><div class="tf-opt-name">Zona normal</div><div class="tf-opt-sub">Barrio estándar, periferia</div></div></div>
-        <div class="tf-opt opt-subtle" onclick="selOpt(this,'f_zona','baja');go(6)"><div><div class="tf-opt-name">Zona económica</div><div class="tf-opt-sub">Pueblo, zona rural, área de menor renta</div></div></div>
+        <div class="tf-opt opt-gold" onclick="selOpt(this,'f_zona','premium');go(6)"><div><div class="tf-opt-name" id="i_zona_cara">Zona cara</div><div class="tf-opt-sub" id="i_zona_cara_s">Centro, barrio exclusivo, zona de lujo</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_zona','media');go(6)"><div><div class="tf-opt-name" id="i_zona_normal">Zona normal</div><div class="tf-opt-sub" id="i_zona_normal_s">Barrio estándar, periferia</div></div></div>
+        <div class="tf-opt opt-subtle" onclick="selOpt(this,'f_zona','baja');go(6)"><div><div class="tf-opt-name" id="i_zona_baja">Zona económica</div><div class="tf-opt-sub" id="i_zona_baja_s">Pueblo, zona rural, área de menor renta</div></div></div>
       </div>
       <input type="hidden" id="f_zona">
       <div class="tf-error" id="err5">Selecciona el tipo de zona.</div>
@@ -613,16 +632,16 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-q clash">¿Cuál es tu nivel técnico?</div>
       <div class="tf-sub">Si dudas entre dos, elige el más bajo — el sistema te dirá si puedes cobrar más.</div>
       <div class="tf-opts" id="nivelOpts">
-        <div class="tf-opt opt-subtle" onclick="selOpt(this,'f_nivel','junior')"><div><div class="tf-opt-name">Junior</div><div class="tf-opt-sub">Aprendiendo, primeros servicios reales</div></div></div>
+        <div class="tf-opt opt-subtle" onclick="selOpt(this,'f_nivel','junior')"><div><div class="tf-opt-name" id="i_n_junior">Junior</div><div class="tf-opt-sub">Aprendiendo, primeros servicios reales</div></div></div>
         <div class="tf-opt" onclick="selOpt(this,'f_nivel','intermedio')" style="--before-color:#3B82F6"><div><div class="tf-opt-name" style="color:#93C5FD">Intermedio</div><div class="tf-opt-sub">Técnica sólida, 1-2 años de experiencia</div></div></div>
         <div class="tf-opt" onclick="selOpt(this,'f_nivel','avanzado')"><div><div class="tf-opt-name" style="color:#F87171">Avanzado</div><div class="tf-opt-sub">Experiencia consolidada, clientela fija</div></div></div>
         <div class="tf-opt" onclick="selOpt(this,'f_nivel','profesional')" style="--c:var(--purple)"><div><div class="tf-opt-name" style="color:#C4B5FD">Profesional</div><div class="tf-opt-sub">Referente local, agenda siempre llena</div></div></div>
-        <div class="tf-opt opt-gold" onclick="selOpt(this,'f_nivel','elite')"><div><div class="tf-opt-name">Élite</div><div class="tf-opt-sub">Referente del sector, lista de espera</div></div></div>
+        <div class="tf-opt opt-gold" onclick="selOpt(this,'f_nivel','elite')"><div><div class="tf-opt-name" id="i_n_elite">Élite</div><div class="tf-opt-sub">Referente del sector, lista de espera</div></div></div>
       </div>
       <div class="tf-sublabel first">¿Trabajas en casa o en salón?</div>
       <div class="tf-opts" id="estructuraOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_estructura','casa')"><div><div class="tf-opt-name">En casa</div></div></div>
-        <div class="tf-opt opt-green" onclick="selOpt(this,'f_estructura','salon')"><div><div class="tf-opt-name">En salón</div><div class="tf-opt-sub">Incremento por estructura profesional</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_estructura','casa')"><div><div class="tf-opt-name" id="i_casa">En casa</div></div></div>
+        <div class="tf-opt opt-green" onclick="selOpt(this,'f_estructura','salon')"><div><div class="tf-opt-name" id="i_salon">En salón</div><div class="tf-opt-sub" id="i_salon_s">Incremento por estructura profesional</div></div></div>
       </div>
       <input type="hidden" id="f_nivel">
       <input type="hidden" id="f_estructura">
@@ -639,11 +658,11 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-q clash">¿Cuál es tu nivel de reputación en el sector?</div>
       <div class="tf-sub">No cambia tu precio base — te muestra el techo al que puedes aspirar con tu posicionamiento real.</div>
       <div class="tf-opts" id="repOpts">
-        <div class="tf-opt r-grey" onclick="selOpt(this,'f_reputacion','construyendo')"><div><div class="tf-opt-name">Construyendo</div><div class="tf-opt-sub">Menos de 1K seguidores, clientela local</div></div></div>
-        <div class="tf-opt r-red" onclick="selOpt(this,'f_reputacion','activa')"><div><div class="tf-opt-name">Presencia activa</div><div class="tf-opt-sub">1K – 10K seguidores, comunidad en crecimiento</div></div></div>
-        <div class="tf-opt r-blue" onclick="selOpt(this,'f_reputacion','local')"><div><div class="tf-opt-name">Referente local</div><div class="tf-opt-sub">10K – 50K seguidores, agenda con lista de espera</div></div></div>
-        <div class="tf-opt r-purple" onclick="selOpt(this,'f_reputacion','nacional')"><div><div class="tf-opt-name">Referente nacional</div><div class="tf-opt-sub">50K – 200K seguidores, clientes de alto perfil</div></div></div>
-        <div class="tf-opt r-gold" onclick="selOpt(this,'f_reputacion','internacional')"><div><div class="tf-opt-name">Referente internacional</div><div class="tf-opt-sub">200K+, ha trabajado con artistas</div></div></div>
+        <div class="tf-opt r-grey" onclick="selOpt(this,'f_reputacion','construyendo')"><div><div class="tf-opt-name" id="i_rep_c">Construyendo</div><div class="tf-opt-sub">Menos de 1K seguidores, clientela local</div></div></div>
+        <div class="tf-opt r-red" onclick="selOpt(this,'f_reputacion','activa')"><div><div class="tf-opt-name" id="i_rep_a">Presencia activa</div><div class="tf-opt-sub">1K – 10K seguidores, comunidad en crecimiento</div></div></div>
+        <div class="tf-opt r-blue" onclick="selOpt(this,'f_reputacion','local')"><div><div class="tf-opt-name" id="i_rep_l">Referente local</div><div class="tf-opt-sub">10K – 50K seguidores, agenda con lista de espera</div></div></div>
+        <div class="tf-opt r-purple" onclick="selOpt(this,'f_reputacion','nacional')"><div><div class="tf-opt-name" id="i_rep_n">Referente nacional</div><div class="tf-opt-sub">50K – 200K seguidores, clientes de alto perfil</div></div></div>
+        <div class="tf-opt r-gold" onclick="selOpt(this,'f_reputacion','internacional')"><div><div class="tf-opt-name" id="i_rep_i">Referente internacional</div><div class="tf-opt-sub">200K+, ha trabajado con artistas</div></div></div>
       </div>
       <input type="hidden" id="f_reputacion">
       <div class="tf-error" id="err13">Selecciona tu nivel de reputación.</div>
@@ -659,9 +678,9 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-q clash" id="i_q7">¿Qué tipo de trenzado vas a calcular?</div>
       <div class="tf-sub">Este sistema <strong>no calcula por número de trenzas</strong> — te ayuda a descubrir el valor real de tu hora de trabajo.</div>
       <div class="tf-opts" id="tipoOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','pegadas');go(8)"><div><div class="tf-opt-name">Pegadas</div><div class="tf-opt-sub">Cornrows · Twist · Barrel Twist</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','sueltas');go(9)"><div><div class="tf-opt-name">Sueltas</div><div class="tf-opt-sub">Box Braids · Knotless · Goddess · Bohemian…</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','fulani');go(10)"><div><div class="tf-opt-name">Fulani Braids</div><div class="tf-opt-sub">Combinación de pegadas y sueltas</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipo','pegadas');go(8)"><div><div class="tf-opt-name" id="i_pegadas">Pegadas</div><div class="tf-opt-sub" id="i_pegadas_s">Cornrows · Twist · Barrel Twist</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipo','sueltas');go(9)"><div><div class="tf-opt-name" id="i_sueltas">Sueltas</div><div class="tf-opt-sub" id="i_sueltas_s">Box Braids · Knotless · Goddess · Bohemian…</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipo','fulani');go(10)"><div><div class="tf-opt-name" id="i_fulani">Fulani Braids</div><div class="tf-opt-sub" id="i_fulani_s">Combinación de pegadas y sueltas</div></div></div>
       </div>
       <input type="hidden" id="f_tipo">
       <div class="tf-nav"><button class="tf-btn-back" onclick="goBack(13)">←</button></div>
@@ -672,28 +691,28 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-eyebrow">08 — Pegadas</div>
       <div class="tf-q clash">Cuéntame sobre las pegadas.</div>
       <div class="tf-sub">Cada detalle afina el precio final.</div>
-      <div class="tf-sublabel first">Tipo de pegadas</div>
+      <div class="tf-sublabel first" id="i_s8_sub1">Tipo de pegadas</div>
       <div class="tf-opts" id="tipoPegOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','cornrows')"><div><div class="tf-opt-name">Cornrows</div><div class="tf-opt-sub">El tipo base de pegadas</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','twist')"><div><div class="tf-opt-name">Twist</div><div class="tf-opt-sub">Flat Twist o Senegalese Twist pegados</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','barrel_twist')"><div><div class="tf-opt-name">Barrel Twist</div><div class="tf-opt-sub">Técnica más compleja, acabado redondeado</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','cornrows')"><div><div class="tf-opt-name" id="i_p8_cornrows">Cornrows</div><div class="tf-opt-sub">El tipo base de pegadas</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','twist')"><div><div class="tf-opt-name" id="i_p8_twist">Twist</div><div class="tf-opt-sub">Flat Twist o Senegalese Twist pegados</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','barrel_twist')"><div><div class="tf-opt-name" id="i_p8_barrel">Barrel Twist</div><div class="tf-opt-sub">Técnica más compleja, acabado redondeado</div></div></div>
       </div>
-      <div class="tf-sublabel">Complejidad del diseño</div>
+      <div class="tf-sublabel" id="i_s8_sub2">Complejidad del diseño</div>
       <div class="tf-opts" id="compPegOpts">
         <div class="tf-opt" onclick="selOpt(this,'f_comppeg','basico')"><div><div class="tf-opt-name">Básico</div><div class="tf-opt-sub">Líneas rectas, sin diseño especial</div></div></div>
         <div class="tf-opt" onclick="selOpt(this,'f_comppeg','con_disenos')"><div><div class="tf-opt-name">Con diseño</div><div class="tf-opt-sub">Curvas, cruces, radial, zigzag…</div></div></div>
       </div>
       <div class="tf-sublabel">¿Llevan extensiones?</div>
       <div class="tf-opts" id="extPegOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','con');showBoho('peg',true);updateLargoExtField()"><div><div class="tf-opt-name">Con extensiones</div><div class="tf-opt-sub">Extensión estándar añadida trenza a trenza</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','feedin');showBoho('peg',true);updateLargoExtField()"><div><div class="tf-opt-name">Feed-in / Camuflaje completo</div><div class="tf-opt-sub">Extensión progresiva por capas</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','sin');showBoho('peg',false);updateLargoExtField()"><div><div class="tf-opt-name">Sin extensiones</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','con');showBoho('peg',true);updateLargoExtField()"><div><div class="tf-opt-name" id="i_ext_con_peg">Con extensiones</div><div class="tf-opt-sub" id="i_ext_con_peg_s">Extensión estándar añadida trenza a trenza</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','feedin');showBoho('peg',true);updateLargoExtField()"><div><div class="tf-opt-name" id="i_ext_feedin">Feed-in / Camuflaje completo</div><div class="tf-opt-sub" id="i_ext_feedin_s">Extensión progresiva por capas</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','sin');showBoho('peg',false);updateLargoExtField()"><div><div class="tf-opt-name" id="i_ext_sin_peg">Sin extensiones</div></div></div>
       </div>
       <div class="tf-subfield" id="bohoPegField">
         <div class="tf-sublabel first">¿Añades efecto Boho?</div>
         <div class="tf-opts" id="bohoPegOpts">
-          <div class="tf-opt" onclick="selOpt(this,'f_bohopeg','si')"><div><div class="tf-opt-name">Sí — con Boho</div><div class="tf-opt-sub">Rizos en las puntas</div></div></div>
-          <div class="tf-opt" onclick="selOpt(this,'f_bohopeg','no')"><div><div class="tf-opt-name">No — sin Boho</div></div></div>
+          <div class="tf-opt" onclick="selOpt(this,'f_bohopeg','si')"><div><div class="tf-opt-name" id="i_boho_si_peg">Sí — con Boho</div><div class="tf-opt-sub" id="i_boho_si_peg_s">Rizos en las puntas</div></div></div>
+          <div class="tf-opt" onclick="selOpt(this,'f_bohopeg','no')"><div><div class="tf-opt-name" id="i_boho_no_peg">No — sin Boho</div></div></div>
         </div>
       </div>
       <input type="hidden" id="f_tipopeg"><input type="hidden" id="f_comppeg"><input type="hidden" id="f_extpeg"><input type="hidden" id="f_bohopeg">
@@ -709,7 +728,7 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-eyebrow">09 — Sueltas</div>
       <div class="tf-q clash">Cuéntame sobre las sueltas.</div>
       <div class="tf-sub">Tamaño, técnica, extensiones y acabado.</div>
-      <div class="tf-sublabel first">Tamaño</div>
+      <div class="tf-sublabel first" id="i_s9_sub1">Tamaño</div>
       <div class="tf-pills" id="tamanoSueltasPills">
         <div class="tf-pill" onclick="selPill(this,'f_tamano','jumbo')">Jumbo</div>
         <div class="tf-pill" onclick="selPill(this,'f_tamano','large')">Large</div>
@@ -719,10 +738,10 @@ option{background:#0d0d0d;color:#fff;}
         <div class="tf-pill" onclick="selPill(this,'f_tamano','small')">Small</div>
         <div class="tf-pill" onclick="selPill(this,'f_tamano','xs_small')">XS Small</div>
       </div>
-      <div class="tf-sublabel">Técnica</div>
+      <div class="tf-sublabel" id="i_s9_sub2">Técnica</div>
       <div class="tf-opts" id="tipoSueltasOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_tiposueltas','normales')"><div><div class="tf-opt-name">Normales (Knotless / Box Braids)</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tiposueltas','twist')"><div><div class="tf-opt-name">Twist (Senegalese / Marley)</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tiposueltas','normales')"><div><div class="tf-opt-name" id="i_p9_normales">Normales (Knotless / Box Braids)</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tiposueltas','twist')"><div><div class="tf-opt-name" id="i_p9_twist">Twist (Senegalese / Marley)</div></div></div>
       </div>
       <div class="tf-sublabel">¿Llevan extensiones?</div>
       <div class="tf-opts" id="extSueltasOpts">
@@ -791,11 +810,11 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-q clash">¿Cómo es el cabello del cliente?</div>
       <div class="tf-sub">El largo afecta el tiempo real de preparación y trabajo.</div>
       <div class="tf-opts" id="largoCabOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','muy_corto')"><div><div class="tf-opt-name">Muy corto</div><div class="tf-opt-sub">Solo tupé, hasta 4 cm</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','corto')"><div><div class="tf-opt-name">Corto</div><div class="tf-opt-sub">Unos 10 cm</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','nuca_hombros')"><div><div class="tf-opt-name">Normal</div><div class="tf-opt-sub">Nuca o hombros</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','media_espalda')"><div><div class="tf-opt-name">Largo</div><div class="tf-opt-sub">Media espalda</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','caderas')"><div><div class="tf-opt-name">Muy largo</div><div class="tf-opt-sub">Caderas o más</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_largocab','muy_corto')"><div><div class="tf-opt-name" id="i_lc_muy_corto">Muy corto</div><div class="tf-opt-sub" id="i_lc_muy_corto_s">Solo tupé, hasta 4 cm</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_largocab','corto')"><div><div class="tf-opt-name" id="i_lc_corto">Corto</div><div class="tf-opt-sub" id="i_lc_corto_s">Unos 10 cm</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_largocab','nuca_hombros')"><div><div class="tf-opt-name" id="i_lc_normal">Normal</div><div class="tf-opt-sub" id="i_lc_normal_s">Nuca o hombros</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_largocab','media_espalda')"><div><div class="tf-opt-name" id="i_lc_largo">Largo</div><div class="tf-opt-sub" id="i_lc_largo_s">Media espalda</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_largocab','caderas')"><div><div class="tf-opt-name" id="i_lc_muy_largo">Muy largo</div><div class="tf-opt-sub" id="i_lc_muy_largo_s">Caderas o más</div></div></div>
       </div>
       <input type="hidden" id="f_largocab">
       <div class="tf-error" id="err11">Selecciona el largo del cabello.</div>
@@ -824,10 +843,10 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-sublabel first">Horas que tardas en este servicio</div>
       <input class="tf-input" type="number" id="f_horas" placeholder="Ej: 4" min="0.5" step="0.5" style="font-size:26px" oninput="checkBtn(12)">
       <div class="tf-hint">Tus horas reales. <strong>No te compares</strong> — el sistema ya ajusta el valor según tu nivel.</div>
-      <div class="tf-sublabel">Gasto en producto</div>
+      <div class="tf-sublabel" id="i_lbl_mats">Gasto en producto</div>
       <input class="tf-input" type="number" id="f_materiales" placeholder="Ej: 8" min="0" step="1" style="font-size:26px">
       <div class="tf-hint" style="margin-bottom:20px">Solo la parte proporcional de este servicio.</div>
-      <div class="tf-sublabel">¿Cuánto cobras actualmente?</div>
+      <div class="tf-sublabel" id="i_lbl_actual">¿Cuánto cobras actualmente?</div>
       <input class="tf-input" type="number" id="f_precioactual" placeholder="0 si es servicio nuevo" min="0" style="font-size:26px">
       <div class="tf-chip" onclick="var b=this.nextElementSibling;b.classList.toggle('open');this.querySelector('span').textContent=b.classList.contains('open')?'▲ Cerrar':'💡 ¿Para qué sirve este dato?'">
         <span>💡 ¿Para qué sirve este dato?</span>
@@ -853,14 +872,14 @@ option{background:#0d0d0d;color:#fff;}
     <div class="res-eyebrow" id="resEyebrow">Tu precio justo</div>
     <div class="res-main-bubble">
       <div class="res-bubble-top">
-        <div class="res-bubble-label">Tu precio justo</div>
+        <div class="res-bubble-label" id="i_precio_justo_lbl">Tu precio justo</div>
         <div class="res-bubble-precio" id="resTotal">—</div>
         <div class="res-bubble-rango" id="resRango"></div>
       </div>
       <div class="res-bubble-bottom">
         <div class="res-smi-block">
           <div class="res-smi-num" id="resSMIval">—</div>
-          <div class="res-smi-label">veces el SMI/hora</div>
+          <div class="res-smi-label" id="i_smi_label">veces el SMI/hora</div>
         </div>
         <div class="res-divider-v"></div>
         <div class="res-contraste-block">
@@ -893,7 +912,7 @@ option{background:#0d0d0d;color:#fff;}
       <div class="res-motivacion-title clash" id="motivacionTitle"></div>
       <div class="res-motivacion-text" id="motivacionText"></div>
     </div>
-    <div class="res-nota"><strong>Nota de Realidad Legacy —</strong> Este precio es una estimación calculada en base a los datos que has introducido. El precio real que puedes cobrar depende también de tu posicionamiento en redes, tu público objetivo, la imagen que transmites y cómo te manejas profesionalmente. Úsalo como referencia, no como precio definitivo.</div>
+    <div class="res-nota" id="i_nota_realidad"><strong id="i_nota_realidad_title">Nota de Realidad Legacy —</strong> <span id="i_nota_realidad_body">Este precio es una estimación calculada en base a los datos que has introducido. El precio real que puedes cobrar depende también de tu posicionamiento en redes, tu público objetivo, la imagen que transmites y cómo te manejas profesionalmente. Úsalo como referencia, no como precio definitivo.</span></div>
     <!-- Botón compartir -->
     <button id="btnCompartir" onclick="abrirModalCompartir()" style="width:100%;padding:14px;margin-bottom:10px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.28);border-radius:12px;color:#C4B5FD;font-family:'Clash Display',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
@@ -933,7 +952,7 @@ option{background:#0d0d0d;color:#fff;}
 <canvas id="shareCanvas" width="1080" height="1080" style="display:none"></canvas>
 
   <div class="tf-footer">
-    <span>Legacy Calculator · Acceso anticipado</span>
+    <span id="i_footer">Legacy Calculator · Acceso anticipado</span>
     <span>© 2026</span>
   </div>
 </div>
@@ -1253,7 +1272,72 @@ var T = {
     calc_loading:'Calculando tu precio justo',access_badge:'Acceso por invitación',
     acc_sub:'Solo puedes entrar con código de invitación de un profesional élite.',
     acc_btn:'Acceder →',acc_wait:'o apúntate a la lista de espera',acc_email_ph:'Tu correo electrónico',acc_ig_ph:'Tu Instagram @',acc_join:'Quiero acceso anticipado',
-    nivel_label:'Nivel'
+    nivel_label:'Nivel',
+    // Pantalla de acceso
+    acc_title:"Something\'s\ncoming.",acc_badge_lock:'Acceso por invitación',
+    acc_sub_wait:'Legacy está en fase de acceso anticipado. Solo puedes entrar con código de invitación de un profesional élite.',
+    acc_join_btn:'Quiero acceso anticipado',acc_wait_or:'o apúntate a la lista de espera',
+    // Sublabels paso 8
+    s8_sub1:'Tipo de pegadas',s8_sub2:'Complejidad del diseño',s8_sub3:'¿Llevan extensiones?',s8_sub4:'¿Añades efecto Boho?',
+    s9_sub1:'Tamaño',s9_sub2:'Técnica',s9_sub3:'¿Llevan extensiones?',s9_sub4:'¿Añades efecto Boho / Goddess / Bohemian?',
+    // Opciones zona
+    zona_cara:'Zona cara',zona_cara_s:'Centro, barrio exclusivo, zona de lujo',
+    zona_normal:'Zona normal',zona_normal_s:'Barrio estándar, periferia',
+    zona_baja:'Zona económica',zona_baja_s:'Pueblo, zona rural, área de menor renta',
+    // Nivel
+    n_junior:'Junior',n_junior_s:'Aprendiendo, primeros servicios reales',
+    n_inter:'Intermedio',n_inter_s:'Técnica sólida, 1-2 años de experiencia',
+    n_avanz:'Avanzado',n_avanz_s:'Experiencia consolidada, clientela fija',
+    n_prof:'Profesional',n_prof_s:'Referente local, agenda siempre llena',
+    n_elite:'Élite',n_elite_s:'Referente del sector, lista de espera',
+    casa:'En casa',salon:'En salón',salon_s:'Incremento por estructura profesional',
+    // Reputación
+    rep_c:'Construyendo',rep_c_s:'Menos de 1K seguidores, clientela local',
+    rep_a:'Presencia activa',rep_a_s:'1K – 10K seguidores, comunidad en crecimiento',
+    rep_l:'Referente local',rep_l_s:'10K – 50K seguidores, agenda con lista de espera',
+    rep_n:'Referente nacional',rep_n_s:'50K – 200K seguidores, clientes de alto perfil',
+    rep_i:'Referente internacional',rep_i_s:'200K+, ha trabajado con artistas',
+    // Tipo trenzado
+    pegadas:'Pegadas',pegadas_s:'Cornrows · Twist · Barrel Twist',
+    sueltas:'Sueltas',sueltas_s:'Box Braids · Knotless · Goddess · Bohemian…',
+    fulani:'Fulani Braids',fulani_s:'Combinación de pegadas y sueltas',
+    // Pegadas opciones
+    p8_cornrows:'Cornrows',p8_twist:'Twist',p8_barrel:'Barrel Twist',
+    p8_basico:'Básico',p8_basico_s:'Líneas rectas, sin diseño especial',
+    p8_diseno:'Con diseño',p8_diseno_s:'Curvas, cruces, radial, zigzag…',
+    ext_con:'Con extensiones',ext_con_s:'Extensión estándar añadida trenza a trenza',
+    ext_feedin:'Feed-in / Camuflaje completo',ext_feedin_s:'Extensión progresiva por capas',
+    ext_sin:'Sin extensiones',
+    boho_si:'Sí — con Boho',boho_si_s:'Rizos en las puntas',boho_no:'No — sin Boho',
+    // Sueltas técnica
+    p9_normales:'Normales (Knotless / Box Braids)',p9_twist:'Twist (Senegalese / Marley)',
+    // Largo cabello
+    lc_muy_corto:'Muy corto',lc_muy_corto_s:'Solo tupé, hasta 4 cm',
+    lc_corto:'Corto',lc_corto_s:'Unos 10 cm',
+    lc_normal:'Normal',lc_normal_s:'Nuca o hombros',
+    lc_largo:'Largo',lc_largo_s:'Media espalda',
+    lc_muy_largo:'Muy largo',lc_muy_largo_s:'Caderas o más',
+    // Labels materiales y precio actual
+    lbl_mats:'Gasto en producto',lbl_actual:'¿Cuánto cobras actualmente?',
+    lbl_mats_usd:'Gasto en producto (USD)',lbl_actual_usd:'¿Cuánto cobras actualmente? (USD)',
+    // SMI label
+    smi_label:'veces el SMI/hora',precio_justo_lbl:'Tu precio justo',
+    // Nota de realidad
+    nota_realidad_title:'Nota de Realidad Legacy —',
+    nota_realidad_body:'Este precio es una estimación calculada en base a los datos que has introducido. El precio real que puedes cobrar depende también de tu posicionamiento en redes, tu público objetivo, la imagen que transmites y cómo te manejas profesionalmente. Úsalo como referencia, no como precio definitivo.',
+    // Footer
+    footer:'Legacy Calculator · Acceso anticipado',
+    // Toggle moneda
+    currency_label:'💱 ¿En qué moneda quieres trabajar?',
+    currency_local:'Moneda local',currency_usd:'Dólares USD',
+    currency_note:'Si materiales y precio actual los manejas en dólares, elige USD. El resultado saldrá en USD.',
+    // Resultado frases
+    precio_ref:'Precio de referencia',precio_ref_t:'Primera vez calculando este servicio. Guarda este número.',
+    cobras_menos:'Cobras {sym}{diff} menos de lo que deberías',
+    cobras_mas:'Cobras {sym}{diff} por encima',
+    cobras_exacto:'Precio exacto',cobras_exacto_t:'Tu precio coincide exactamente con la referencia. Bien calibrado.',
+    cobras_menos_t:'Tu precio de {sym}{actual} está un {pct}% por debajo del precio justo.',
+    cobras_mas_t:'Tu precio de {sym}{actual} supera la referencia en un {pct}%.',
   },
   en:{
     step:'Step',of:'of',result:'Result',
@@ -1290,7 +1374,72 @@ var T = {
     calc_loading:'Calculating your fair price',access_badge:'Invitation only',
     acc_sub:'You can only enter with an invitation code from an elite professional.',
     acc_btn:'Enter →',acc_wait:'or join the waiting list',acc_email_ph:'Your email address',acc_ig_ph:'Your Instagram @',acc_join:'I want early access',
-    nivel_label:'Level'
+    nivel_label:'Level',
+    // Access screen
+    acc_title:"Something\'s\ncoming.",acc_badge_lock:'Invitation only',
+    acc_sub_wait:'Legacy is in early access. You can only enter with an invitation code from an elite professional.',
+    acc_join_btn:'I want early access',acc_wait_or:'or join the waiting list',
+    // Step 8 sublabels
+    s8_sub1:'Type of flat braids',s8_sub2:'Design complexity',s8_sub3:'Do they include extensions?',s8_sub4:'Do you add a Boho effect?',
+    s9_sub1:'Size',s9_sub2:'Technique',s9_sub3:'Do they include extensions?',s9_sub4:'Do you add a Boho / Goddess / Bohemian effect?',
+    // Zone options
+    zona_cara:'Expensive area',zona_cara_s:'City centre, exclusive neighbourhood',
+    zona_normal:'Standard area',zona_normal_s:'Regular neighbourhood, suburbs',
+    zona_baja:'Budget area',zona_baja_s:'Small town, rural area',
+    // Level
+    n_junior:'Junior',n_junior_s:'Learning, first real services',
+    n_inter:'Intermediate',n_inter_s:'Solid technique, 1-2 years experience',
+    n_avanz:'Advanced',n_avanz_s:'Consolidated experience, regular clients',
+    n_prof:'Professional',n_prof_s:'Local reference, always fully booked',
+    n_elite:'Elite',n_elite_s:'Industry reference, waiting list',
+    casa:'At home',salon:'In a salon',salon_s:'Increase for professional structure',
+    // Reputation
+    rep_c:'Building',rep_c_s:'Less than 1K followers, local clientele',
+    rep_a:'Active presence',rep_a_s:'1K – 10K followers, growing community',
+    rep_l:'Local reference',rep_l_s:'10K – 50K followers, waiting list',
+    rep_n:'National reference',rep_n_s:'50K – 200K followers, high-profile clients',
+    rep_i:'International reference',rep_i_s:'200K+, has worked with artists',
+    // Braid type
+    pegadas:'Cornrows & Flat styles',pegadas_s:'Cornrows · Twist · Barrel Twist',
+    sueltas:'Box & Knotless styles',sueltas_s:'Box Braids · Knotless · Goddess · Bohemian…',
+    fulani:'Fulani Braids',fulani_s:'Combination of flat and loose styles',
+    // Flat braid options
+    p8_cornrows:'Cornrows',p8_twist:'Twist',p8_barrel:'Barrel Twist',
+    p8_basico:'Basic',p8_basico_s:'Straight lines, no special design',
+    p8_diseno:'With design',p8_diseno_s:'Curves, crosses, radial, zigzag…',
+    ext_con:'With extensions',ext_con_s:'Standard extension added braid by braid',
+    ext_feedin:'Feed-in / Full camouflage',ext_feedin_s:'Progressive extension in layers',
+    ext_sin:'Without extensions',
+    boho_si:'Yes — with Boho',boho_si_s:'Curls at the ends',boho_no:'No — without Boho',
+    // Loose styles technique
+    p9_normales:'Standard (Knotless / Box Braids)',p9_twist:'Twist (Senegalese / Marley)',
+    // Hair length
+    lc_muy_corto:'Very short',lc_muy_corto_s:'Just the top, up to 4 cm',
+    lc_corto:'Short',lc_corto_s:'About 10 cm',
+    lc_normal:'Medium',lc_normal_s:'Nape or shoulders',
+    lc_largo:'Long',lc_largo_s:'Mid-back',
+    lc_muy_largo:'Very long',lc_muy_largo_s:'Hips or longer',
+    // Material labels
+    lbl_mats:'Product expenses',lbl_actual:'How much are you currently charging?',
+    lbl_mats_usd:'Product expenses (USD)',lbl_actual_usd:'How much are you currently charging? (USD)',
+    // SMI label
+    smi_label:'times the minimum wage/hour',precio_justo_lbl:'Your fair price',
+    // Reality note
+    nota_realidad_title:'Legacy Reality Note —',
+    nota_realidad_body:'This price is an estimate calculated based on the data you have entered. The actual price you can charge also depends on your social media presence, your target audience, the image you project and how you present yourself professionally. Use it as a reference, not as a definitive price.',
+    // Footer
+    footer:'Legacy Calculator · Early access',
+    // Currency toggle
+    currency_label:'💱 Which currency do you want to work in?',
+    currency_local:'Local currency',currency_usd:'US Dollars (USD)',
+    currency_note:'If you handle materials and current pricing in dollars, choose USD. The result will show in USD.',
+    // Result phrases
+    precio_ref:'Reference price',precio_ref_t:'First time calculating this service. Save this number.',
+    cobras_menos:'You charge {sym}{diff} less than you should',
+    cobras_mas:'You charge {sym}{diff} above the reference',
+    cobras_exacto:'Exact price',cobras_exacto_t:'Your price matches the reference exactly. Well calibrated.',
+    cobras_menos_t:'Your price of {sym}{actual} is {pct}% below the fair price.',
+    cobras_mas_t:'Your price of {sym}{actual} exceeds the reference by {pct}%.',
   },
   pt:{
     step:'Passo',of:'de',result:'Resultado',
@@ -1327,7 +1476,72 @@ var T = {
     calc_loading:'A calcular o seu preço justo',access_badge:'Acesso por convite',
     acc_sub:'Só pode entrar com código de convite de um profissional elite.',
     acc_btn:'Entrar →',acc_wait:'ou inscreva-se na lista de espera',acc_email_ph:'O seu endereço de email',acc_ig_ph:'O seu Instagram @',acc_join:'Quero acesso antecipado',
-    nivel_label:'Nível'
+    nivel_label:'Nível',
+    // Ecrã de acesso
+    acc_title:"Something\'s\ncoming.",acc_badge_lock:'Acesso por convite',
+    acc_sub_wait:'O Legacy está em fase de acesso antecipado. Só pode entrar com código de convite de um profissional elite.',
+    acc_join_btn:'Quero acesso antecipado',acc_wait_or:'ou inscreva-se na lista de espera',
+    // Sublabels passo 8
+    s8_sub1:'Tipo de tranças coladas',s8_sub2:'Complexidade do design',s8_sub3:'Têm extensões?',s8_sub4:'Adiciona efeito Boho?',
+    s9_sub1:'Tamanho',s9_sub2:'Técnica',s9_sub3:'Têm extensões?',s9_sub4:'Adiciona efeito Boho / Goddess / Bohemian?',
+    // Zona
+    zona_cara:'Zona cara',zona_cara_s:'Centro, bairro exclusivo, zona de luxo',
+    zona_normal:'Zona normal',zona_normal_s:'Bairro padrão, periferia',
+    zona_baja:'Zona económica',zona_baja_s:'Cidade pequena, zona rural',
+    // Nível
+    n_junior:'Júnior',n_junior_s:'Aprendendo, primeiros serviços reais',
+    n_inter:'Intermédio',n_inter_s:'Técnica sólida, 1-2 anos de experiência',
+    n_avanz:'Avançado',n_avanz_s:'Experiência consolidada, clientes fixos',
+    n_prof:'Profissional',n_prof_s:'Referência local, agenda sempre cheia',
+    n_elite:'Elite',n_elite_s:'Referência do setor, lista de espera',
+    casa:'Em casa',salon:'Em salão',salon_s:'Incremento por estrutura profissional',
+    // Reputação
+    rep_c:'Construindo',rep_c_s:'Menos de 1K seguidores, clientela local',
+    rep_a:'Presença ativa',rep_a_s:'1K – 10K seguidores, comunidade em crescimento',
+    rep_l:'Referência local',rep_l_s:'10K – 50K seguidores, lista de espera',
+    rep_n:'Referência nacional',rep_n_s:'50K – 200K seguidores, clientes de alto perfil',
+    rep_i:'Referência internacional',rep_i_s:'200K+, trabalhou com artistas',
+    // Tipo tranças
+    pegadas:'Tranças coladas',pegadas_s:'Cornrows · Twist · Barrel Twist',
+    sueltas:'Tranças soltas',sueltas_s:'Box Braids · Knotless · Goddess · Bohemian…',
+    fulani:'Fulani Braids',fulani_s:'Combinação de tranças coladas e soltas',
+    // Opções tranças coladas
+    p8_cornrows:'Cornrows',p8_twist:'Twist',p8_barrel:'Barrel Twist',
+    p8_basico:'Básico',p8_basico_s:'Linhas retas, sem design especial',
+    p8_diseno:'Com design',p8_diseno_s:'Curvas, cruzamentos, radial, zigzag…',
+    ext_con:'Com extensões',ext_con_s:'Extensão padrão adicionada trança a trança',
+    ext_feedin:'Feed-in / Camuflagem completa',ext_feedin_s:'Extensão progressiva em camadas',
+    ext_sin:'Sem extensões',
+    boho_si:'Sim — com Boho',boho_si_s:'Caracóis nas pontas',boho_no:'Não — sem Boho',
+    // Técnica soltas
+    p9_normales:'Normais (Knotless / Box Braids)',p9_twist:'Twist (Senegalese / Marley)',
+    // Comprimento cabelo
+    lc_muy_corto:'Muito curto',lc_muy_corto_s:'Apenas o topo, até 4 cm',
+    lc_corto:'Curto',lc_corto_s:'Cerca de 10 cm',
+    lc_normal:'Normal',lc_normal_s:'Nuca ou ombros',
+    lc_largo:'Longo',lc_largo_s:'Meio das costas',
+    lc_muy_largo:'Muito longo',lc_muy_largo_s:'Ancas ou mais',
+    // Labels materiais
+    lbl_mats:'Gasto em produtos',lbl_actual:'Quanto cobra atualmente?',
+    lbl_mats_usd:'Gasto em produtos (USD)',lbl_actual_usd:'Quanto cobra atualmente? (USD)',
+    // SMI label
+    smi_label:'vezes o salário mínimo/hora',precio_justo_lbl:'O seu preço justo',
+    // Nota de realidade
+    nota_realidad_title:'Nota de Realidade Legacy —',
+    nota_realidad_body:'Este preço é uma estimativa calculada com base nos dados que introduziu. O preço real que pode cobrar depende também da sua presença nas redes, do seu público-alvo, da imagem que transmite e de como se apresenta profissionalmente. Use-o como referência, não como preço definitivo.',
+    // Footer
+    footer:'Legacy Calculator · Acesso antecipado',
+    // Toggle moeda
+    currency_label:'💱 Em que moeda quer trabalhar?',
+    currency_local:'Moeda local',currency_usd:'Dólares USD',
+    currency_note:'Se gere materiais e preço atual em dólares, escolha USD. O resultado será em USD.',
+    // Frases resultado
+    precio_ref:'Preço de referência',precio_ref_t:'Primeira vez a calcular este serviço. Guarde este número.',
+    cobras_menos:'Cobra {sym}{diff} menos do que deveria',
+    cobras_mas:'Cobra {sym}{diff} acima da referência',
+    cobras_exacto:'Preço exato',cobras_exacto_t:'O seu preço coincide exatamente com a referência. Bem calibrado.',
+    cobras_menos_t:'O seu preço de {sym}{actual} está {pct}% abaixo do preço justo.',
+    cobras_mas_t:'O seu preço de {sym}{actual} supera a referência em {pct}%.',
   }
 };
 
@@ -1355,37 +1569,166 @@ function setLang(lang, el, source){
 }
 
 function applyTranslations(){
-  // Pasos eyebrow y preguntas
-  var map = {
-    'ey1':t('s1_ey'),'q1':t('s1_q'),'sub1':t('s1_sub'),'hint1':t('s1_hint'),
-    'ey2':t('s2_ey'),'q2':t('s2_q'),'sub2':t('s2_sub'),
-    'ey3':t('s3_ey'),'q3':t('s3_q'),'sub3':t('s3_sub'),
-    'ey4':t('s4_ey'),'q4':t('s4_q'),'sub4':t('s4_sub'),
-    'ey5':t('s5_ey'),'q5':t('s5_q'),'sub5':t('s5_sub'),
-    'ey6':t('s6_ey'),'q6':t('s6_q'),'sub6':t('s6_sub'),
-    'ey13':t('s13_ey'),'q13':t('s13_q'),'sub13':t('s13_sub'),
-    'ey7':t('s7_ey'),'q7':t('s7_q'),'sub7':t('s7_sub'),
-    'ey8':t('s8_ey'),'q8':t('s8_q'),'sub8':t('s8_sub'),
-    'ey9':t('s9_ey'),'q9':t('s9_q'),'sub9':t('s9_sub'),
-    'ey10':t('s10_ey'),'q10':t('s10_q'),'sub10':t('s10_sub'),
-    'ey11':t('s11_ey'),'q11':t('s11_q'),'sub11':t('s11_sub'),
-    'ey12':t('s12_ey'),'q12':t('s12_q'),'sub12':t('s12_sub'),
-  };
-  Object.keys(map).forEach(function(id){
-    var el=document.getElementById('i_'+id);if(el)el.textContent=map[id];
-  });
-  // Botón compartir
+  // Helper para set texto si existe el elemento
+  function setText(id,val){var el=document.getElementById(id);if(el&&val)el.textContent=val;}
+  function setPH(id,val){var el=document.getElementById(id);if(el&&val)el.placeholder=val;}
+
+  // ── Preguntas y eyebrows ──
+  setText('i_ey1',t('s1_ey'));setText('i_q1',t('s1_q'));setText('i_hint1',t('s1_hint'));
+  setText('i_ey2',t('s2_ey'));setText('i_q2',t('s2_q'));
+  setText('i_ey3',t('s3_ey'));setText('i_q3',t('s3_q'));
+  setText('i_ey4',t('s4_ey'));setText('i_q4',t('s4_q'));
+  setText('i_ey5',t('s5_ey'));setText('i_q5',t('s5_q'));setText('i_sub5',t('s5_sub'));
+  setText('i_ey6',t('s6_ey'));setText('i_q6',t('s6_q'));setText('i_sub6',t('s6_sub'));
+  setText('i_ey13',t('s13_ey'));setText('i_q13',t('s13_q'));setText('i_sub13',t('s13_sub'));
+  setText('i_ey7',t('s7_ey'));setText('i_q7',t('s7_q'));setText('i_sub7',t('s7_sub'));
+  setText('i_ey8',t('s8_ey'));setText('i_q8',t('s8_q'));setText('i_sub8',t('s8_sub'));
+  setText('i_ey9',t('s9_ey'));setText('i_q9',t('s9_q'));setText('i_sub9',t('s9_sub'));
+  setText('i_ey10',t('s10_ey'));setText('i_q10',t('s10_q'));setText('i_sub10',t('s10_sub'));
+  setText('i_ey11',t('s11_ey'));setText('i_q11',t('s11_q'));setText('i_sub11',t('s11_sub'));
+  setText('i_ey12',t('s12_ey'));setText('i_q12',t('s12_q'));setText('i_sub12',t('s12_sub'));
+
+  // ── Pantalla de acceso ──
+  setPH('codigoInput',t('acc_btn').replace('→','').trim() ? t('acc_ph')||'Código de invitación' : 'Código de invitación');
+  setPH('esperaEmail',t('acc_email_ph'));
+  setPH('esperaIg',t('acc_ig_ph'));
+
+  // ── Opciones de zona ──
+  setText('i_zona_cara',t('zona_cara'));setText('i_zona_cara_s',t('zona_cara_s'));
+  setText('i_zona_normal',t('zona_normal'));setText('i_zona_normal_s',t('zona_normal_s'));
+  setText('i_zona_baja',t('zona_baja'));setText('i_zona_baja_s',t('zona_baja_s'));
+
+  // ── Opciones de nivel ──
+  setText('i_n_junior',t('n_junior'));setText('i_n_inter',t('n_inter'));
+  setText('i_n_avanz',t('n_avanz'));setText('i_n_prof',t('n_prof'));setText('i_n_elite',t('n_elite'));
+  setText('i_casa',t('casa'));setText('i_salon',t('salon'));setText('i_salon_s',t('salon_s'));
+
+  // ── Reputación ──
+  setText('i_rep_c',t('rep_c'));setText('i_rep_a',t('rep_a'));
+  setText('i_rep_l',t('rep_l'));setText('i_rep_n',t('rep_n'));setText('i_rep_i',t('rep_i'));
+
+  // ── Tipo trenzado ──
+  setText('i_pegadas',t('pegadas'));setText('i_pegadas_s',t('pegadas_s'));
+  setText('i_sueltas',t('sueltas'));setText('i_sueltas_s',t('sueltas_s'));
+  setText('i_fulani',t('fulani'));setText('i_fulani_s',t('fulani_s'));
+
+  // ── Paso 8: sublabels y opciones ──
+  setText('i_s8_sub1',t('s8_sub1'));setText('i_s8_sub2',t('s8_sub2'));
+  setText('i_p8_cornrows',t('p8_cornrows'));setText('i_p8_twist',t('p8_twist'));setText('i_p8_barrel',t('p8_barrel'));
+  setText('i_p8_basico',t('p8_basico'));setText('i_p8_basico_s',t('p8_basico_s'));
+  setText('i_p8_diseno',t('p8_diseno'));setText('i_p8_diseno_s',t('p8_diseno_s'));
+  setText('i_ext_con_peg',t('ext_con'));setText('i_ext_con_peg_s',t('ext_con_s'));
+  setText('i_ext_feedin',t('ext_feedin'));setText('i_ext_feedin_s',t('ext_feedin_s'));
+  setText('i_ext_sin_peg',t('ext_sin'));
+  setText('i_boho_si_peg',t('boho_si'));setText('i_boho_si_peg_s',t('boho_si_s'));
+  setText('i_boho_no_peg',t('boho_no'));
+
+  // ── Paso 9: sublabels y técnica ──
+  setText('i_s9_sub1',t('s9_sub1'));setText('i_s9_sub2',t('s9_sub2'));
+  setText('i_p9_normales',t('p9_normales'));setText('i_p9_twist',t('p9_twist'));
+
+  // ── Paso 11: largo cabello ──
+  setText('i_lc_muy_corto',t('lc_muy_corto'));setText('i_lc_muy_corto_s',t('lc_muy_corto_s'));
+  setText('i_lc_corto',t('lc_corto'));setText('i_lc_corto_s',t('lc_corto_s'));
+  setText('i_lc_normal',t('lc_normal'));setText('i_lc_normal_s',t('lc_normal_s'));
+  setText('i_lc_largo',t('lc_largo'));setText('i_lc_largo_s',t('lc_largo_s'));
+  setText('i_lc_muy_largo',t('lc_muy_largo'));setText('i_lc_muy_largo_s',t('lc_muy_largo_s'));
+
+  // ── Paso 12: labels moneda ──
+  var usandoUSD = (currencyMode === 'usd');
+  setText('i_lbl_mats', usandoUSD ? t('lbl_mats_usd') : t('lbl_mats'));
+  setText('i_lbl_actual', usandoUSD ? t('lbl_actual_usd') : t('lbl_actual'));
+
+  // ── Resultado ──
+  setText('i_smi_label',t('smi_label'));
+  setText('i_precio_justo_lbl',t('precio_justo_lbl'));
+  setText('i_nota_realidad_title',t('nota_realidad_title'));
+  setText('i_nota_realidad_body',t('nota_realidad_body'));
+
+  // ── Toggle moneda ──
+  setText('i_currency_label',t('currency_label'));
+  setText('i_currency_note',t('currency_note'));
+  var btnLocal=document.getElementById('btnCurrencyLocal');if(btnLocal)btnLocal.textContent=t('currency_local');
+  var btnUSD=document.getElementById('btnCurrencyUSD');if(btnUSD)btnUSD.textContent=t('currency_usd');
+
+  // ── Footer ──
+  setText('i_footer',t('footer'));
+
+  // ── Botón compartir ──
   var bc=document.getElementById('btnCompartirTxt');if(bc)bc.textContent=t('compartir');
-  // Modal
+
+  // ── Modal compartir (data-i) ──
   document.querySelectorAll('[data-i]').forEach(function(el){
     var key=el.getAttribute('data-i');
     if(T[LANG]&&T[LANG][key])el.textContent=T[LANG][key];
   });
-  // Spinner
+
+  // ── Spinner ──
   var sp=document.getElementById('spinnerText');if(sp)sp.textContent=t('calc_loading');
-  // Placeholder email
-  var em=document.getElementById('f_email');if(em)em.placeholder=t('s1_ph');
-  var ig=document.getElementById('f_ig');if(ig)ig.placeholder=t('s2_ph');
+
+  // ── Placeholders ──
+  setPH('f_email',t('s1_ph'));
+  setPH('f_ig',t('s2_ph'));
+
+  // ── Step counter ──
+  if(cur&&cur!==0){
+    var stepEl=document.getElementById('stepCounter');
+    if(stepEl&&stepEl.textContent!=='Resultado'&&stepEl.textContent!=='Result'&&stepEl.textContent!=='Resultado'){
+      stepEl.textContent=t('step')+' '+cur+' '+t('of')+' 13';
+    }
+  }
+}
+
+
+// ── TOGGLE MONEDA ──
+var currencyMode = 'local'; // 'local' o 'usd'
+// Países LATAM con toggle de moneda (con su tipo de cambio orientativo)
+var LATAM_USD = {
+  ar: { name:'Argentina', usdRate: 1050, note:'Tipo de cambio orientativo. Las profesionales élite suelen cobrar en USD.' },
+  ve: { name:'Venezuela', usdRate: 40,   note:'Economía dolarizada. Se recomienda cobrar en USD.' },
+};
+
+function setCurrency(mode){
+  currencyMode = mode;
+  document.getElementById('btnCurrencyLocal').classList.toggle('active', mode==='local');
+  document.getElementById('btnCurrencyUSD').classList.toggle('active', mode==='usd');
+  // Actualizar labels de materiales y precio actual
+  applyTranslations();
+  // Actualizar pills SMI si ya hay ciudad seleccionada
+  if(currentCityData){
+    var pais = document.getElementById('f_pais').value;
+    var geo = GEO[pais];
+    var sim = (mode==='usd') ? 'USD ' : (geo?geo.simbolo:'');
+    var smeShow = (mode==='usd' && LATAM_USD[pais])
+      ? Math.round(currentCityData.sme / LATAM_USD[pais].usdRate)
+      : currentCityData.sme;
+    var smiShow = (mode==='usd' && LATAM_USD[pais])
+      ? Math.round(currentCityData.smi / LATAM_USD[pais].usdRate)
+      : currentCityData.smi;
+    document.getElementById('smeVal').textContent = smeShow ? smeShow.toLocaleString('es-ES')+' '+sim : '—';
+    document.getElementById('smiVal').textContent = smiShow ? smiShow.toLocaleString('es-ES')+' '+sim : '—';
+    // Recalcular el valor de SMI que se enviará al backend
+    selectSMI(smiMode);
+  }
+}
+
+function showCurrencyToggle(pais){
+  var wrap = document.getElementById('currencyToggleWrap');
+  if(!wrap) return;
+  if(LATAM_USD[pais]){
+    wrap.classList.add('visible');
+    // Actualizar nota con el tipo de cambio
+    var note = document.getElementById('i_currency_note');
+    if(note) note.textContent = LATAM_USD[pais].note || t('currency_note');
+  } else {
+    wrap.classList.remove('visible');
+    // Si cambiamos de país y ya no es LATAM, resetear a moneda local
+    if(currencyMode === 'usd'){
+      currencyMode = 'local';
+      document.getElementById('btnCurrencyLocal').classList.add('active');
+      document.getElementById('btnCurrencyUSD').classList.remove('active');
+    }
+  }
 }
 
 // ── COMPARTIR ──
@@ -1799,9 +2142,19 @@ function onCiudadChange(){
   const sel=document.getElementById('f_ciudad');const opt=sel.options[sel.selectedIndex];
   const key=document.getElementById('f_pais').value;const geo=GEO[key];if(!opt||!geo)return;
   currentCityData={sme:Number(opt.dataset.sme)||0,smi:Number(opt.dataset.smi)||0};
-  const sim=geo.simbolo;
-  document.getElementById('smeVal').textContent=currentCityData.sme?currentCityData.sme.toLocaleString('es-ES')+' '+sim:'—';
-  document.getElementById('smiVal').textContent=currentCityData.smi?currentCityData.smi.toLocaleString('es-ES')+' '+sim:'—';
+  // Mostrar toggle de moneda si es país LATAM
+  showCurrencyToggle(key);
+  // Resetear a moneda local al cambiar ciudad (por si venían de USD)
+  if(!LATAM_USD[key] && currencyMode === 'usd'){
+    currencyMode = 'local';
+    var btnL=document.getElementById('btnCurrencyLocal');if(btnL)btnL.classList.add('active');
+    var btnU=document.getElementById('btnCurrencyUSD');if(btnU)btnU.classList.remove('active');
+  }
+  const sim = (currencyMode==='usd' && LATAM_USD[key]) ? 'USD' : geo.simbolo;
+  const smeShow = (currencyMode==='usd' && LATAM_USD[key]) ? Math.round(currentCityData.sme/LATAM_USD[key].usdRate) : currentCityData.sme;
+  const smiShow = (currencyMode==='usd' && LATAM_USD[key]) ? Math.round(currentCityData.smi/LATAM_USD[key].usdRate) : currentCityData.smi;
+  document.getElementById('smeVal').textContent=smeShow?smeShow.toLocaleString('es-ES')+' '+sim:'—';
+  document.getElementById('smiVal').textContent=smiShow?smiShow.toLocaleString('es-ES')+' '+sim:'—';
   document.getElementById('smiPillsWrap').style.display='block';selectSMI(smiMode);
 }
 function selectSMI(mode){
@@ -1809,7 +2162,13 @@ function selectSMI(mode){
   document.getElementById('pillSME').classList.toggle('active',mode==='sme');
   document.getElementById('pillSMI').classList.toggle('active',mode==='smi');
   if(!currentCityData)return;
-  document.getElementById('f_smi').value=mode==='sme'?currentCityData.sme:currentCityData.smi||'';
+  var pais=document.getElementById('f_pais').value;
+  var rawVal = mode==='sme' ? currentCityData.sme : (currentCityData.smi||0);
+  if(currencyMode==='usd' && LATAM_USD[pais]){
+    // Convertir a USD para enviar al backend
+    rawVal = Math.round(rawVal / LATAM_USD[pais].usdRate);
+  }
+  document.getElementById('f_smi').value = rawVal || '';
 }
 
 // ── CALCULAR ──
@@ -1828,6 +2187,7 @@ async function calcular(){
     email:document.getElementById('f_email').value.trim(),
     instagram:document.getElementById('f_ig').value.trim(),
     pais:document.getElementById('f_pais').value,
+    currency: currencyMode,
     provincia:document.getElementById('f_region').value||'',
     ciudad:document.getElementById('f_ciudad').value||'',
     zona:document.getElementById('f_zona').value,
@@ -1867,7 +2227,8 @@ async function calcular(){
 }
 
 function fmt(n){
-  const pais=document.getElementById('f_pais').value;const geo=GEO[pais];const sim=geo?geo.simbolo:'€';
+  const pais=document.getElementById('f_pais').value;const geo=GEO[pais];
+  const sim = (currencyMode==='usd' && LATAM_USD[pais]) ? 'USD ' : (geo?geo.simbolo:'€');
   return n>=1000?sim+Math.round(n).toLocaleString('es-ES'):sim+n.toFixed(0);
 }
 
@@ -1875,7 +2236,8 @@ function renderResult(data){
   consultaNum++;
   // Guardar datos para compartir
   var pais2=document.getElementById('f_pais').value;
-  var geo2=GEO[pais2];var sim2=geo2?geo2.simbolo:'€';
+  var geo2=GEO[pais2];
+  var sim2 = (currencyMode==='usd' && LATAM_USD[pais2]) ? 'USD ' : (geo2?geo2.simbolo:'€');
   var precioNum=Math.round(data.precioTotal);
   var precioFmtReal=precioNum>=1000?sim2+precioNum.toLocaleString('es-ES'):sim2+precioNum;
   shareData = {
@@ -1910,17 +2272,20 @@ function renderResult(data){
   const eliteMsg=document.getElementById('eliteMsg');eliteMsg.style.display='none';
   const cd=document.getElementById('contrasteDiff'),ct=document.getElementById('contrasteText');
 
+  function fillTemplate(str,sym,diff,actual,pct){
+    return str.replace('{sym}',sym).replace('{diff}',Math.round(Math.abs(diff))).replace('{actual}',actual).replace('{pct}',Math.abs(pct));
+  }
   if(!data.precioActual||data.precioActual===0){
-    cd.textContent='Precio de referencia';cd.style.color='var(--text)';ct.textContent='Primera vez calculando este servicio. Guarda este número.';
+    cd.textContent=t('precio_ref');cd.style.color='var(--text)';ct.textContent=t('precio_ref_t');
   }else if(diff>0){
-    cd.textContent='Cobras '+sim+Math.round(Math.abs(diff))+' menos de lo que deberías';cd.style.color='var(--orange)';
-    ct.textContent='Tu precio de '+sim+data.precioActual+' está un '+Math.abs(pct)+'% por debajo del precio justo.';
+    cd.textContent=fillTemplate(t('cobras_menos'),sim,diff,data.precioActual,pct);cd.style.color='var(--orange)';
+    ct.textContent=fillTemplate(t('cobras_menos_t'),sim,diff,data.precioActual,pct);
   }else if(diff<0){
-    cd.textContent='Cobras '+sim+Math.round(Math.abs(diff))+' por encima';cd.style.color='var(--green)';
-    ct.textContent='Tu precio de '+sim+data.precioActual+' supera la referencia en un '+Math.abs(pct)+'%.';
+    cd.textContent=fillTemplate(t('cobras_mas'),sim,diff,data.precioActual,pct);cd.style.color='var(--green)';
+    ct.textContent=fillTemplate(t('cobras_mas_t'),sim,diff,data.precioActual,pct);
     eliteMsg.style.display='block';
   }else{
-    cd.textContent='Precio exacto';cd.style.color='var(--green)';ct.textContent='Tu precio coincide exactamente con la referencia. Bien calibrado.';
+    cd.textContent=t('cobras_exacto');cd.style.color='var(--green)';ct.textContent=t('cobras_exacto_t');
   }
 
   const repNivel=document.getElementById('f_reputacion').value||'construyendo';
