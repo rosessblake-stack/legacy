@@ -111,7 +111,7 @@ export default async function handler(req, res) {
 
   // ── FACTOR OASIS (solo Élite + Premium en LATAM/África) ───────
   const FACTOR_OASIS = {
-    mx:2.2, co:2.0, do:1.8, ar:2.5, cl:1.6, pe:1.7, ec:1.5, ve:2.0,
+    mx:2.2, co:2.0, do:1.8, ar:1.75, cl:1.6, pe:1.7, ec:1.5, ve:2.0,
     gt:1.4, cr:1.5, pa:1.6, py:1.3, uy:1.5, bo:1.3, br:1.6,
     ng:1.5, gh:1.4, ke:1.4, za:1.5, ma:1.3, eg:1.3,
     es:1.0, us:1.0, gb:1.0, fr:1.0, de:1.0, it:1.0, pt:1.0,
