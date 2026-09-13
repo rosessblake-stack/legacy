@@ -161,7 +161,7 @@ export default async function handler(req, res) {
 
   // ── DETERMINAR SI LLEVA EXTENSIONES ───────────────────────────
   const llevaExtensiones =
-    (tipoTrenzado === 'pegadas' && extensionesPegadas === 'con') ||
+    (tipoTrenzado === 'pegadas' && (extensionesPegadas === 'con' || extensionesPegadas === 'feedin')) ||
     (tipoTrenzado === 'sueltas' && extensionesSueltas === 'con') ||
     (tipoTrenzado === 'fulani'  && extensionesFulani  === 'con');
 
@@ -229,7 +229,9 @@ export default async function handler(req, res) {
     else if (tipoPegadas === 'twist')         modComp *= 1.05;
     if (complejidadPegadas === 'con_disenos') modComp *= 1.20;
     if (extensionesPegadas === 'con')         modComp *= 1.08;
-    if (extensionesPegadas === 'con' && bohoPegadas === 'si') modComp *= 1.18;
+    else if (extensionesPegadas === 'feedin') modComp *= 1.15;
+    const llevaExtPegadas = extensionesPegadas === 'con' || extensionesPegadas === 'feedin';
+    if (llevaExtPegadas && bohoPegadas === 'si') modComp *= 1.18;
 
     valorConocimiento =
       horaBase *
