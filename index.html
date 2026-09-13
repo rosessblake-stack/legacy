@@ -564,12 +564,12 @@ option{background:#0d0d0d;color:#fff;}
     <div class="tf-step active" id="s1">
       <div class="tf-eyebrow" id="i_ey1">01 — Bienvenida</div>
       <div class="tf-q clash" id="i_q1">¿Cuál es tu correo electrónico?</div>
-      <div class="tf-sub">Para guardarte los resultados. <strong>Sin spam, sin newsletter.</strong></div>
+      <div class="tf-sub" data-i-html="s1_sub_html">Para guardarte los resultados. <strong>Sin spam, sin newsletter.</strong></div>
       <input class="tf-input" type="email" id="f_email" placeholder="tu@email.com" autocomplete="email" oninput="checkBtn(1)">
-      <div class="tf-hint">Tu correo se guarda de forma segura y nunca se comparte.</div>
+      <div class="tf-hint" id="i_hint1">Tu correo se guarda de forma segura y nunca se comparte.</div>
       <div class="tf-error" id="err1">Introduce un correo válido.</div>
       <div class="tf-nav">
-        <button class="tf-btn-next" id="btn1" disabled onclick="validarYAvanzar(1,2)">Continuar →</button>
+        <button class="tf-btn-next" id="btn1" disabled onclick="validarYAvanzar(1,2)" data-i="continue">Continuar →</button>
         <span class="tf-enter">pulsa Enter ↵</span>
       </div>
     </div>
@@ -578,11 +578,11 @@ option{background:#0d0d0d;color:#fff;}
     <div class="tf-step" id="s2">
       <div class="tf-eyebrow" id="i_ey2">02 — Tu perfil</div>
       <div class="tf-q clash" id="i_q2">¿Tu usuario de Instagram?</div>
-      <div class="tf-sub">Nos ayuda a entender el mercado real de profesionales.</div>
+      <div class="tf-sub" id="i_sub2">Nos ayuda a entender el mercado real de profesionales.</div>
       <input class="tf-input" type="text" id="f_ig" placeholder="@tuusuario">
       <div class="tf-nav">
         <button class="tf-btn-back" onclick="goBack(1)">←</button>
-        <button class="tf-btn-next" onclick="go(3)">Continuar →</button>
+        <button class="tf-btn-next" onclick="go(3)" data-i="continue">Continuar →</button>
       </div>
     </div>
 
@@ -590,9 +590,9 @@ option{background:#0d0d0d;color:#fff;}
     <div class="tf-step" id="s3">
       <div class="tf-eyebrow" id="i_ey3">03 — Ubicación</div>
       <div class="tf-q clash" id="i_q3">¿En qué país trabajas?</div>
-      <div class="tf-sub">El sistema ajustará los precios al mercado real de tu zona.</div>
+      <div class="tf-sub" id="i_sub3">El sistema ajustará los precios al mercado real de tu zona.</div>
       <select class="tf-select" id="f_pais" onchange="updateRegiones()">
-        <option value="" disabled selected>Selecciona tu país…</option>
+        <option value="" disabled selected data-i="s3_sel">Selecciona tu país…</option>
         <option value="es">🇪🇸 España</option>
         <option value="us">🇺🇸 Estados Unidos</option>
         <option value="mx">🇲🇽 México</option>
@@ -622,38 +622,38 @@ option{background:#0d0d0d;color:#fff;}
 
       <div class="tf-nav">
         <button class="tf-btn-back" onclick="goBack(2)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(3,4)">Continuar →</button>
+        <button class="tf-btn-next" onclick="validarYAvanzar(3,4)" data-i="continue">Continuar →</button>
       </div>
     </div>
 
     <!-- 04 CIUDAD -->
     <div class="tf-step" id="s4">
-      <div class="tf-eyebrow">04 — Ubicación</div>
-      <div class="tf-q clash">¿En qué ciudad trabajas?</div>
-      <div class="tf-sub">Selecciona tu región y ciudad para usar el salario real de tu zona.</div>
+      <div class="tf-eyebrow" id="i_ey4">04 — Ubicación</div>
+      <div class="tf-q clash" id="i_q4">¿En qué ciudad trabajas?</div>
+      <div class="tf-sub" id="i_sub4">Selecciona tu región y ciudad para usar el salario real de tu zona.</div>
       <select class="tf-select" id="f_region" onchange="updateCiudades()">
-        <option value="" disabled selected>Selecciona tu región…</option>
+        <option value="" disabled selected data-i="s4_r">Selecciona tu región…</option>
       </select>
       <select class="tf-select" id="f_ciudad" style="margin-top:10px" onchange="onCiudadChange()">
-        <option value="" disabled selected>Selecciona tu ciudad…</option>
+        <option value="" disabled selected data-i="s4_c">Selecciona tu ciudad…</option>
       </select>
       <div id="smiPillsWrap" style="display:none;margin-top:16px">
         <div class="smi-pills">
           <div class="smi-pill active" id="pillSME" onclick="selectSMI('sme')">
-            <div class="smi-pill-label">Salario Medio</div>
+            <div class="smi-pill-label" data-i="s4_sme">Salario Medio</div>
             <div class="smi-pill-val" id="smeVal">—</div>
             <div class="smi-pill-desc">SME</div>
           </div>
           <div class="smi-pill" id="pillSMI" onclick="selectSMI('smi')">
-            <div class="smi-pill-label">Salario Mínimo</div>
+            <div class="smi-pill-label" data-i="s4_smi">Salario Mínimo</div>
             <div class="smi-pill-val" id="smiVal">—</div>
             <div class="smi-pill-desc">SMI</div>
           </div>
         </div>
-        <div class="tf-chip" onclick="var b=this.nextElementSibling;b.classList.toggle('open');this.querySelector('span').textContent=b.classList.contains('open')?'▲ Cerrar':'💡 ¿Cuál elijo?'">
-          <span>💡 ¿Cuál elijo?</span>
+        <div class="tf-chip" onclick="var b=this.nextElementSibling;b.classList.toggle('open');this.querySelector('span').textContent=b.classList.contains('open')?t('s4_chip_close'):t('s4_chip')">
+          <span data-i="s4_chip">💡 ¿Cuál elijo?</span>
         </div>
-        <div class="tf-chip-body">
+        <div class="tf-chip-body" data-i-html="s4_chip_body_html">
           <strong>Salario Medio (SME)</strong> — lo que gana de media la gente en tu ciudad. Es la base más justa.<br><br>
           <strong>Salario Mínimo (SMI)</strong> — el mínimo legal del país. Precios más conservadores.<br><br>
           Si dudas, elige el <strong>Salario Medio</strong>.
@@ -663,19 +663,19 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-error" id="err4">Selecciona tu región y ciudad.</div>
       <div class="tf-nav">
         <button class="tf-btn-back" onclick="goBack(3)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(4,5)">Continuar →</button>
+        <button class="tf-btn-next" onclick="validarYAvanzar(4,5)" data-i="continue">Continuar →</button>
       </div>
     </div>
 
     <!-- 05 ZONA -->
     <div class="tf-step" id="s5">
-      <div class="tf-eyebrow">05 — Tu zona</div>
-      <div class="tf-q clash">¿En qué tipo de zona trabajas?</div>
-      <div class="tf-sub">Ajusta el precio según el poder adquisitivo de tus clientes.</div>
+      <div class="tf-eyebrow" id="i_ey5">05 — Tu zona</div>
+      <div class="tf-q clash" id="i_q5">¿En qué tipo de zona trabajas?</div>
+      <div class="tf-sub" id="i_sub5">Ajusta el precio según el poder adquisitivo de tus clientes.</div>
       <div class="tf-opts" id="zonaOpts">
-        <div class="tf-opt opt-gold" onclick="selOpt(this,'f_zona','premium');go(6)"><div><div class="tf-opt-name">Zona cara</div><div class="tf-opt-sub">Centro, barrio exclusivo, zona de lujo</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_zona','media');go(6)"><div><div class="tf-opt-name">Zona normal</div><div class="tf-opt-sub">Barrio estándar, periferia</div></div></div>
-        <div class="tf-opt opt-subtle" onclick="selOpt(this,'f_zona','baja');go(6)"><div><div class="tf-opt-name">Zona económica</div><div class="tf-opt-sub">Pueblo, zona rural, área de menor renta</div></div></div>
+        <div class="tf-opt opt-gold" onclick="selOpt(this,'f_zona','premium');go(6)"><div><div class="tf-opt-name" data-i="zona_cara">Zona cara</div><div class="tf-opt-sub" data-i="zona_cara_s">Centro, barrio exclusivo, zona de lujo</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_zona','media');go(6)"><div><div class="tf-opt-name" data-i="zona_normal">Zona normal</div><div class="tf-opt-sub" data-i="zona_normal_s">Barrio estándar, periferia</div></div></div>
+        <div class="tf-opt opt-subtle" onclick="selOpt(this,'f_zona','baja');go(6)"><div><div class="tf-opt-name" data-i="zona_baja">Zona económica</div><div class="tf-opt-sub" data-i="zona_baja_s">Pueblo, zona rural, área de menor renta</div></div></div>
       </div>
       <input type="hidden" id="f_zona">
       <div class="tf-error" id="err5">Selecciona el tipo de zona.</div>
@@ -684,47 +684,47 @@ option{background:#0d0d0d;color:#fff;}
 
     <!-- 06 NIVEL -->
     <div class="tf-step" id="s6">
-      <div class="tf-eyebrow">06 — Tu perfil profesional</div>
-      <div class="tf-q clash">¿Cuál es tu nivel técnico?</div>
-      <div class="tf-sub">Si dudas entre dos, elige el más bajo — el sistema te dirá si puedes cobrar más.</div>
+      <div class="tf-eyebrow" id="i_ey6">06 — Tu perfil profesional</div>
+      <div class="tf-q clash" id="i_q6">¿Cuál es tu nivel técnico?</div>
+      <div class="tf-sub" id="i_sub6">Si dudas entre dos, elige el más bajo — el sistema te dirá si puedes cobrar más.</div>
       <div class="tf-opts" id="nivelOpts">
-        <div class="tf-opt opt-subtle" onclick="selOpt(this,'f_nivel','junior')"><div><div class="tf-opt-name">Junior</div><div class="tf-opt-sub">Aprendiendo, primeros servicios reales</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_nivel','intermedio')" style="--before-color:#3B82F6"><div><div class="tf-opt-name" style="color:#93C5FD">Intermedio</div><div class="tf-opt-sub">Técnica sólida, 1-2 años de experiencia</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_nivel','avanzado')"><div><div class="tf-opt-name" style="color:#F87171">Avanzado</div><div class="tf-opt-sub">Experiencia consolidada, clientela fija</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_nivel','profesional')" style="--c:var(--purple)"><div><div class="tf-opt-name" style="color:#C4B5FD">Profesional</div><div class="tf-opt-sub">Referente local, agenda siempre llena</div></div></div>
-        <div class="tf-opt opt-gold" onclick="selOpt(this,'f_nivel','elite')"><div><div class="tf-opt-name">Élite</div><div class="tf-opt-sub">Referente del sector, lista de espera</div></div></div>
+        <div class="tf-opt opt-subtle" onclick="selOpt(this,'f_nivel','junior')"><div><div class="tf-opt-name" data-i="n_junior">Junior</div><div class="tf-opt-sub" data-i="n_junior_s">Aprendiendo, primeros servicios reales</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_nivel','intermedio')" style="--before-color:#3B82F6"><div><div class="tf-opt-name" style="color:#93C5FD" data-i="n_inter">Intermedio</div><div class="tf-opt-sub" data-i="n_inter_s">Técnica sólida, 1-2 años de experiencia</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_nivel','avanzado')"><div><div class="tf-opt-name" style="color:#F87171" data-i="n_avanz">Avanzado</div><div class="tf-opt-sub" data-i="n_avanz_s">Experiencia consolidada, clientela fija</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_nivel','profesional')" style="--c:var(--purple)"><div><div class="tf-opt-name" style="color:#C4B5FD" data-i="n_prof">Profesional</div><div class="tf-opt-sub" data-i="n_prof_s">Referente local, agenda siempre llena</div></div></div>
+        <div class="tf-opt opt-gold" onclick="selOpt(this,'f_nivel','elite')"><div><div class="tf-opt-name" data-i="n_elite">Élite</div><div class="tf-opt-sub" data-i="n_elite_s">Referente del sector, lista de espera</div></div></div>
       </div>
-      <div class="tf-sublabel first">¿Trabajas en casa o en salón?</div>
+      <div class="tf-sublabel first" data-i="s6_estructura_q">¿Trabajas en casa o en salón?</div>
       <div class="tf-opts" id="estructuraOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_estructura','casa')"><div><div class="tf-opt-name">En casa</div></div></div>
-        <div class="tf-opt opt-green" onclick="selOpt(this,'f_estructura','salon')"><div><div class="tf-opt-name">En salón</div><div class="tf-opt-sub">Incremento por estructura profesional</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_estructura','casa')"><div><div class="tf-opt-name" data-i="casa">En casa</div></div></div>
+        <div class="tf-opt opt-green" onclick="selOpt(this,'f_estructura','salon')"><div><div class="tf-opt-name" data-i="salon">En salón</div><div class="tf-opt-sub" data-i="salon_s">Incremento por estructura profesional</div></div></div>
       </div>
       <input type="hidden" id="f_nivel">
       <input type="hidden" id="f_estructura">
       <div class="tf-error" id="err6">Selecciona tu nivel y dónde trabajas.</div>
       <div class="tf-nav">
         <button class="tf-btn-back" onclick="goBack(5)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(6,13)">Continuar →</button>
+        <button class="tf-btn-next" onclick="validarYAvanzar(6,13)" data-i="continue">Continuar →</button>
       </div>
     </div>
 
     <!-- 13 REPUTACIÓN -->
     <div class="tf-step" id="s13">
-      <div class="tf-eyebrow">Tu presencia</div>
-      <div class="tf-q clash">¿Cuál es tu nivel de reputación en el sector?</div>
-      <div class="tf-sub">No cambia tu precio base — te muestra el techo al que puedes aspirar con tu posicionamiento real.</div>
+      <div class="tf-eyebrow" id="i_ey13">Tu presencia</div>
+      <div class="tf-q clash" id="i_q13">¿Cuál es tu nivel de reputación en el sector?</div>
+      <div class="tf-sub" id="i_sub13">No cambia tu precio base — te muestra el techo al que puedes aspirar con tu posicionamiento real.</div>
       <div class="tf-opts" id="repOpts">
-        <div class="tf-opt r-grey" onclick="selOpt(this,'f_reputacion','construyendo')"><div><div class="tf-opt-name">Construyendo</div><div class="tf-opt-sub">Menos de 1K seguidores, clientela local</div></div></div>
-        <div class="tf-opt r-red" onclick="selOpt(this,'f_reputacion','activa')"><div><div class="tf-opt-name">Presencia activa</div><div class="tf-opt-sub">1K – 10K seguidores, comunidad en crecimiento</div></div></div>
-        <div class="tf-opt r-blue" onclick="selOpt(this,'f_reputacion','local')"><div><div class="tf-opt-name">Referente local</div><div class="tf-opt-sub">10K – 50K seguidores, agenda con lista de espera</div></div></div>
-        <div class="tf-opt r-purple" onclick="selOpt(this,'f_reputacion','nacional')"><div><div class="tf-opt-name">Referente nacional</div><div class="tf-opt-sub">50K – 200K seguidores, clientes de alto perfil</div></div></div>
-        <div class="tf-opt r-gold" onclick="selOpt(this,'f_reputacion','internacional')"><div><div class="tf-opt-name">Referente internacional</div><div class="tf-opt-sub">200K+, ha trabajado con artistas</div></div></div>
+        <div class="tf-opt r-grey" onclick="selOpt(this,'f_reputacion','construyendo')"><div><div class="tf-opt-name" data-i="rep_c">Construyendo</div><div class="tf-opt-sub" data-i="rep_c_s">Menos de 1K seguidores, clientela local</div></div></div>
+        <div class="tf-opt r-red" onclick="selOpt(this,'f_reputacion','activa')"><div><div class="tf-opt-name" data-i="rep_a">Presencia activa</div><div class="tf-opt-sub" data-i="rep_a_s">1K – 10K seguidores, comunidad en crecimiento</div></div></div>
+        <div class="tf-opt r-blue" onclick="selOpt(this,'f_reputacion','local')"><div><div class="tf-opt-name" data-i="rep_l">Referente local</div><div class="tf-opt-sub" data-i="rep_l_s">10K – 50K seguidores, agenda con lista de espera</div></div></div>
+        <div class="tf-opt r-purple" onclick="selOpt(this,'f_reputacion','nacional')"><div><div class="tf-opt-name" data-i="rep_n">Referente nacional</div><div class="tf-opt-sub" data-i="rep_n_s">50K – 200K seguidores, clientes de alto perfil</div></div></div>
+        <div class="tf-opt r-gold" onclick="selOpt(this,'f_reputacion','internacional')"><div><div class="tf-opt-name" data-i="rep_i">Referente internacional</div><div class="tf-opt-sub" data-i="rep_i_s">200K+, ha trabajado con artistas</div></div></div>
       </div>
       <input type="hidden" id="f_reputacion">
       <div class="tf-error" id="err13">Selecciona tu nivel de reputación.</div>
       <div class="tf-nav">
         <button class="tf-btn-back" onclick="goBack(6)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(13,7)">Continuar →</button>
+        <button class="tf-btn-next" onclick="validarYAvanzar(13,7)" data-i="continue">Continuar →</button>
       </div>
     </div>
 
@@ -732,11 +732,11 @@ option{background:#0d0d0d;color:#fff;}
     <div class="tf-step" id="s7">
       <div class="tf-eyebrow" id="i_ey7">07 — El servicio</div>
       <div class="tf-q clash" id="i_q7">¿Qué tipo de trenzado vas a calcular?</div>
-      <div class="tf-sub">Este sistema <strong>no calcula por número de trenzas</strong> — te ayuda a descubrir el valor real de tu hora de trabajo.</div>
+      <div class="tf-sub" data-i-html="s7_sub_html">Este sistema <strong>no calcula por número de trenzas</strong> — te ayuda a descubrir el valor real de tu hora de trabajo.</div>
       <div class="tf-opts" id="tipoOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','pegadas');go(8);actualizarEstimado(1)"><div><div class="tf-opt-name">Pegadas</div><div class="tf-opt-sub">Cornrows · Twist · Barrel Twist</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','sueltas');go(9);actualizarEstimado(1)"><div><div class="tf-opt-name">Sueltas</div><div class="tf-opt-sub">Box Braids · Knotless · Goddess · Bohemian…</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','fulani');go(10);actualizarEstimado(1)"><div><div class="tf-opt-name">Fulani Braids</div><div class="tf-opt-sub">Combinación de pegadas y sueltas</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipo','pegadas');go(8);actualizarEstimado(1)"><div><div class="tf-opt-name" data-i="pegadas">Pegadas</div><div class="tf-opt-sub" data-i="pegadas_s">Cornrows · Twist · Barrel Twist</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipo','sueltas');go(9);actualizarEstimado(1)"><div><div class="tf-opt-name" data-i="sueltas">Sueltas</div><div class="tf-opt-sub" data-i="sueltas_s">Box Braids · Knotless · Goddess · Bohemian…</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipo','fulani');go(10);actualizarEstimado(1)"><div><div class="tf-opt-name" data-i="fulani">Fulani Braids</div><div class="tf-opt-sub" data-i="fulani_s">Combinación de pegadas y sueltas</div></div></div>
       </div>
       <input type="hidden" id="f_tipo">
       <div class="tf-nav"><button class="tf-btn-back" onclick="goBack(13)">←</button></div>
@@ -744,47 +744,47 @@ option{background:#0d0d0d;color:#fff;}
 
     <!-- 08 PEGADAS -->
     <div class="tf-step" id="s8">
-      <div class="tf-eyebrow">08 — Pegadas</div>
-      <div class="tf-q clash">Cuéntame sobre las pegadas.</div>
-      <div class="tf-sub">Cada detalle afina el precio final.</div>
-      <div class="tf-sublabel first">Tipo de pegadas</div>
+      <div class="tf-eyebrow" id="i_ey8">08 — Pegadas</div>
+      <div class="tf-q clash" id="i_q8">Cuéntame sobre las pegadas.</div>
+      <div class="tf-sub" id="i_sub8">Cada detalle afina el precio final.</div>
+      <div class="tf-sublabel first" data-i="wiz_tipo_peg_label">Tipo de pegadas</div>
       <div class="tf-opts" id="tipoPegOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','cornrows')"><div><div class="tf-opt-name">Cornrows</div><div class="tf-opt-sub">El tipo base de pegadas</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','twist')"><div><div class="tf-opt-name">Twist</div><div class="tf-opt-sub">Flat Twist o Senegalese Twist pegados</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','barrel_twist')"><div><div class="tf-opt-name">Barrel Twist</div><div class="tf-opt-sub">Técnica más compleja, acabado redondeado</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','cornrows')"><div><div class="tf-opt-name">Cornrows</div><div class="tf-opt-sub" data-i="opt_cornrows_sub">El tipo base de pegadas</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','twist')"><div><div class="tf-opt-name">Twist</div><div class="tf-opt-sub" data-i="opt_twist_sub">Flat Twist o Senegalese Twist pegados</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipopeg','barrel_twist')"><div><div class="tf-opt-name">Barrel Twist</div><div class="tf-opt-sub" data-i="opt_barrel_sub">Técnica más compleja, acabado redondeado</div></div></div>
       </div>
-      <div class="tf-sublabel">Complejidad del diseño</div>
+      <div class="tf-sublabel" data-i="wiz_complejidad_label">Complejidad del diseño</div>
       <div class="tf-opts" id="compPegOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_comppeg','basico')"><div><div class="tf-opt-name">Básico</div><div class="tf-opt-sub">Líneas rectas, sin diseño especial</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_comppeg','con_disenos')"><div><div class="tf-opt-name">Con diseño</div><div class="tf-opt-sub">Curvas, cruces, radial, zigzag…</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_comppeg','basico')"><div><div class="tf-opt-name" data-i="opt_basico">Básico</div><div class="tf-opt-sub" data-i="opt_basico_sub">Líneas rectas, sin diseño especial</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_comppeg','con_disenos')"><div><div class="tf-opt-name" data-i="opt_con_disenos">Con diseño</div><div class="tf-opt-sub" data-i="opt_condisenos_sub">Curvas, cruces, radial, zigzag…</div></div></div>
       </div>
-      <div class="tf-sublabel">¿Llevan extensiones?</div>
+      <div class="tf-sublabel" data-i="wiz_ext_q">¿Llevan extensiones?</div>
       <div class="tf-opts" id="extPegOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','con');showBoho('peg',true);updateLargoExtField()"><div><div class="tf-opt-name">Con extensiones</div><div class="tf-opt-sub">Extensión estándar añadida trenza a trenza</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','con');showBoho('peg',true);updateLargoExtField()"><div><div class="tf-opt-name" data-i="opt_con_ext">Con extensiones</div><div class="tf-opt-sub" data-i="opt_conext_sub_peg">Extensión estándar añadida trenza a trenza</div></div></div>
         <div class="tf-opt" onclick="selOpt(this,'f_extpeg','feedin');showBoho('peg',true);updateLargoExtField()"><div><div class="tf-opt-name">Feed-in / Camuflaje completo</div><div class="tf-opt-sub" data-i="feedin_sub">Extensión progresiva por capas — siempre lleva extensión (sin extensión serían trenzas normales)</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','sin');showBoho('peg',false);updateLargoExtField()"><div><div class="tf-opt-name">Sin extensiones</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','sin');showBoho('peg',false);updateLargoExtField()"><div><div class="tf-opt-name" data-i="opt_sin_ext">Sin extensiones</div></div></div>
       </div>
       <div class="tf-subfield" id="bohoPegField">
-        <div class="tf-sublabel first">¿Añades efecto Boho?</div>
+        <div class="tf-sublabel first" data-i="wiz_boho_q">¿Añades efecto Boho?</div>
         <div class="tf-opts" id="bohoPegOpts">
-          <div class="tf-opt" onclick="selOpt(this,'f_bohopeg','si')"><div><div class="tf-opt-name">Sí — con Boho</div><div class="tf-opt-sub">Rizos en las puntas</div></div></div>
-          <div class="tf-opt" onclick="selOpt(this,'f_bohopeg','no')"><div><div class="tf-opt-name">No — sin Boho</div></div></div>
+          <div class="tf-opt" onclick="selOpt(this,'f_bohopeg','si')"><div><div class="tf-opt-name" data-i="opt_boho_si">Sí — con Boho</div><div class="tf-opt-sub" data-i="opt_boho_si_sub">Rizos en las puntas</div></div></div>
+          <div class="tf-opt" onclick="selOpt(this,'f_bohopeg','no')"><div><div class="tf-opt-name" data-i="opt_boho_no">No — sin Boho</div></div></div>
         </div>
       </div>
       <input type="hidden" id="f_tipopeg"><input type="hidden" id="f_comppeg"><input type="hidden" id="f_extpeg"><input type="hidden" id="f_bohopeg">
       <div class="tf-error" id="err8">Selecciona el tipo, complejidad y extensiones.</div>
       <div class="tf-nav">
         <button class="tf-btn-back" onclick="goBack(7)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(8,11)">Continuar →</button>
+        <button class="tf-btn-next" onclick="validarYAvanzar(8,11)" data-i="continue">Continuar →</button>
       </div>
     </div>
 
     <!-- 09 SUELTAS -->
     <div class="tf-step" id="s9">
-      <div class="tf-eyebrow">09 — Sueltas</div>
-      <div class="tf-q clash">Cuéntame sobre las sueltas.</div>
-      <div class="tf-sub">Tamaño, técnica, extensiones y acabado.</div>
-      <div class="tf-sublabel first">Tamaño</div>
+      <div class="tf-eyebrow" id="i_ey9">09 — Sueltas</div>
+      <div class="tf-q clash" id="i_q9">Cuéntame sobre las sueltas.</div>
+      <div class="tf-sub" id="i_sub9">Tamaño, técnica, extensiones y acabado.</div>
+      <div class="tf-sublabel first" data-i="qf_tamano">Tamaño</div>
       <div class="tf-pills" id="tamanoSueltasPills">
         <div class="tf-pill" onclick="selPill(this,'f_tamano','jumbo')">Jumbo</div>
         <div class="tf-pill" onclick="selPill(this,'f_tamano','large')">Large</div>
@@ -794,37 +794,37 @@ option{background:#0d0d0d;color:#fff;}
         <div class="tf-pill" onclick="selPill(this,'f_tamano','small')">Small</div>
         <div class="tf-pill" onclick="selPill(this,'f_tamano','xs_small')">XS Small</div>
       </div>
-      <div class="tf-sublabel">Técnica</div>
+      <div class="tf-sublabel" data-i="qf_tecnica">Técnica</div>
       <div class="tf-opts" id="tipoSueltasOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_tiposueltas','normales')"><div><div class="tf-opt-name">Normales (Knotless / Box Braids)</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tiposueltas','twist')"><div><div class="tf-opt-name">Twist (Senegalese / Marley)</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tiposueltas','normales')"><div><div class="tf-opt-name" data-i="s9_tecnica_normales">Normales (Knotless / Box Braids)</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tiposueltas','twist')"><div><div class="tf-opt-name" data-i="s9_tecnica_twist">Twist (Senegalese / Marley)</div></div></div>
       </div>
-      <div class="tf-sublabel">¿Llevan extensiones?</div>
+      <div class="tf-sublabel" data-i="wiz_ext_q">¿Llevan extensiones?</div>
       <div class="tf-opts" id="extSueltasOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_extsueltas','con');showBoho('sue',true);updateLargoExtField()"><div><div class="tf-opt-name">Con extensiones</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_extsueltas','sin');showBoho('sue',false);updateLargoExtField()"><div><div class="tf-opt-name">Sin extensiones</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_extsueltas','con');showBoho('sue',true);updateLargoExtField()"><div><div class="tf-opt-name" data-i="opt_con_ext">Con extensiones</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_extsueltas','sin');showBoho('sue',false);updateLargoExtField()"><div><div class="tf-opt-name" data-i="opt_sin_ext">Sin extensiones</div></div></div>
       </div>
       <div class="tf-subfield visible" id="bohoSueField">
-        <div class="tf-sublabel first">¿Añades efecto Boho / Goddess / Bohemian?</div>
+        <div class="tf-sublabel first" data-i="wiz_boho_q_sue">¿Añades efecto Boho / Goddess / Bohemian?</div>
         <div class="tf-opts" id="bohoSueOpts">
-          <div class="tf-opt" onclick="selOpt(this,'f_bohosueltas','si')"><div><div class="tf-opt-name">Sí — con Boho</div><div class="tf-opt-sub">Rizos en las puntas</div></div></div>
-          <div class="tf-opt" onclick="selOpt(this,'f_bohosueltas','no')"><div><div class="tf-opt-name">No — sin Boho</div></div></div>
+          <div class="tf-opt" onclick="selOpt(this,'f_bohosueltas','si')"><div><div class="tf-opt-name" data-i="opt_boho_si">Sí — con Boho</div><div class="tf-opt-sub" data-i="opt_boho_si_sub">Rizos en las puntas</div></div></div>
+          <div class="tf-opt" onclick="selOpt(this,'f_bohosueltas','no')"><div><div class="tf-opt-name" data-i="opt_boho_no">No — sin Boho</div></div></div>
         </div>
       </div>
       <input type="hidden" id="f_tamano"><input type="hidden" id="f_tiposueltas"><input type="hidden" id="f_extsueltas"><input type="hidden" id="f_bohosueltas">
       <div class="tf-error" id="err9">Selecciona tamaño, técnica y extensiones.</div>
       <div class="tf-nav">
         <button class="tf-btn-back" onclick="goBack(7)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(9,11)">Continuar →</button>
+        <button class="tf-btn-next" onclick="validarYAvanzar(9,11)" data-i="continue">Continuar →</button>
       </div>
     </div>
 
     <!-- 10 FULANI -->
     <div class="tf-step" id="s10">
-      <div class="tf-eyebrow">10 — Fulani Braids</div>
-      <div class="tf-q clash">Cuéntame sobre las Fulani.</div>
-      <div class="tf-sub">Parte trasera (sueltas) y parte delantera (pegadas).</div>
-      <div class="tf-sublabel first">Tamaño parte trasera</div>
+      <div class="tf-eyebrow" id="i_ey10">10 — Fulani Braids</div>
+      <div class="tf-q clash" id="i_q10">Cuéntame sobre las Fulani.</div>
+      <div class="tf-sub" id="i_sub10">Parte trasera (sueltas) y parte delantera (pegadas).</div>
+      <div class="tf-sublabel first" data-i="wiz_tamano_atras_label">Tamaño parte trasera</div>
       <div class="tf-pills" id="tamanoFulaniPills">
         <div class="tf-pill" onclick="selPill(this,'f_tamanofulsueltas','jumbo')">Jumbo</div>
         <div class="tf-pill" onclick="selPill(this,'f_tamanofulsueltas','large')">Large</div>
@@ -834,89 +834,89 @@ option{background:#0d0d0d;color:#fff;}
         <div class="tf-pill" onclick="selPill(this,'f_tamanofulsueltas','small')">Small</div>
         <div class="tf-pill" onclick="selPill(this,'f_tamanofulsueltas','xs_small')">XS Small</div>
       </div>
-      <div class="tf-sublabel">Complejidad parte delantera</div>
+      <div class="tf-sublabel" data-i="wiz_complejidad_delante_label">Complejidad parte delantera</div>
       <div class="tf-opts" id="compFulOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_compfuldelante','simples')"><div><div class="tf-opt-name">Simples</div><div class="tf-opt-sub">Pocas trenzas, sin adornos</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_compfuldelante','medias')"><div><div class="tf-opt-name">Medias</div><div class="tf-opt-sub">Diseño definido con accesorios</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_compfuldelante','elaboradas')"><div><div class="tf-opt-name">Elaboradas</div><div class="tf-opt-sub">Diseño intrincado, múltiples trenzas</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_compfuldelante','simples')"><div><div class="tf-opt-name" data-i="opt_simples">Simples</div><div class="tf-opt-sub" data-i="opt_simples_sub">Pocas trenzas, sin adornos</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_compfuldelante','medias')"><div><div class="tf-opt-name" data-i="opt_medias">Medias</div><div class="tf-opt-sub" data-i="opt_medias_sub">Diseño definido con accesorios</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_compfuldelante','elaboradas')"><div><div class="tf-opt-name" data-i="opt_elaboradas">Elaboradas</div><div class="tf-opt-sub" data-i="opt_elaboradas_sub">Diseño intrincado, múltiples trenzas</div></div></div>
       </div>
-      <div class="tf-sublabel">¿Llevan extensiones?</div>
+      <div class="tf-sublabel" data-i="wiz_ext_q">¿Llevan extensiones?</div>
       <div class="tf-opts" id="extFulOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_extfulani','con');showBoho('ful',true);updateLargoExtField()"><div><div class="tf-opt-name">Con extensiones</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_extfulani','sin');showBoho('ful',false);updateLargoExtField()"><div><div class="tf-opt-name">Sin extensiones</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_extfulani','con');showBoho('ful',true);updateLargoExtField()"><div><div class="tf-opt-name" data-i="opt_con_ext">Con extensiones</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_extfulani','sin');showBoho('ful',false);updateLargoExtField()"><div><div class="tf-opt-name" data-i="opt_sin_ext">Sin extensiones</div></div></div>
       </div>
       <div class="tf-subfield visible" id="bohoFulField">
-        <div class="tf-sublabel first">¿Añades efecto Boho?</div>
+        <div class="tf-sublabel first" data-i="wiz_boho_q">¿Añades efecto Boho?</div>
         <div class="tf-opts" id="bohoFulOpts">
-          <div class="tf-opt" onclick="selOpt(this,'f_bohofulsueltas','si')"><div><div class="tf-opt-name">Sí — con Boho</div><div class="tf-opt-sub">Rizos en las sueltas traseras</div></div></div>
-          <div class="tf-opt" onclick="selOpt(this,'f_bohofulsueltas','no')"><div><div class="tf-opt-name">No — sin Boho</div></div></div>
+          <div class="tf-opt" onclick="selOpt(this,'f_bohofulsueltas','si')"><div><div class="tf-opt-name" data-i="opt_boho_si">Sí — con Boho</div><div class="tf-opt-sub" data-i="opt_boho_si_sub_ful">Rizos en las sueltas traseras</div></div></div>
+          <div class="tf-opt" onclick="selOpt(this,'f_bohofulsueltas','no')"><div><div class="tf-opt-name" data-i="opt_boho_no">No — sin Boho</div></div></div>
         </div>
       </div>
       <input type="hidden" id="f_tamanofulsueltas"><input type="hidden" id="f_compfuldelante"><input type="hidden" id="f_extfulani"><input type="hidden" id="f_bohofulsueltas">
       <div class="tf-error" id="err10">Selecciona tamaño, complejidad y extensiones.</div>
       <div class="tf-nav">
         <button class="tf-btn-back" onclick="goBack(7)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(10,11)">Continuar →</button>
+        <button class="tf-btn-next" onclick="validarYAvanzar(10,11)" data-i="continue">Continuar →</button>
       </div>
     </div>
 
     <!-- 11 LARGO -->
     <div class="tf-step" id="s11">
-      <div class="tf-eyebrow">11 — Cabello</div>
-      <div class="tf-q clash">¿Cómo es el cabello del cliente?</div>
-      <div class="tf-sub">El largo afecta el tiempo real de preparación y trabajo.</div>
+      <div class="tf-eyebrow" id="i_ey11">11 — Cabello</div>
+      <div class="tf-q clash" id="i_q11">¿Cómo es el cabello del cliente?</div>
+      <div class="tf-sub" id="i_sub11">El largo afecta el tiempo real de preparación y trabajo.</div>
       <div class="tf-opts" id="largoCabOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','muy_corto')"><div><div class="tf-opt-name">Muy corto</div><div class="tf-opt-sub">Solo tupé, hasta 4 cm</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','corto')"><div><div class="tf-opt-name">Corto</div><div class="tf-opt-sub">Unos 10 cm</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','nuca_hombros')"><div><div class="tf-opt-name">Normal</div><div class="tf-opt-sub">Nuca o hombros</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','media_espalda')"><div><div class="tf-opt-name">Largo</div><div class="tf-opt-sub">Media espalda</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_largocab','caderas')"><div><div class="tf-opt-name">Muy largo</div><div class="tf-opt-sub">Caderas o más</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_largocab','muy_corto')"><div><div class="tf-opt-name" data-i="opt_muy_corto">Muy corto</div><div class="tf-opt-sub" data-i="opt_muy_corto_sub">Solo tupé, hasta 4 cm</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_largocab','corto')"><div><div class="tf-opt-name" data-i="opt_corto">Corto</div><div class="tf-opt-sub" data-i="opt_corto_sub">Unos 10 cm</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_largocab','nuca_hombros')"><div><div class="tf-opt-name" data-i="opt_normal_largo">Normal</div><div class="tf-opt-sub" data-i="opt_normal_sub">Nuca o hombros</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_largocab','media_espalda')"><div><div class="tf-opt-name" data-i="opt_largo">Largo</div><div class="tf-opt-sub" data-i="opt_largo_sub">Media espalda</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_largocab','caderas')"><div><div class="tf-opt-name" data-i="opt_muy_largo">Muy largo</div><div class="tf-opt-sub" data-i="opt_muy_largo_sub">Caderas o más</div></div></div>
       </div>
       <input type="hidden" id="f_largocab">
       <div class="tf-error" id="err11">Selecciona el largo del cabello.</div>
       <div id="largoExtField" style="display:none">
-        <div class="tf-sublabel">Largo final de las extensiones</div>
+        <div class="tf-sublabel" data-i="wiz_largo_ext_label">Largo final de las extensiones</div>
         <div class="tf-pills" id="largoExtPills">
-          <div class="tf-pill" onclick="selPill(this,'f_largoext','nuca')">Nuca</div>
-          <div class="tf-pill" onclick="selPill(this,'f_largoext','hombros')">Hombros</div>
-          <div class="tf-pill" onclick="selPill(this,'f_largoext','media_espalda')">Media espalda</div>
-          <div class="tf-pill" onclick="selPill(this,'f_largoext','caderas')">Caderas</div>
-          <div class="tf-pill" onclick="selPill(this,'f_largoext','mas_largo')">Más largo</div>
+          <div class="tf-pill" onclick="selPill(this,'f_largoext','nuca')" data-i="opt_nuca">Nuca</div>
+          <div class="tf-pill" onclick="selPill(this,'f_largoext','hombros')" data-i="opt_hombros">Hombros</div>
+          <div class="tf-pill" onclick="selPill(this,'f_largoext','media_espalda')" data-i="opt_media_espalda">Media espalda</div>
+          <div class="tf-pill" onclick="selPill(this,'f_largoext','caderas')" data-i="opt_caderas">Caderas</div>
+          <div class="tf-pill" onclick="selPill(this,'f_largoext','mas_largo')" data-i="opt_mas_largo">Más largo</div>
         </div>
       </div>
       <input type="hidden" id="f_largoext">
       <div class="tf-nav">
         <button class="tf-btn-back" id="backBtn11" onclick="go(7)">←</button>
-        <button class="tf-btn-next" onclick="validarYAvanzar(11,12)">Continuar →</button>
+        <button class="tf-btn-next" onclick="validarYAvanzar(11,12)" data-i="continue">Continuar →</button>
       </div>
     </div>
 
     <!-- 12 TIEMPO -->
     <div class="tf-step" id="s12">
-      <div class="tf-eyebrow">12 — Último paso</div>
-      <div class="tf-q clash">Tiempo y materiales</div>
-      <div class="tf-sub">Tres datos más y calculamos tu precio justo.</div>
-      <div class="tf-sublabel first">Horas que tardas en este servicio</div>
+      <div class="tf-eyebrow" id="i_ey12">12 — Último paso</div>
+      <div class="tf-q clash" id="i_q12">Tiempo y materiales</div>
+      <div class="tf-sub" id="i_sub12">Tres datos más y calculamos tu precio justo.</div>
+      <div class="tf-sublabel first" data-i="h_hours">Horas que tardas en este servicio</div>
       <input class="tf-input" type="number" id="f_horas" placeholder="Ej: 4" min="0.5" step="0.5" style="font-size:26px" oninput="checkBtn(12);actualizarEstimadoDebounced()">
-      <div class="tf-hint">Tus horas reales. <strong>No te compares</strong> — el sistema ya ajusta el valor según tu nivel.</div>
-      <div class="tf-sublabel">Gasto en producto <span id="monedaAviso12" style="text-transform:none;font-weight:600;color:var(--gold)"></span></div>
+      <div class="tf-hint" data-i-html="h_hours_hint_html">Tus horas reales. <strong>No te compares</strong> — el sistema ya ajusta el valor según tu nivel.</div>
+      <div class="tf-sublabel"><span data-i="h_mats">Gasto en producto</span> <span id="monedaAviso12" style="text-transform:none;font-weight:600;color:var(--gold)"></span></div>
       <input class="tf-input" type="number" id="f_materiales" placeholder="Ej: 8" min="0" step="1" style="font-size:26px">
-      <div class="tf-hint" style="margin-bottom:20px">Solo la parte proporcional de este servicio.</div>
-      <div class="tf-sublabel">¿Cuánto cobras actualmente? <span id="monedaAviso12b" style="text-transform:none;font-weight:600;color:var(--gold)"></span></div>
+      <div class="tf-hint" style="margin-bottom:20px" data-i="h_mats_hint">Solo la parte proporcional de este servicio.</div>
+      <div class="tf-sublabel"><span data-i="h_actual">¿Cuánto cobras actualmente?</span> <span id="monedaAviso12b" style="text-transform:none;font-weight:600;color:var(--gold)"></span></div>
       <input class="tf-input" type="number" id="f_precioactual" placeholder="0 si es servicio nuevo" min="0" style="font-size:26px">
-      <div class="tf-chip" onclick="var b=this.nextElementSibling;b.classList.toggle('open');this.querySelector('span').textContent=b.classList.contains('open')?'▲ Cerrar':'💡 ¿Para qué sirve este dato?'">
-        <span>💡 ¿Para qué sirve este dato?</span>
+      <div class="tf-chip" onclick="var b=this.nextElementSibling;b.classList.toggle('open');this.querySelector('span').textContent=b.classList.contains('open')?t('s12_chip_close'):t('s12_chip')">
+        <span data-i="s12_chip">💡 ¿Para qué sirve este dato?</span>
       </div>
-      <div class="tf-chip-body">Con este dato el sistema te muestra si estás cobrando <strong>por encima o por debajo</strong> del precio justo. Si es servicio nuevo, pon <strong>0</strong>.</div>
-      <div class="tf-sublabel">¿Cómo quieres llamar a este servicio?</div>
+      <div class="tf-chip-body" data-i-html="s12_chip_body_html">Con este dato el sistema te muestra si estás cobrando <strong>por encima o por debajo</strong> del precio justo. Si es servicio nuevo, pon <strong>0</strong>.</div>
+      <div class="tf-sublabel" data-i="h_nombre">¿Cómo quieres llamar a este servicio?</div>
       <input class="tf-input" type="text" id="f_nombre" placeholder="Ej: Knotless Medium con Boho" style="font-size:16px" maxlength="80">
-      <div class="tf-hint">Opcional — para identificar el resultado.</div>
+      <div class="tf-hint" data-i="h_nombre_hint">Opcional — para identificar el resultado.</div>
       <div class="tf-error" id="err12">Introduce las horas del servicio.</div>
       <div class="tf-nav" style="margin-top:20px">
         <button class="tf-btn-back" onclick="goBack(11)">←</button>
-        <button class="tf-btn-next" id="btn12" id="calcBtn" onclick="calcular()">Ver mi precio →</button>
+        <button class="tf-btn-next" id="btn12" onclick="calcular()" data-i="see_price">Ver mi precio →</button>
       </div>
-      <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:14px">No hay respuestas incorrectas — el sistema se adapta a lo que pongas.</p>
+      <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:14px" data-i="s12_note">No hay respuestas incorrectas — el sistema se adapta a lo que pongas.</p>
     </div>
 
   </div>
@@ -928,14 +928,14 @@ option{background:#0d0d0d;color:#fff;}
     <div class="res-eyebrow" id="resEyebrow">Tu precio justo</div>
     <div class="res-main-bubble">
       <div class="res-bubble-top">
-        <div class="res-bubble-label">Tu precio justo</div>
+        <div class="res-bubble-label" data-i="res_bubble_label">Tu precio justo</div>
         <div class="res-bubble-precio" id="resTotal">—</div>
         <div class="res-bubble-rango" id="resRango"></div>
       </div>
       <div class="res-bubble-bottom">
         <div class="res-smi-block">
           <div class="res-smi-num" id="resSMIval">—</div>
-          <div class="res-smi-label">veces el SMI/hora</div>
+          <div class="res-smi-label" data-i="res_smi_label">veces el SMI/hora</div>
         </div>
         <div class="res-divider-v"></div>
         <div class="res-contraste-block">
@@ -967,8 +967,8 @@ option{background:#0d0d0d;color:#fff;}
       </div>
     </div>
     <div class="res-elite-msg" id="eliteMsg">
-      <div class="res-elite-title">Por encima del mercado</div>
-      <div class="res-elite-text">Tu precio supera la referencia del sistema. Señal de <strong>posicionamiento sólido</strong> — visibilidad en redes, clientes de alto perfil o años de reputación construida. Sigue así.</div>
+      <div class="res-elite-title" data-i="res_elite_title">Por encima del mercado</div>
+      <div class="res-elite-text" data-i-html="res_elite_text_html">Tu precio supera la referencia del sistema. Señal de <strong>posicionamiento sólido</strong> — visibilidad en redes, clientes de alto perfil o años de reputación construida. Sigue así.</div>
     </div>
     <div id="repPotBlock" style="display:none;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:14px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.06) inset;">
       <div id="repPotTopLine" style="position:absolute;top:0;left:0;right:0;height:1px;"></div>
@@ -990,7 +990,7 @@ option{background:#0d0d0d;color:#fff;}
       <div class="res-motivacion-title clash" id="motivacionTitle"></div>
       <div class="res-motivacion-text" id="motivacionText"></div>
     </div>
-    <div class="res-nota"><strong>Nota de Realidad Legacy —</strong> Este precio es una estimación calculada en base a los datos que has introducido. El precio real que puedes cobrar depende también de tu posicionamiento en redes, tu público objetivo, la imagen que transmites y cómo te manejas profesionalmente. Úsalo como referencia, no como precio definitivo.</div>
+    <div class="res-nota" data-i-html="res_nota_html"><strong>Nota de Realidad Legacy —</strong> Este precio es una estimación calculada en base a los datos que has introducido. El precio real que puedes cobrar depende también de tu posicionamiento en redes, tu público objetivo, la imagen que transmites y cómo te manejas profesionalmente. Úsalo como referencia, no como precio definitivo.</div>
     <!-- Botón compartir -->
     <button id="btnCompartir" onclick="abrirModalCompartir()" style="width:100%;padding:14px;margin-bottom:10px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.28);border-radius:12px;color:#C4B5FD;font-family:'Clash Display',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
@@ -1518,7 +1518,7 @@ var T = {
     s12_ey:'12 — Último paso',s12_q:'Tiempo y materiales',s12_sub:'Tres datos más y calculamos tu precio justo.',
     h_hours:'Horas que tardas en este servicio',h_hours_hint:'Tus horas reales. No te compares — el sistema ya ajusta el valor según tu nivel.',
     h_mats:'Gasto en producto',h_mats_hint:'Solo la parte proporcional de este servicio.',
-    h_actual:'¿Cuánto cobras actualmente?',h_nombre:'¿Cómo quieres llamar a este servicio?',h_nombre_ph:'Ej: Knotless Medium con Boho',h_nombre_hint:'Opcional — para identificar el resultado.',
+    h_actual:'¿Cuánto cobras actualmente?',h_actual_ph:'0 si es servicio nuevo',h_nombre:'¿Cómo quieres llamar a este servicio?',h_nombre_ph:'Ej: Knotless Medium con Boho',h_nombre_hint:'Opcional — para identificar el resultado.',
     precio_ref:'Precio de referencia',precio_ref_t:'Primera vez calculando este servicio. Guarda este número.',
     siguiente:'¿Cuánto cobro por mi siguiente servicio? →',
     compartir:'Compartir resultado',
@@ -1558,7 +1558,47 @@ var T = {
     qf_cobras_ahora:'¿Cuánto cobras ahora?',qf_cobras_ahora_ph:'0 si es nuevo',
     qf_nombre_servicio:'Nombre del servicio (opcional)',qf_nombre_servicio_ph:'Ej: Knotless Medium',
     qf_error:'Selecciona un tipo de trenzado y las horas para continuar.',
-    feedin_sub:'Extensión progresiva por capas — siempre lleva extensión (sin extensión serían trenzas normales)'
+    feedin_sub:'Extensión progresiva por capas — siempre lleva extensión (sin extensión serían trenzas normales)',
+    // Wizard — subtítulos, botones y opciones que faltaban por conectar
+    s1_sub_html:'Para guardarte los resultados. <strong>Sin spam, sin newsletter.</strong>',
+    h_hours_hint_html:'Tus horas reales. <strong>No te compares</strong> — el sistema ya ajusta el valor según tu nivel.',
+    s7_sub_html:'Este sistema <strong>no calcula por número de trenzas</strong> — te ayuda a descubrir el valor real de tu hora de trabajo.',
+    s6_estructura_q:'¿Trabajas en casa o en salón?',
+    wiz_ext_q:'¿Llevan extensiones?',wiz_boho_q:'¿Añades efecto Boho?',wiz_boho_q_sue:'¿Añades efecto Boho / Goddess / Bohemian?',
+    wiz_tipo_peg_label:'Tipo de pegadas',wiz_complejidad_label:'Complejidad del diseño',
+    wiz_tamano_atras_label:'Tamaño parte trasera',wiz_complejidad_delante_label:'Complejidad parte delantera',
+    wiz_largo_ext_label:'Largo final de las extensiones',
+    opt_cornrows_sub:'El tipo base de pegadas',opt_twist_sub:'Flat Twist o Senegalese Twist pegados',opt_barrel_sub:'Técnica más compleja, acabado redondeado',
+    opt_basico_sub:'Líneas rectas, sin diseño especial',opt_condisenos_sub:'Curvas, cruces, radial, zigzag…',
+    opt_conext_sub_peg:'Extensión estándar añadida trenza a trenza',
+    opt_boho_si:'Sí — con Boho',opt_boho_no:'No — sin Boho',opt_boho_si_sub:'Rizos en las puntas',opt_boho_si_sub_ful:'Rizos en las sueltas traseras',
+    s9_tecnica_normales:'Normales (Knotless / Box Braids)',s9_tecnica_twist:'Twist (Senegalese / Marley)',
+    opt_simples_sub:'Pocas trenzas, sin adornos',opt_medias_sub:'Diseño definido con accesorios',opt_elaboradas_sub:'Diseño intrincado, múltiples trenzas',
+    opt_muy_corto_sub:'Solo tupé, hasta 4 cm',opt_corto_sub:'Unos 10 cm',opt_normal_sub:'Nuca o hombros',opt_largo_sub:'Media espalda',opt_muy_largo_sub:'Caderas o más',
+    s12_chip:'💡 ¿Para qué sirve este dato?',s12_chip_close:'▲ Cerrar',
+    s12_chip_body_html:'Con este dato el sistema te muestra si estás cobrando <strong>por encima o por debajo</strong> del precio justo. Si es servicio nuevo, pon <strong>0</strong>.',
+    s12_note:'No hay respuestas incorrectas — el sistema se adapta a lo que pongas.',
+    s4_chip_body_html:'<strong>Salario Medio (SME)</strong> — lo que gana de media la gente en tu ciudad. Es la base más justa.<br><br><strong>Salario Mínimo (SMI)</strong> — el mínimo legal del país. Precios más conservadores.<br><br>Si dudas, elige el <strong>Salario Medio</strong>.',
+    // Pantalla de resultado
+    res_bubble_label:'Tu precio justo',res_rango_sub:'Mínimo y máximo según tu posicionamiento real.',res_smi_label:'veces el SMI/hora',
+    res_cobras_menos:'Cobras {monto} menos de lo que deberías',res_debajo_txt:'Tu precio de {actual} está un {pct}% por debajo del precio justo.',
+    res_cobras_mas:'Cobras {monto} por encima',res_encima_txt:'Tu precio de {actual} supera la referencia en un {pct}%.',
+    res_exacto:'Precio exacto',res_exacto_txt:'Tu precio coincide exactamente con la referencia. Bien calibrado.',
+    res_elite_title:'Por encima del mercado',
+    res_elite_text_html:'Tu precio supera la referencia del sistema. Señal de <strong>posicionamiento sólido</strong> — visibilidad en redes, clientes de alto perfil o años de reputación construida. Sigue así.',
+    res_potencial_label:'Tu precio potencial',
+    res_pot_desc_activa:'Tu comunidad en crecimiento justifica ir algo por encima del precio base.',
+    res_pot_desc_local:'Tu agenda con lista de espera te da margen real para subir.',
+    res_pot_desc_nacional:'Tu posicionamiento como referente nacional justifica ir claramente más allá del precio base.',
+    res_pot_desc_internacional:'Has trabajado con artistas o perfiles públicos. Tu nombre vale por encima del mercado estándar.',
+    res_precio_base:'Precio base',res_potencial:'Potencial',
+    res_motivo1_t:'Primera consulta.',res_motivo1_tx:'Este número es tuyo. No lo que cobra la competencia ni lo que dicta Instagram. Lo que vale tu hora real en tu ciudad y tu nivel.',
+    res_motivo2_t:'Segunda consulta.',res_motivo2_tx:'Ya tienes dos referencias. Hay servicios donde estás bien calibrado y servicios donde dejas dinero sobre la mesa.',
+    res_motivo3_t:'Construyendo tu tarifa.',res_motivo3_tx:'Cada consulta es un dato más. Con 5-10 servicios calculados tendrás una imagen completa de tu pricing.',
+    res_motivo4_t:'Dato real.',res_motivo4_tx:'La mayoría de profesionales nunca se paran a calcular esto. Tú ya llevas {n} servicios analizados.',
+    res_consulta_prefix:'Consulta #',
+    res_nota_html:'<strong>Nota de Realidad Legacy —</strong> Este precio es una estimación calculada en base a los datos que has introducido. El precio real que puedes cobrar depende también de tu posicionamiento en redes, tu público objetivo, la imagen que transmites y cómo te manejas profesionalmente. Úsalo como referencia, no como precio definitivo.',
+    res_default_nombre:'Tu servicio'
   },
   en:{
     step:'Step',of:'of',result:'Result',
@@ -1584,7 +1624,7 @@ var T = {
     s12_ey:'12 — Last step',s12_q:'Time and materials',s12_sub:'Three more pieces of data and we calculate your fair price.',
     h_hours:'Hours you spend on this service',h_hours_hint:'Your real hours. Don\'t compare yourself — the system already adjusts the value for your level.',
     h_mats:'Product expenses',h_mats_hint:'Only the proportional part used for this service.',
-    h_actual:'How much are you currently charging?',h_nombre:'What do you want to call this service?',h_nombre_ph:'e.g. Medium Knotless with Boho',h_nombre_hint:'Optional — to identify the result.',
+    h_actual:'How much are you currently charging?',h_actual_ph:'0 if it\'s a new service',h_nombre:'What do you want to call this service?',h_nombre_ph:'e.g. Medium Knotless with Boho',h_nombre_hint:'Optional — to identify the result.',
     precio_ref:'Reference price',precio_ref_t:'First time calculating this service. Save this number.',
     siguiente:'Calculate my next service → ',
     compartir:'Share result',
@@ -1620,7 +1660,45 @@ var T = {
     qf_cobras_ahora:'What do you currently charge?',qf_cobras_ahora_ph:'0 if it\'s new',
     qf_nombre_servicio:'Service name (optional)',qf_nombre_servicio_ph:'e.g. Medium Knotless',
     qf_error:'Choose a braid type and enter the hours to continue.',
-    feedin_sub:'Progressive layered extension — always includes extensions (without them it would just be regular flat braids)'
+    feedin_sub:'Progressive layered extension — always includes extensions (without them it would just be regular flat braids)',
+    s1_sub_html:'To save your results. <strong>No spam, no newsletter.</strong>',
+    h_hours_hint_html:'Your real hours. <strong>Don\'t compare yourself</strong> — the system already adjusts the value for your level.',
+    s7_sub_html:'This system <strong>does not calculate by number of braids</strong> — it helps you discover the real value of your hour.',
+    s6_estructura_q:'Do you work at home or in a salon?',
+    wiz_ext_q:'Does it include extensions?',wiz_boho_q:'Adding a Boho effect?',wiz_boho_q_sue:'Adding a Boho / Goddess / Bohemian effect?',
+    wiz_tipo_peg_label:'Flat braid type',wiz_complejidad_label:'Design complexity',
+    wiz_tamano_atras_label:'Back section size',wiz_complejidad_delante_label:'Front section complexity',
+    wiz_largo_ext_label:'Final extension length',
+    opt_cornrows_sub:'The base flat-braid style',opt_twist_sub:'Flat Twist or Senegalese Twist, glued down',opt_barrel_sub:'More complex technique, rounded finish',
+    opt_basico_sub:'Straight lines, no special design',opt_condisenos_sub:'Curves, crosses, radial, zigzag…',
+    opt_conext_sub_peg:'Standard extension added braid by braid',
+    opt_boho_si:'Yes — with Boho',opt_boho_no:'No — without Boho',opt_boho_si_sub:'Curls at the ends',opt_boho_si_sub_ful:'Curls on the back loose section',
+    s9_tecnica_normales:'Regular (Knotless / Box Braids)',s9_tecnica_twist:'Twist (Senegalese / Marley)',
+    opt_simples_sub:'Few braids, no accessories',opt_medias_sub:'Defined design with accessories',opt_elaboradas_sub:'Intricate design, multiple braids',
+    opt_muy_corto_sub:'Fringe only, up to 4 cm',opt_corto_sub:'About 10 cm',opt_normal_sub:'Nape or shoulders',opt_largo_sub:'Mid-back',opt_muy_largo_sub:'Hips or longer',
+    s12_chip:'💡 What is this data for?',s12_chip_close:'▲ Close',
+    s12_chip_body_html:'With this data the system shows you whether you are charging <strong>above or below</strong> the fair price. If it\'s a new service, put <strong>0</strong>.',
+    s12_note:'There are no wrong answers — the system adapts to whatever you enter.',
+    s4_chip_body_html:'<strong>Average Salary (SME)</strong> — what people in your city earn on average. It\'s the fairest baseline.<br><br><strong>Minimum Wage (SMI)</strong> — the country\'s legal minimum. More conservative prices.<br><br>If unsure, choose <strong>Average Salary</strong>.',
+    res_bubble_label:'Your fair price',res_rango_sub:'Minimum and maximum based on your real positioning.',res_smi_label:'times the minimum wage/hour',
+    res_cobras_menos:'You charge {monto} less than you should',res_debajo_txt:'Your price of {actual} is {pct}% below the fair price.',
+    res_cobras_mas:'You charge {monto} above',res_encima_txt:'Your price of {actual} exceeds the reference by {pct}%.',
+    res_exacto:'Exact price',res_exacto_txt:'Your price matches the reference exactly. Well calibrated.',
+    res_elite_title:'Above the market',
+    res_elite_text_html:'Your price exceeds the system reference. A sign of <strong>solid positioning</strong> — social media visibility, high-profile clients, or years of built reputation. Keep it up.',
+    res_potencial_label:'Your potential price',
+    res_pot_desc_activa:'Your growing community justifies going somewhat above the base price.',
+    res_pot_desc_local:'Your waiting list gives you real room to raise your price.',
+    res_pot_desc_nacional:'Your positioning as a national reference justifies going clearly beyond the base price.',
+    res_pot_desc_internacional:'You have worked with artists or public figures. Your name is worth above the standard market.',
+    res_precio_base:'Base price',res_potencial:'Potential',
+    res_motivo1_t:'First consultation.',res_motivo1_tx:'This number is yours. Not what the competition charges or what Instagram dictates. What your real hour is worth in your city and at your level.',
+    res_motivo2_t:'Second consultation.',res_motivo2_tx:'You already have two references. There are services where you are well calibrated and services where you are leaving money on the table.',
+    res_motivo3_t:'Building your rate.',res_motivo3_tx:'Every consultation is one more data point. With 5-10 calculated services you will have a full picture of your pricing.',
+    res_motivo4_t:'Real data.',res_motivo4_tx:'Most professionals never stop to calculate this. You have already analysed {n} services.',
+    res_consulta_prefix:'Consultation #',
+    res_nota_html:'<strong>Legacy Reality Note —</strong> This price is an estimate calculated from the data you entered. The real price you can charge also depends on your social media positioning, your target audience, the image you project, and how you conduct yourself professionally. Use it as a reference, not a final price.',
+    res_default_nombre:'Your service'
   },
   pt:{
     step:'Passo',of:'de',result:'Resultado',
@@ -1646,7 +1724,7 @@ var T = {
     s12_ey:'12 — Último passo',s12_q:'Tempo e materiais',s12_sub:'Mais três dados e calculamos o seu preço justo.',
     h_hours:'Horas que demora neste serviço',h_hours_hint:'As suas horas reais. Não se compare — o sistema já ajusta o valor para o seu nível.',
     h_mats:'Gasto em produtos',h_mats_hint:'Apenas a parte proporcional usada neste serviço.',
-    h_actual:'Quanto cobra atualmente?',h_nombre:'Como quer chamar a este serviço?',h_nombre_ph:'Ex: Knotless Medium com Boho',h_nombre_hint:'Opcional — para identificar o resultado.',
+    h_actual:'Quanto cobra atualmente?',h_actual_ph:'0 se for um serviço novo',h_nombre:'Como quer chamar a este serviço?',h_nombre_ph:'Ex: Knotless Medium com Boho',h_nombre_hint:'Opcional — para identificar o resultado.',
     precio_ref:'Preço de referência',precio_ref_t:'Primeira vez a calcular este serviço. Guarde este número.',
     siguiente:'Quanto cobro pelo meu próximo serviço? →',
     compartir:'Partilhar resultado',
@@ -1682,11 +1760,54 @@ var T = {
     qf_cobras_ahora:'Quanto cobra atualmente?',qf_cobras_ahora_ph:'0 se for novo',
     qf_nombre_servicio:'Nome do serviço (opcional)',qf_nombre_servicio_ph:'Ex: Knotless Medium',
     qf_error:'Selecione um tipo de trança e as horas para continuar.',
-    feedin_sub:'Extensão progressiva por camadas — inclui sempre extensão (sem extensão seriam tranças normais)'
+    feedin_sub:'Extensão progressiva por camadas — inclui sempre extensão (sem extensão seriam tranças normais)',
+    s1_sub_html:'Para guardar os seus resultados. <strong>Sem spam, sem newsletter.</strong>',
+    h_hours_hint_html:'As suas horas reais. <strong>Não se compare</strong> — o sistema já ajusta o valor para o seu nível.',
+    s7_sub_html:'Este sistema <strong>não calcula pelo número de tranças</strong> — ajuda-o a descobrir o valor real da sua hora de trabalho.',
+    s6_estructura_q:'Trabalha em casa ou em salão?',
+    wiz_ext_q:'Inclui extensões?',wiz_boho_q:'Vai adicionar efeito Boho?',wiz_boho_q_sue:'Vai adicionar efeito Boho / Goddess / Bohemian?',
+    wiz_tipo_peg_label:'Tipo de tranças coladas',wiz_complejidad_label:'Complexidade do design',
+    wiz_tamano_atras_label:'Tamanho da parte traseira',wiz_complejidad_delante_label:'Complexidade da parte dianteira',
+    wiz_largo_ext_label:'Comprimento final das extensões',
+    opt_cornrows_sub:'O tipo base de tranças coladas',opt_twist_sub:'Flat Twist ou Senegalese Twist coladas',opt_barrel_sub:'Técnica mais complexa, acabamento arredondado',
+    opt_basico_sub:'Linhas retas, sem design especial',opt_condisenos_sub:'Curvas, cruzamentos, radial, ziguezague…',
+    opt_conext_sub_peg:'Extensão padrão adicionada trança a trança',
+    opt_boho_si:'Sim — com Boho',opt_boho_no:'Não — sem Boho',opt_boho_si_sub:'Caracóis nas pontas',opt_boho_si_sub_ful:'Caracóis nas soltas de trás',
+    s9_tecnica_normales:'Normais (Knotless / Box Braids)',s9_tecnica_twist:'Twist (Senegalese / Marley)',
+    opt_simples_sub:'Poucas tranças, sem adornos',opt_medias_sub:'Design definido com acessórios',opt_elaboradas_sub:'Design intrincado, múltiplas tranças',
+    opt_muy_corto_sub:'Apenas topete, até 4 cm',opt_corto_sub:'Cerca de 10 cm',opt_normal_sub:'Nuca ou ombros',opt_largo_sub:'Meio das costas',opt_muy_largo_sub:'Ancas ou mais',
+    s12_chip:'💡 Para que serve este dado?',s12_chip_close:'▲ Fechar',
+    s12_chip_body_html:'Com este dado o sistema mostra-lhe se está a cobrar <strong>acima ou abaixo</strong> do preço justo. Se for um serviço novo, coloque <strong>0</strong>.',
+    s12_note:'Não há respostas erradas — o sistema adapta-se ao que colocar.',
+    s4_chip_body_html:'<strong>Salário Médio (SME)</strong> — o que a média das pessoas ganha na sua cidade. É a base mais justa.<br><br><strong>Salário Mínimo (SMI)</strong> — o mínimo legal do país. Preços mais conservadores.<br><br>Se tiver dúvidas, escolha o <strong>Salário Médio</strong>.',
+    res_bubble_label:'O seu preço justo',res_rango_sub:'Mínimo e máximo de acordo com o seu posicionamento real.',res_smi_label:'vezes o salário mínimo/hora',
+    res_cobras_menos:'Está a cobrar {monto} a menos do que devia',res_debajo_txt:'O seu preço de {actual} está {pct}% abaixo do preço justo.',
+    res_cobras_mas:'Está a cobrar {monto} a mais',res_encima_txt:'O seu preço de {actual} supera a referência em {pct}%.',
+    res_exacto:'Preço exato',res_exacto_txt:'O seu preço coincide exatamente com a referência. Bem calibrado.',
+    res_elite_title:'Acima do mercado',
+    res_elite_text_html:'O seu preço supera a referência do sistema. Sinal de <strong>posicionamento sólido</strong> — visibilidade nas redes, clientes de alto perfil ou anos de reputação construída. Continue assim.',
+    res_potencial_label:'O seu preço potencial',
+    res_pot_desc_activa:'A sua comunidade em crescimento justifica ir um pouco acima do preço base.',
+    res_pot_desc_local:'A sua agenda com lista de espera dá-lhe margem real para subir.',
+    res_pot_desc_nacional:'O seu posicionamento como referência nacional justifica ir claramente além do preço base.',
+    res_pot_desc_internacional:'Já trabalhou com artistas ou perfis públicos. O seu nome vale acima do mercado padrão.',
+    res_precio_base:'Preço base',res_potencial:'Potencial',
+    res_motivo1_t:'Primeira consulta.',res_motivo1_tx:'Este número é seu. Não o que a concorrência cobra nem o que o Instagram dita. O que vale a sua hora real na sua cidade e no seu nível.',
+    res_motivo2_t:'Segunda consulta.',res_motivo2_tx:'Já tem duas referências. Há serviços onde está bem calibrado e serviços onde está a deixar dinheiro em cima da mesa.',
+    res_motivo3_t:'A construir a sua tarifa.',res_motivo3_tx:'Cada consulta é mais um dado. Com 5-10 serviços calculados terá uma imagem completa do seu pricing.',
+    res_motivo4_t:'Dado real.',res_motivo4_tx:'A maioria dos profissionais nunca para para calcular isto. Você já tem {n} serviços analisados.',
+    res_consulta_prefix:'Consulta #',
+    res_nota_html:'<strong>Nota de Realidade Legacy —</strong> Este preço é uma estimativa calculada com base nos dados que introduziu. O preço real que pode cobrar depende também do seu posicionamento nas redes, do seu público-alvo, da imagem que transmite e de como se conduz profissionalmente. Use-o como referência, não como preço definitivo.',
+    res_default_nombre:'O seu serviço'
   }
 };
 
 function t(key){return(T[LANG]&&T[LANG][key])||T['es'][key]||key;}
+function tpl(key,vals){
+  var s=t(key);
+  Object.keys(vals).forEach(function(k){s=s.split('{'+k+'}').join(vals[k]);});
+  return s;
+}
 
 function setLang(lang, el, source){
   LANG = lang;
@@ -1731,16 +1852,25 @@ function applyTranslations(){
   });
   // Botón compartir
   var bc=document.getElementById('btnCompartirTxt');if(bc)bc.textContent=t('compartir');
-  // Modal
+  // Modal y resto de textos estáticos
   document.querySelectorAll('[data-i]').forEach(function(el){
     var key=el.getAttribute('data-i');
     if(T[LANG]&&T[LANG][key])el.textContent=T[LANG][key];
+  });
+  // Textos con formato (negrita, saltos de línea) — usan innerHTML en vez de textContent
+  document.querySelectorAll('[data-i-html]').forEach(function(el){
+    var key=el.getAttribute('data-i-html');
+    if(T[LANG]&&T[LANG][key])el.innerHTML=T[LANG][key];
   });
   // Spinner
   var sp=document.getElementById('spinnerText');if(sp)sp.textContent=t('calc_loading');
   // Placeholder email
   var em=document.getElementById('f_email');if(em)em.placeholder=t('s1_ph');
   var ig=document.getElementById('f_ig');if(ig)ig.placeholder=t('s2_ph');
+  var fh=document.getElementById('f_horas');if(fh)fh.placeholder=t('qf_horas_ph');
+  var fm=document.getElementById('f_materiales');if(fm)fm.placeholder=t('qf_gasto_producto_ph');
+  var fp=document.getElementById('f_precioactual');if(fp)fp.placeholder=t('h_actual_ph');
+  var fn=document.getElementById('f_nombre');if(fn)fn.placeholder=t('h_nombre_ph');
   // Formulario rápido — placeholders y resumen (si está abierto)
   var qh=document.getElementById('q_horas');if(qh)qh.placeholder=t('qf_horas_ph');
   var qm=document.getElementById('q_materiales');if(qm)qm.placeholder=t('qf_gasto_producto_ph');
@@ -1797,7 +1927,7 @@ function descargarTarjeta(){
   drawBlob(W*0.5,H*0.45,220,'#C9A84C');
   ctx.globalAlpha=1;
 
-  var servicio = shareData.nombreServicio || 'Tu servicio';
+  var servicio = shareData.nombreServicio || t('res_default_nombre');
   var precio = shareData.precioFmt || '—';
   var nivelLabel = t('nivel_label');
   var nivelValor = shareData.nivel || '';
@@ -2123,7 +2253,7 @@ function go(n){
     goingBack=false;
     const pct=n>=12?92:Math.round((n-1)/12*100);
     document.getElementById('tfBar').style.width=pct+'%';
-    document.getElementById('stepCounter').textContent='Paso '+n+' de 13';
+    document.getElementById('stepCounter').textContent=t('step')+' '+n+' '+t('of')+' 13';
     if(!document.getElementById('f_tipo').value) document.getElementById('liveEstimateBar').classList.remove('visible');
     if(n===11)updateLargoExtField();
     if(n===11){const tipo=document.getElementById('f_tipo').value;const bb=document.getElementById('backBtn11');if(bb)bb.onclick=()=>goBack(tipo==='pegadas'?8:tipo==='sueltas'?9:10);}
@@ -2201,9 +2331,11 @@ function updateLargoExtField(){
 // ── GEO ──
 function updateRegiones(){
   const key=document.getElementById('f_pais').value;const geo=GEO[key];if(!geo)return;
-  const r=document.getElementById('f_region');r.innerHTML='<option value="" disabled selected>Selecciona tu región…</option>';
+  const r=document.getElementById('f_region');r.innerHTML='';
+  const rPlaceholder=document.createElement('option');rPlaceholder.value='';rPlaceholder.disabled=true;rPlaceholder.selected=true;rPlaceholder.textContent=t('s4_r');r.appendChild(rPlaceholder);
   Object.keys(geo.comunidades).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;r.appendChild(o);});
-  document.getElementById('f_ciudad').innerHTML='<option value="" disabled selected>Selecciona tu ciudad…</option>';
+  const cPlaceholder='<option value="" disabled selected>'+t('s4_c')+'</option>';
+  document.getElementById('f_ciudad').innerHTML=cPlaceholder;
   document.getElementById('smiPillsWrap').style.display='none';document.getElementById('f_smi').value='';
 
   monedaCalculo='local';
@@ -2220,7 +2352,7 @@ function updateRegiones(){
 function updateCiudades(){
   const key=document.getElementById('f_pais').value;const geo=GEO[key];if(!geo)return;
   const reg=document.getElementById('f_region').value;const cd=geo.comunidades[reg]?.ciudades;if(!cd)return;
-  const c=document.getElementById('f_ciudad');c.innerHTML='<option value="" disabled selected>Selecciona tu ciudad…</option>';
+  const c=document.getElementById('f_ciudad');c.innerHTML='<option value="" disabled selected>'+t('s4_c')+'</option>';
   Object.entries(cd).forEach(([n,d])=>{const o=document.createElement('option');o.value=n;o.textContent=n;o.dataset.sme=d.sme||'';o.dataset.smi=d.smi||'';c.appendChild(o);});
   document.getElementById('smiPillsWrap').style.display='none';document.getElementById('f_smi').value='';
 }
@@ -2378,7 +2510,7 @@ function volverAWizardCompleto(){
   document.querySelectorAll('.tf-step').forEach(s=>s.classList.remove('active'));
   document.getElementById('s3').classList.add('active');
   document.getElementById('tfBar').style.width=Math.round((3-1)/12*100)+'%';
-  document.getElementById('stepCounter').textContent='Paso 3 de 13';
+  document.getElementById('stepCounter').textContent=t('step')+' 3 '+t('of')+' 13';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -2620,7 +2752,7 @@ function renderResult(data){
   var precioNum=Math.round(dPrecioTotal);
   var precioFmtReal=precioNum>=1000?sim+precioNum.toLocaleString('es-ES'):sim+precioNum;
   shareData = {
-    nombreServicio: data.nombreServicio || 'Tu servicio',
+    nombreServicio: data.nombreServicio || t('res_default_nombre'),
     precioFmt: precioFmtReal,
     precioNum: precioNum,
     simbolo: sim,
@@ -2628,10 +2760,10 @@ function renderResult(data){
   };
   document.getElementById('tfMainArea').style.display='none';
   const rs=document.getElementById('resultSection');rs.style.display='flex';rs.classList.add('visible');
-  document.getElementById('stepCounter').textContent='Resultado';
+  document.getElementById('stepCounter').textContent=t('result');
   document.getElementById('tfBar').style.width='100%';
 
-  const nombre=data.nombreServicio||'Tu servicio';
+  const nombre=data.nombreServicio||t('res_default_nombre');
   document.getElementById('resEyebrow').textContent=nombre;
 
   const pf=dPrecioTotal>=1000?sim+Math.round(dPrecioTotal).toLocaleString('es-ES'):sim+Math.round(dPrecioTotal);
@@ -2642,7 +2774,7 @@ function renderResult(data){
   const mn=Math.round(dPrecioTotal*0.9),mx=Math.round(dPrecioTotal*1.1);
   const mf=mn>=1000?sim+mn.toLocaleString('es-ES'):sim+mn;
   const xf=mx>=1000?sim+mx.toLocaleString('es-ES'):sim+mx;
-  document.getElementById('resRango').innerHTML='<strong>'+mf+' – '+xf+'</strong><br><span style="font-size:10px;color:var(--subtle)">Mínimo y máximo según tu posicionamiento real.</span>';
+  document.getElementById('resRango').innerHTML='<strong>'+mf+' – '+xf+'</strong><br><span style="font-size:10px;color:var(--subtle)">'+t('res_rango_sub')+'</span>';
 
   document.getElementById('resSMIval').textContent=data.relacionSMI+'x';
 
@@ -2671,16 +2803,16 @@ function renderResult(data){
   const cd=document.getElementById('contrasteDiff'),ct=document.getElementById('contrasteText');
 
   if(!data.precioActual||data.precioActual===0){
-    cd.textContent='Precio de referencia';cd.style.color='var(--text)';ct.textContent='Primera vez calculando este servicio. Guarda este número.';
+    cd.textContent=t('precio_ref');cd.style.color='var(--text)';ct.textContent=t('precio_ref_t');
   }else if(diff>0){
-    cd.textContent='Cobras '+sim+Math.round(Math.abs(diff))+' menos de lo que deberías';cd.style.color='var(--orange)';
-    ct.textContent='Tu precio de '+sim+Math.round(dPrecioActual)+' está un '+Math.abs(pct)+'% por debajo del precio justo.';
+    cd.textContent=tpl('res_cobras_menos',{monto:sim+Math.round(Math.abs(diff))});cd.style.color='var(--orange)';
+    ct.textContent=tpl('res_debajo_txt',{actual:sim+Math.round(dPrecioActual),pct:Math.abs(pct)});
   }else if(diff<0){
-    cd.textContent='Cobras '+sim+Math.round(Math.abs(diff))+' por encima';cd.style.color='var(--green)';
-    ct.textContent='Tu precio de '+sim+Math.round(dPrecioActual)+' supera la referencia en un '+Math.abs(pct)+'%.';
+    cd.textContent=tpl('res_cobras_mas',{monto:sim+Math.round(Math.abs(diff))});cd.style.color='var(--green)';
+    ct.textContent=tpl('res_encima_txt',{actual:sim+Math.round(dPrecioActual),pct:Math.abs(pct)});
     eliteMsg.style.display='block';
   }else{
-    cd.textContent='Precio exacto';cd.style.color='var(--green)';ct.textContent='Tu precio coincide exactamente con la referencia. Bien calibrado.';
+    cd.textContent=t('res_exacto');cd.style.color='var(--green)';ct.textContent=t('res_exacto_txt');
   }
 
   const repNivel=document.getElementById('f_reputacion').value||'construyendo';
@@ -2698,26 +2830,26 @@ function renderResult(data){
     const potFmt=pot>=1000?sim+pot.toLocaleString('es-ES'):sim+pot;
     rpb.style.display='block';rpb.style.background=rc.bg;rpb.style.border='1px solid '+rc.border;
     document.getElementById('repPotTopLine').style.background='linear-gradient(90deg,transparent,'+rc.top+',transparent)';
-    document.getElementById('repPotLabel').style.color=rc.color;
+    document.getElementById('repPotLabel').style.color=rc.color;document.getElementById('repPotLabel').textContent=t('res_potencial_label');
     document.getElementById('repPotPrecio').style.color=rc.color;document.getElementById('repPotPrecio').textContent=potFmt;
-    const descMap={activa:'Tu comunidad en crecimiento justifica ir algo por encima del precio base.',local:'Tu agenda con lista de espera te da margen real para subir.',nacional:'Tu posicionamiento como referente nacional justifica ir claramente más allá del precio base.',internacional:'Has trabajado con artistas o perfiles públicos. Tu nombre vale por encima del mercado estándar.'};
+    const descMap={activa:t('res_pot_desc_activa'),local:t('res_pot_desc_local'),nacional:t('res_pot_desc_nacional'),internacional:t('res_pot_desc_internacional')};
     document.getElementById('repPotDesc').style.color='rgba(255,255,255,.35)';
     document.getElementById('repPotDesc').textContent=descMap[repNivel]||'';
-    document.getElementById('potBaseLabel').style.color='rgba(255,255,255,.2)';document.getElementById('potBaseLabel').textContent='Precio base · '+pf;
-    document.getElementById('potMaxLabel').style.color=rc.color;document.getElementById('potMaxLabel').textContent='Potencial · '+potFmt;
+    document.getElementById('potBaseLabel').style.color='rgba(255,255,255,.2)';document.getElementById('potBaseLabel').textContent=t('res_precio_base')+' · '+pf;
+    document.getElementById('potMaxLabel').style.color=rc.color;document.getElementById('potMaxLabel').textContent=t('res_potencial')+' · '+potFmt;
     document.getElementById('potFillBar').style.background=rc.top;
     document.getElementById('potFillBar').style.width=Math.round(20+(rc.pct/25)*70)+'%';
     document.getElementById('potFillBar').style.boxShadow='0 0 8px '+rc.top+'66';
   }else{rpb.style.display='none';}
 
   const motivos=[
-    {t:'Primera consulta.',tx:'Este número es tuyo. No lo que cobra la competencia ni lo que dicta Instagram. Lo que vale tu hora real en tu ciudad y tu nivel.'},
-    {t:'Segunda consulta.',tx:'Ya tienes dos referencias. Hay servicios donde estás bien calibrado y servicios donde dejas dinero sobre la mesa.'},
-    {t:'Construyendo tu tarifa.',tx:'Cada consulta es un dato más. Con 5-10 servicios calculados tendrás una imagen completa de tu pricing.'},
-    {t:'Dato real.',tx:'La mayoría de profesionales nunca se paran a calcular esto. Tú ya llevas '+consultaNum+' servicios analizados.'},
+    {t:t('res_motivo1_t'),tx:t('res_motivo1_tx')},
+    {t:t('res_motivo2_t'),tx:t('res_motivo2_tx')},
+    {t:t('res_motivo3_t'),tx:t('res_motivo3_tx')},
+    {t:t('res_motivo4_t'),tx:tpl('res_motivo4_tx',{n:consultaNum})},
   ];
   const m=motivos[Math.min(consultaNum-1,motivos.length-1)];
-  document.getElementById('motivacionCounter').textContent='Consulta #'+consultaNum;
+  document.getElementById('motivacionCounter').textContent=t('res_consulta_prefix')+consultaNum;
   document.getElementById('motivacionTitle').textContent=m.t;
   document.getElementById('motivacionText').textContent=m.tx;
 }
