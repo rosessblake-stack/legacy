@@ -1615,6 +1615,23 @@ function animarPrecio(elemento, valorFinal, simbolo, duracion){
   requestAnimationFrame(step);
 }
 
+// ── AJUSTE POR INFLACIÓN ──
+// Los salarios de GEO están calibrados a una fecha concreta (fechaBase).
+// En países con inflación muy alta esos números quedan desactualizados
+// en pocos meses, así que en vez de tocar la tabla a mano proyectamos el
+// valor hasta hoy con una tasa mensual estimada.
+// ⚠️ Revisar `tasaMensual` cada cierto tiempo con datos reales (INDEC u otra fuente oficial) —
+// esto es una proyección, no un dato oficial en tiempo real.
+const INFLACION={
+  ar:{tasaMensual:0.03, fechaBase:'2026-09-13'}, // Argentina — ajustar según INDEC
+};
+function factorInflacion(pais){
+  const cfg=INFLACION[pais];
+  if(!cfg) return 1;
+  const meses=Math.max(0,(Date.now()-new Date(cfg.fechaBase).getTime())/(1000*60*60*24*30.44));
+  return Math.pow(1+cfg.tasaMensual, meses);
+}
+
 // ── GEO DATA (completo) ──
 const GEO={
 es:{nombre:'España',simbolo:'€',smiBase:1221,smeBase:1350,comunidades:{'Cataluña':{ciudades:{'Barcelona':{sme:1500,smi:1221},'Terrassa':{sme:1350,smi:1221},'Sabadell':{sme:1300,smi:1221},'L\'Hospitalet':{sme:1300,smi:1221},'Otra ciudad':{sme:1250,smi:1221}}},'Comunidad de Madrid':{ciudades:{'Madrid Capital':{sme:1500,smi:1221},'Alcalá de Henares':{sme:1300,smi:1221},'Getafe':{sme:1280,smi:1221},'Otra ciudad':{sme:1250,smi:1221}}},'Andalucía':{ciudades:{'Sevilla':{sme:1250,smi:1221},'Málaga':{sme:1280,smi:1221},'Granada':{sme:1230,smi:1221},'Otra ciudad':{sme:1230,smi:1221}}},'Comunitat Valenciana':{ciudades:{'Valencia':{sme:1280,smi:1221},'Alicante':{sme:1240,smi:1221},'Otra ciudad':{sme:1230,smi:1221}}},'País Vasco':{ciudades:{'Bilbao':{sme:1500,smi:1221},'San Sebastián':{sme:1550,smi:1221},'Otra ciudad':{sme:1400,smi:1221}}},'Otra comunidad':{ciudades:{'Mi ciudad':{sme:1250,smi:1221}}}}},
@@ -1798,7 +1815,8 @@ function updateCiudades(){
 function onCiudadChange(){
   const sel=document.getElementById('f_ciudad');const opt=sel.options[sel.selectedIndex];
   const key=document.getElementById('f_pais').value;const geo=GEO[key];if(!opt||!geo)return;
-  currentCityData={sme:Number(opt.dataset.sme)||0,smi:Number(opt.dataset.smi)||0};
+  const factor=factorInflacion(key);
+  currentCityData={sme:Math.round((Number(opt.dataset.sme)||0)*factor),smi:Math.round((Number(opt.dataset.smi)||0)*factor)};
   const sim=geo.simbolo;
   document.getElementById('smeVal').textContent=currentCityData.sme?currentCityData.sme.toLocaleString('es-ES')+' '+sim:'—';
   document.getElementById('smiVal').textContent=currentCityData.smi?currentCityData.smi.toLocaleString('es-ES')+' '+sim:'—';
