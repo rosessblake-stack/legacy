@@ -352,6 +352,24 @@ option{background:#0d0d0d;color:#fff;}
 .res-contraste-diff{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;margin-bottom:4px;}
 .res-contraste-text{font-size:10px;color:var(--subtle);line-height:1.5;}
 
+/* ── DESGLOSE DEL PRECIO ── */
+.res-desglose{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 0 rgba(255,255,255,.06) inset;}
+.res-desglose-label{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle);margin-bottom:12px;}
+.res-desglose-bar{display:flex;height:8px;border-radius:6px;overflow:hidden;background:rgba(255,255,255,.05);margin-bottom:16px;}
+.res-desglose-seg{height:100%;width:0;transition:width .7s cubic-bezier(.25,.46,.45,.94);}
+.seg-trabajo{background:linear-gradient(90deg,var(--red),#ff6b6b);}
+.seg-tiempo{background:linear-gradient(90deg,var(--purple),#a78bfa);}
+.seg-mat{background:linear-gradient(90deg,var(--gold),#e8c96a);}
+.res-desglose-items{display:flex;flex-direction:column;gap:12px;}
+.res-desglose-item-top{display:flex;align-items:center;gap:7px;}
+.res-desglose-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.dot-trabajo{background:var(--red);box-shadow:0 0 6px rgba(227,30,36,.5);}
+.dot-tiempo{background:var(--purple);box-shadow:0 0 6px rgba(139,92,246,.5);}
+.dot-mat{background:var(--gold);box-shadow:0 0 6px rgba(201,168,76,.5);}
+.res-desglose-item-name{font-size:12px;font-weight:600;color:var(--text);}
+.res-desglose-item-val{font-size:12px;font-weight:700;color:var(--white);margin-left:auto;}
+.res-desglose-item-sub{font-size:10px;color:var(--muted);margin-left:14px;margin-top:2px;line-height:1.5;}
+
 .res-elite-msg{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:var(--green-dim);border:1px solid var(--green-border);border-radius:12px;padding:14px 16px;margin-bottom:12px;display:none;}
 .res-elite-title{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:6px;}
 .res-elite-text{font-size:12px;color:#4ADE80;line-height:1.6;}
@@ -876,6 +894,28 @@ option{background:#0d0d0d;color:#fff;}
         <div class="res-contraste-block">
           <div class="res-contraste-diff" id="contrasteDiff">—</div>
           <div class="res-contraste-text" id="contrasteText"></div>
+        </div>
+      </div>
+    </div>
+    <div class="res-desglose" id="resDesglose">
+      <div class="res-desglose-label">Cómo se compone tu precio</div>
+      <div class="res-desglose-bar" id="desgloseBar">
+        <div class="res-desglose-seg seg-trabajo" id="segTrabajo"></div>
+        <div class="res-desglose-seg seg-tiempo" id="segTiempo"></div>
+        <div class="res-desglose-seg seg-mat" id="segMat"></div>
+      </div>
+      <div class="res-desglose-items">
+        <div class="res-desglose-item">
+          <div class="res-desglose-item-top"><span class="res-desglose-dot dot-trabajo"></span><span class="res-desglose-item-name">Tu experiencia y nivel</span><span class="res-desglose-item-val" id="desgloseTrabajoVal">—</span></div>
+          <div class="res-desglose-item-sub">Lo que vale tu técnica en tu zona y a tu nivel</div>
+        </div>
+        <div class="res-desglose-item">
+          <div class="res-desglose-item-top"><span class="res-desglose-dot dot-tiempo"></span><span class="res-desglose-item-name">Tu tiempo</span><span class="res-desglose-item-val" id="desgloseTiempoVal">—</span></div>
+          <div class="res-desglose-item-sub">Las horas reales que dedicas al servicio</div>
+        </div>
+        <div class="res-desglose-item">
+          <div class="res-desglose-item-top"><span class="res-desglose-dot dot-mat"></span><span class="res-desglose-item-name">Materiales</span><span class="res-desglose-item-val" id="desgloseMatVal">—</span></div>
+          <div class="res-desglose-item-sub">Lo que gastas en producto para este servicio</div>
         </div>
       </div>
     </div>
@@ -1953,6 +1993,10 @@ function renderResult(data){
   const dPrecioTotal=data.precioTotal/tasaConv;
   const dDiferencia=data.diferencia/tasaConv;
   const dPrecioActual=data.precioActual/tasaConv;
+  const dTrabajo=(data.valorConocimiento||0)/tasaConv;
+  const dTiempo=(data.costeTiempo||0)/tasaConv;
+  const dMateriales=(data.materiales||0)/tasaConv;
+  const fmtSim=v=>v>=1000?sim+Math.round(v).toLocaleString('es-ES'):sim+Math.round(v);
 
   // Guardar datos para compartir
   var precioNum=Math.round(dPrecioTotal);
@@ -1983,6 +2027,26 @@ function renderResult(data){
   document.getElementById('resRango').innerHTML='<strong>'+mf+' – '+xf+'</strong><br><span style="font-size:10px;color:var(--subtle)">Mínimo y máximo según tu posicionamiento real.</span>';
 
   document.getElementById('resSMIval').textContent=data.relacionSMI+'x';
+
+  // Desglose visual: experiencia/nivel + tiempo + materiales = precio total
+  const totalDesglose=dTrabajo+dTiempo+dMateriales;
+  if(totalDesglose>0){
+    const pTrabajo=Math.max(0,dTrabajo/totalDesglose*100);
+    const pTiempo=Math.max(0,dTiempo/totalDesglose*100);
+    const pMat=Math.max(0,dMateriales/totalDesglose*100);
+    // Se anima en el siguiente frame para que la transición de width se vea.
+    document.getElementById('segTrabajo').style.width='0%';
+    document.getElementById('segTiempo').style.width='0%';
+    document.getElementById('segMat').style.width='0%';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      document.getElementById('segTrabajo').style.width=pTrabajo+'%';
+      document.getElementById('segTiempo').style.width=pTiempo+'%';
+      document.getElementById('segMat').style.width=pMat+'%';
+    }));
+    document.getElementById('desgloseTrabajoVal').textContent=fmtSim(dTrabajo);
+    document.getElementById('desgloseTiempoVal').textContent=fmtSim(dTiempo);
+    document.getElementById('desgloseMatVal').textContent=fmtSim(dMateriales);
+  }
 
   const diff=dDiferencia,pct=data.porcentajeDiferencia;
   const eliteMsg=document.getElementById('eliteMsg');eliteMsg.style.display='none';
