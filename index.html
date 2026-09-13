@@ -1620,10 +1620,15 @@ function animarPrecio(elemento, valorFinal, simbolo, duracion){
 // En países con inflación muy alta esos números quedan desactualizados
 // en pocos meses, así que en vez de tocar la tabla a mano proyectamos el
 // valor hasta hoy con una tasa mensual estimada.
-// ⚠️ Revisar `tasaMensual` cada cierto tiempo con datos reales (INDEC u otra fuente oficial) —
-// esto es una proyección, no un dato oficial en tiempo real.
+// ⚠️ Revisar `tasaMensual` cada cierto tiempo con datos reales (bancos centrales /
+// institutos de estadística oficiales) — esto es una proyección, no un dato en tiempo real.
 const INFLACION={
-  ar:{tasaMensual:0.03, fechaBase:'2026-09-13'}, // Argentina — ajustar según INDEC
+  ar:{tasaMensual:0.03,  fechaBase:'2026-09-13'}, // Argentina (INDEC)
+  mx:{tasaMensual:0.004, fechaBase:'2026-09-13'}, // México (INEGI)
+  co:{tasaMensual:0.005, fechaBase:'2026-09-13'}, // Colombia (DANE)
+  do:{tasaMensual:0.003, fechaBase:'2026-09-13'}, // Rep. Dominicana (Banco Central)
+  cl:{tasaMensual:0.003, fechaBase:'2026-09-13'}, // Chile (INE)
+  pe:{tasaMensual:0.002, fechaBase:'2026-09-13'}, // Perú (INEI)
 };
 function factorInflacion(pais){
   const cfg=INFLACION[pais];
