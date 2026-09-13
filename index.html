@@ -206,13 +206,17 @@ body{overflow-y:auto;}
 .tf-progress-fill{height:100%;background:linear-gradient(90deg,var(--red),#ff6b6b);transition:width .4s ease;box-shadow:0 0 10px rgba(227,30,36,.4);}
 
 /* ── PRECIO EN VIVO (estimado, checkpoints — no exacto hasta el resultado) ── */
-.live-estimate{max-height:0;overflow:hidden;opacity:0;transition:max-height .35s ease,opacity .35s ease;position:sticky;top:51px;z-index:98;backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);background:rgba(139,92,246,.07);border-bottom:1px solid rgba(139,92,246,.18);}
-.live-estimate.visible{max-height:60px;opacity:1;}
-.live-estimate-inner{max-width:520px;margin:0 auto;padding:9px 20px;display:flex;align-items:center;gap:8px;}
-.live-estimate-dot{width:6px;height:6px;border-radius:50%;background:var(--purple);box-shadow:0 0 8px rgba(139,92,246,.6);flex-shrink:0;animation:pulse 1.4s ease-in-out infinite;}
-.live-estimate-label{font-size:10px;color:rgba(196,181,253,.7);font-weight:600;letter-spacing:.02em;}
-.live-estimate-val{font-family:'Clash Display',sans-serif;font-size:13px;font-weight:700;color:#C4B5FD;margin-left:auto;transition:opacity .2s ease;}
+.live-estimate{max-height:0;overflow:hidden;opacity:0;transition:max-height .4s ease,opacity .4s ease;position:sticky;top:51px;z-index:98;backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);background:rgba(139,92,246,.07);border-bottom:1px solid rgba(139,92,246,.18);}
+.live-estimate.visible{max-height:92px;opacity:1;}
+.live-estimate-inner{max-width:520px;margin:0 auto;padding:10px 20px 12px;}
+.live-estimate-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(196,181,253,.6);margin-bottom:4px;}
+.live-estimate-val{font-family:'Clash Display',sans-serif;font-size:19px;font-weight:700;color:#C4B5FD;transition:opacity .2s ease;margin-bottom:7px;}
 .live-estimate-val.updating{opacity:.4;}
+.live-estimate-val.bump{animation:estimateBump .35s ease;}
+@keyframes estimateBump{0%{transform:scale(1);}35%{transform:scale(1.06);}100%{transform:scale(1);}}
+.live-estimate-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--purple);box-shadow:0 0 8px rgba(139,92,246,.6);margin-right:7px;vertical-align:middle;animation:pulse 1.4s ease-in-out infinite;}
+.live-estimate-meter{height:4px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden;}
+.live-estimate-meter-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--purple),#a78bfa);width:0%;transition:width .6s cubic-bezier(.25,.46,.45,.94);}
 
 .tf-main{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px 100px;}
 .tf-card{width:100%;max-width:520px;}
@@ -522,9 +526,9 @@ option{background:#0d0d0d;color:#fff;}
 
   <div id="liveEstimateBar" class="live-estimate">
     <div class="live-estimate-inner">
-      <span class="live-estimate-dot"></span>
-      <span class="live-estimate-label">Estimado con lo que llevas</span>
-      <span class="live-estimate-val" id="liveEstimateVal">—</span>
+      <div class="live-estimate-label">Tu precio va tomando forma</div>
+      <div class="live-estimate-val" id="liveEstimateVal"><span class="live-estimate-dot"></span>—</div>
+      <div class="live-estimate-meter"><div class="live-estimate-meter-fill" id="liveEstimateFill"></div></div>
     </div>
   </div>
 
@@ -705,9 +709,9 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-q clash" id="i_q7">¿Qué tipo de trenzado vas a calcular?</div>
       <div class="tf-sub">Este sistema <strong>no calcula por número de trenzas</strong> — te ayuda a descubrir el valor real de tu hora de trabajo.</div>
       <div class="tf-opts" id="tipoOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','pegadas');go(8);actualizarEstimado()"><div><div class="tf-opt-name">Pegadas</div><div class="tf-opt-sub">Cornrows · Twist · Barrel Twist</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','sueltas');go(9);actualizarEstimado()"><div><div class="tf-opt-name">Sueltas</div><div class="tf-opt-sub">Box Braids · Knotless · Goddess · Bohemian…</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','fulani');go(10);actualizarEstimado()"><div><div class="tf-opt-name">Fulani Braids</div><div class="tf-opt-sub">Combinación de pegadas y sueltas</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipo','pegadas');go(8);actualizarEstimado(1)"><div><div class="tf-opt-name">Pegadas</div><div class="tf-opt-sub">Cornrows · Twist · Barrel Twist</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipo','sueltas');go(9);actualizarEstimado(1)"><div><div class="tf-opt-name">Sueltas</div><div class="tf-opt-sub">Box Braids · Knotless · Goddess · Bohemian…</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipo','fulani');go(10);actualizarEstimado(1)"><div><div class="tf-opt-name">Fulani Braids</div><div class="tf-opt-sub">Combinación de pegadas y sueltas</div></div></div>
       </div>
       <input type="hidden" id="f_tipo">
       <div class="tf-nav"><button class="tf-btn-back" onclick="goBack(13)">←</button></div>
@@ -1859,7 +1863,8 @@ function validarYAvanzar(step,next){
   if(step===10){if(!document.getElementById('f_tamanofulsueltas').value||!document.getElementById('f_compfuldelante').value||!document.getElementById('f_extfulani').value){if(errEl)errEl.style.display='block';return;}updateLargoExtField();}
   if(step===11){if(!document.getElementById('f_largocab').value){if(errEl)errEl.style.display='block';return;}}
   go(next);
-  if([6,8,9,10,11,13].includes(step)) actualizarEstimado();
+  if(step===8||step===9||step===10) actualizarEstimado(2);
+  if(step===11) actualizarEstimado(3);
 }
 
 // ── SELECTORES ──
@@ -1984,11 +1989,13 @@ function buildEstimadoBody(){
     largoExtensiones:document.getElementById('f_largoext').value||'hombros',
   };
 }
-async function actualizarEstimado(){
+const ESTIMADO_CHECKPOINTS_TOTAL=4;
+async function actualizarEstimado(checkpoint){
   if(!datosSuficientesParaEstimado()) return;
-  const bar=document.getElementById('liveEstimateBar'),valEl=document.getElementById('liveEstimateVal');
+  const bar=document.getElementById('liveEstimateBar'),valEl=document.getElementById('liveEstimateVal'),fillEl=document.getElementById('liveEstimateFill');
   bar.classList.add('visible');
   valEl.classList.add('updating');
+  if(checkpoint) fillEl.style.width=Math.round(checkpoint/ESTIMADO_CHECKPOINTS_TOTAL*100)+'%';
   if(estimadoAbortCtrl) estimadoAbortCtrl.abort();
   estimadoAbortCtrl=new AbortController();
   try{
@@ -2003,7 +2010,8 @@ async function actualizarEstimado(){
     const precio=data.precioTotal/tasaConv;
     const lo=redondear2SigFigs(precio*0.88),hi=redondear2SigFigs(precio*1.15);
     const f=v=>v>=1000?sim+Math.round(v).toLocaleString('es-ES'):sim+Math.round(v);
-    valEl.textContent=f(lo)+' – '+f(hi);
+    valEl.innerHTML='<span class="live-estimate-dot"></span>'+f(lo)+' – '+f(hi);
+    valEl.classList.remove('bump'); void valEl.offsetWidth; valEl.classList.add('bump');
   }catch(e){
     // fetch abortado (llegó una respuesta más reciente) o error de red — no bloquea el formulario
   }finally{
@@ -2012,7 +2020,7 @@ async function actualizarEstimado(){
 }
 function actualizarEstimadoDebounced(){
   clearTimeout(estimadoDebounceT);
-  estimadoDebounceT=setTimeout(actualizarEstimado,600);
+  estimadoDebounceT=setTimeout(()=>actualizarEstimado(ESTIMADO_CHECKPOINTS_TOTAL),600);
 }
 
 // ── CALCULAR ──
