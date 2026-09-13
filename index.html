@@ -551,7 +551,7 @@ option{background:#0d0d0d;color:#fff;}
 
   <div id="liveEstimateBar" class="live-estimate">
     <div class="live-estimate-inner">
-      <div class="live-estimate-label">Tu precio va tomando forma</div>
+      <div class="live-estimate-label" data-i="live_meter_label">Tu precio va tomando forma</div>
       <div class="live-estimate-val" id="liveEstimateVal"><span class="live-estimate-dot"></span>—</div>
       <div class="live-estimate-meter"><div class="live-estimate-meter-fill" id="liveEstimateFill"></div></div>
     </div>
@@ -612,12 +612,12 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-error" id="err3">Selecciona tu país.</div>
 
       <div id="monedaWrap" style="display:none;margin-top:16px">
-        <div class="tf-sublabel first">¿En qué moneda quieres calcular?</div>
+        <div class="tf-sublabel first" data-i="qf_moneda_title">¿En qué moneda quieres calcular?</div>
         <div class="tf-opts" id="monedaOpts">
-          <div class="tf-opt active" id="monedaOptLocal" onclick="setMoneda('local')"><div><div class="tf-opt-name" id="monedaLocalLabel">Moneda local</div><div class="tf-opt-sub">Precios en la moneda de tu país</div></div></div>
-          <div class="tf-opt" id="monedaOptUsd" onclick="setMoneda('usd')"><div><div class="tf-opt-name">Dólares (USD)</div><div class="tf-opt-sub">Recomendado si tus clientes piensan/cobran en dólares</div></div></div>
+          <div class="tf-opt active" id="monedaOptLocal" onclick="setMoneda('local')"><div><div class="tf-opt-name" id="monedaLocalLabel">Moneda local</div><div class="tf-opt-sub" data-i="qf_moneda_local_sub">Precios en la moneda de tu país</div></div></div>
+          <div class="tf-opt" id="monedaOptUsd" onclick="setMoneda('usd')"><div><div class="tf-opt-name" data-i="qf_moneda_usd">Dólares (USD)</div><div class="tf-opt-sub" data-i="qf_moneda_usd_sub">Recomendado si tus clientes piensan/cobran en dólares</div></div></div>
         </div>
-        <div class="tf-hint" style="margin-bottom:0">⚠️ Elige una y mantenla: si eliges dólares, el gasto en material y lo que cobras actualmente también hay que ponerlos en dólares — no mezcles monedas.</div>
+        <div class="tf-hint" style="margin-bottom:0" data-i="qf_moneda_warn">⚠️ Elige una y mantenla: si eliges dólares, el gasto en material y lo que cobras actualmente también hay que ponerlos en dólares — no mezcles monedas.</div>
       </div>
 
       <div class="tf-nav">
@@ -761,7 +761,7 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-sublabel">¿Llevan extensiones?</div>
       <div class="tf-opts" id="extPegOpts">
         <div class="tf-opt" onclick="selOpt(this,'f_extpeg','con');showBoho('peg',true);updateLargoExtField()"><div><div class="tf-opt-name">Con extensiones</div><div class="tf-opt-sub">Extensión estándar añadida trenza a trenza</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','feedin');showBoho('peg',true);updateLargoExtField()"><div><div class="tf-opt-name">Feed-in / Camuflaje completo</div><div class="tf-opt-sub">Extensión progresiva por capas — siempre lleva extensión (sin extensión serían trenzas normales)</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_extpeg','feedin');showBoho('peg',true);updateLargoExtField()"><div><div class="tf-opt-name">Feed-in / Camuflaje completo</div><div class="tf-opt-sub" data-i="feedin_sub">Extensión progresiva por capas — siempre lleva extensión (sin extensión serían trenzas normales)</div></div></div>
         <div class="tf-opt" onclick="selOpt(this,'f_extpeg','sin');showBoho('peg',false);updateLargoExtField()"><div><div class="tf-opt-name">Sin extensiones</div></div></div>
       </div>
       <div class="tf-subfield" id="bohoPegField">
@@ -945,7 +945,7 @@ option{background:#0d0d0d;color:#fff;}
       </div>
     </div>
     <div class="res-desglose" id="resDesglose">
-      <div class="res-desglose-label">Cómo se compone tu precio</div>
+      <div class="res-desglose-label" data-i="res_desglose_title">Cómo se compone tu precio</div>
       <div class="res-desglose-bar" id="desgloseBar">
         <div class="res-desglose-seg seg-trabajo" id="segTrabajo"></div>
         <div class="res-desglose-seg seg-tiempo" id="segTiempo"></div>
@@ -953,16 +953,16 @@ option{background:#0d0d0d;color:#fff;}
       </div>
       <div class="res-desglose-items">
         <div class="res-desglose-item">
-          <div class="res-desglose-item-top"><span class="res-desglose-dot dot-trabajo"></span><span class="res-desglose-item-name">Tu experiencia y nivel</span><span class="res-desglose-item-val" id="desgloseTrabajoVal">—</span></div>
-          <div class="res-desglose-item-sub">Lo que vale tu técnica en tu zona y a tu nivel</div>
+          <div class="res-desglose-item-top"><span class="res-desglose-dot dot-trabajo"></span><span class="res-desglose-item-name" data-i="res_desglose_trabajo">Tu experiencia y nivel</span><span class="res-desglose-item-val" id="desgloseTrabajoVal">—</span></div>
+          <div class="res-desglose-item-sub" data-i="res_desglose_trabajo_sub">Lo que vale tu técnica en tu zona y a tu nivel</div>
         </div>
         <div class="res-desglose-item">
-          <div class="res-desglose-item-top"><span class="res-desglose-dot dot-tiempo"></span><span class="res-desglose-item-name">Tu tiempo</span><span class="res-desglose-item-val" id="desgloseTiempoVal">—</span></div>
-          <div class="res-desglose-item-sub">Las horas reales que dedicas al servicio</div>
+          <div class="res-desglose-item-top"><span class="res-desglose-dot dot-tiempo"></span><span class="res-desglose-item-name" data-i="res_desglose_tiempo">Tu tiempo</span><span class="res-desglose-item-val" id="desgloseTiempoVal">—</span></div>
+          <div class="res-desglose-item-sub" data-i="res_desglose_tiempo_sub">Las horas reales que dedicas al servicio</div>
         </div>
         <div class="res-desglose-item">
-          <div class="res-desglose-item-top"><span class="res-desglose-dot dot-mat"></span><span class="res-desglose-item-name">Materiales</span><span class="res-desglose-item-val" id="desgloseMatVal">—</span></div>
-          <div class="res-desglose-item-sub">Lo que gastas en producto para este servicio</div>
+          <div class="res-desglose-item-top"><span class="res-desglose-dot dot-mat"></span><span class="res-desglose-item-name" data-i="res_desglose_materiales">Materiales</span><span class="res-desglose-item-val" id="desgloseMatVal">—</span></div>
+          <div class="res-desglose-item-sub" data-i="res_desglose_materiales_sub">Lo que gastas en producto para este servicio</div>
         </div>
       </div>
     </div>
@@ -1042,17 +1042,17 @@ option{background:#0d0d0d;color:#fff;}
       <div class="logo-mark" style="width:24px;height:24px;border-radius:7px;"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 12L7 2L12 12" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 9H10.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
       <span class="tf-logo-text">Legacy</span>
     </div>
-    <span class="tf-step-counter">Cálculo rápido</span>
+    <span class="tf-step-counter" data-i="qf_header">Cálculo rápido</span>
   </div>
 
   <div class="qf-summary">
     <span id="qfSummaryText">—</span>
-    <span class="qf-summary-link" onclick="volverAWizardCompleto()">Cambiar mis datos</span>
+    <span class="qf-summary-link" onclick="volverAWizardCompleto()" data-i="qf_change_data">Cambiar mis datos</span>
   </div>
 
   <div id="quickEstimateBar" class="live-estimate">
     <div class="live-estimate-inner">
-      <div class="live-estimate-label">Tu precio va tomando forma</div>
+      <div class="live-estimate-label" data-i="live_meter_label">Tu precio va tomando forma</div>
       <div class="live-estimate-val" id="quickEstimateVal"><span class="live-estimate-dot"></span>Rellena los datos</div>
       <div class="live-estimate-meter"><div class="live-estimate-meter-fill" id="quickEstimateFill"></div></div>
     </div>
@@ -1060,20 +1060,20 @@ option{background:#0d0d0d;color:#fff;}
 
   <div class="qf-main">
     <div class="qf-card">
-      <div class="qf-card-label">¿Qué vas a calcular?</div>
+      <div class="qf-card-label" data-i="qf_que_calcular">¿Qué vas a calcular?</div>
       <div class="qf-pills">
-        <div class="qf-pill" id="qTipoPegadas" onclick="qElegirTipo('pegadas')">Pegadas</div>
-        <div class="qf-pill" id="qTipoSueltas" onclick="qElegirTipo('sueltas')">Sueltas</div>
-        <div class="qf-pill" id="qTipoFulani" onclick="qElegirTipo('fulani')">Fulani Braids</div>
+        <div class="qf-pill" id="qTipoPegadas" onclick="qElegirTipo('pegadas')" data-i="pegadas">Pegadas</div>
+        <div class="qf-pill" id="qTipoSueltas" onclick="qElegirTipo('sueltas')" data-i="sueltas">Sueltas</div>
+        <div class="qf-pill" id="qTipoFulani" onclick="qElegirTipo('fulani')" data-i="fulani">Fulani Braids</div>
       </div>
     </div>
 
     <!-- Detalle Pegadas -->
     <div class="qf-card qf-detail" id="qDetallePegadas">
-      <div class="qf-card-label">Detalle de las pegadas</div>
+      <div class="qf-card-label" data-i="qf_detalle_pegadas">Detalle de las pegadas</div>
       <div class="qf-row">
         <label class="qf-field">
-          <span class="qf-field-label">Tipo</span>
+          <span class="qf-field-label" data-i="qf_tipo">Tipo</span>
           <select class="tf-select" id="q_tipopeg" onchange="actualizarEstimadoRapidoDebounced()">
             <option value="cornrows">Cornrows</option>
             <option value="twist">Twist</option>
@@ -1081,100 +1081,100 @@ option{background:#0d0d0d;color:#fff;}
           </select>
         </label>
         <label class="qf-field">
-          <span class="qf-field-label">Diseño</span>
+          <span class="qf-field-label" data-i="qf_diseno">Diseño</span>
           <select class="tf-select" id="q_comppeg" onchange="actualizarEstimadoRapidoDebounced()">
-            <option value="basico">Básico</option>
-            <option value="con_disenos">Con diseño</option>
+            <option value="basico" data-i="opt_basico">Básico</option>
+            <option value="con_disenos" data-i="opt_con_disenos">Con diseño</option>
           </select>
         </label>
       </div>
-      <div class="qf-field-label" style="margin-top:10px">Extensiones</div>
+      <div class="qf-field-label" style="margin-top:10px" data-i="qf_extensiones">Extensiones</div>
       <div class="qf-pills">
-        <div class="qf-pill" onclick="qSetExt('peg','con',this)">Con extensiones</div>
-        <div class="qf-pill" onclick="qSetExt('peg','feedin',this)">Feed-in</div>
-        <div class="qf-pill" onclick="qSetExt('peg','sin',this)">Sin extensiones</div>
+        <div class="qf-pill" onclick="qSetExt('peg','con',this)" data-i="opt_con_ext">Con extensiones</div>
+        <div class="qf-pill" onclick="qSetExt('peg','feedin',this)" data-i="opt_feedin">Feed-in</div>
+        <div class="qf-pill" onclick="qSetExt('peg','sin',this)" data-i="opt_sin_ext">Sin extensiones</div>
       </div>
       <div class="qf-boho" id="qBohoPeg">
-        <div class="qf-field-label">¿Con efecto Boho?</div>
-        <div class="qf-pills"><div class="qf-pill" onclick="qSetBoho('peg','si',this)">Sí</div><div class="qf-pill" onclick="qSetBoho('peg','no',this)">No</div></div>
+        <div class="qf-field-label" data-i="qf_boho_q">¿Con efecto Boho?</div>
+        <div class="qf-pills"><div class="qf-pill" onclick="qSetBoho('peg','si',this)" data-i="opt_si">Sí</div><div class="qf-pill" onclick="qSetBoho('peg','no',this)" data-i="opt_no">No</div></div>
       </div>
     </div>
 
     <!-- Detalle Sueltas -->
     <div class="qf-card qf-detail" id="qDetalleSueltas">
-      <div class="qf-card-label">Detalle de las sueltas</div>
+      <div class="qf-card-label" data-i="qf_detalle_sueltas">Detalle de las sueltas</div>
       <div class="qf-row">
         <label class="qf-field">
-          <span class="qf-field-label">Tamaño</span>
+          <span class="qf-field-label" data-i="qf_tamano">Tamaño</span>
           <select class="tf-select" id="q_tamano" onchange="actualizarEstimadoRapidoDebounced()">
             <option value="jumbo">Jumbo</option><option value="large">Large</option><option value="lardium">Lardium</option>
             <option value="medium">Medium</option><option value="smedium">Smedium</option><option value="small">Small</option><option value="xs_small">XS Small</option>
           </select>
         </label>
         <label class="qf-field">
-          <span class="qf-field-label">Técnica</span>
+          <span class="qf-field-label" data-i="qf_tecnica">Técnica</span>
           <select class="tf-select" id="q_tiposueltas" onchange="actualizarEstimadoRapidoDebounced()">
-            <option value="normales">Normales</option>
+            <option value="normales" data-i="opt_normales">Normales</option>
             <option value="twist">Twist</option>
           </select>
         </label>
       </div>
-      <div class="qf-field-label" style="margin-top:10px">Extensiones</div>
+      <div class="qf-field-label" style="margin-top:10px" data-i="qf_extensiones">Extensiones</div>
       <div class="qf-pills">
-        <div class="qf-pill" onclick="qSetExt('sue','con',this)">Con extensiones</div>
-        <div class="qf-pill" onclick="qSetExt('sue','sin',this)">Sin extensiones</div>
+        <div class="qf-pill" onclick="qSetExt('sue','con',this)" data-i="opt_con_ext">Con extensiones</div>
+        <div class="qf-pill" onclick="qSetExt('sue','sin',this)" data-i="opt_sin_ext">Sin extensiones</div>
       </div>
       <div class="qf-boho" id="qBohoSue">
-        <div class="qf-field-label">¿Con efecto Boho?</div>
-        <div class="qf-pills"><div class="qf-pill" onclick="qSetBoho('sue','si',this)">Sí</div><div class="qf-pill" onclick="qSetBoho('sue','no',this)">No</div></div>
+        <div class="qf-field-label" data-i="qf_boho_q">¿Con efecto Boho?</div>
+        <div class="qf-pills"><div class="qf-pill" onclick="qSetBoho('sue','si',this)" data-i="opt_si">Sí</div><div class="qf-pill" onclick="qSetBoho('sue','no',this)" data-i="opt_no">No</div></div>
       </div>
     </div>
 
     <!-- Detalle Fulani -->
     <div class="qf-card qf-detail" id="qDetalleFulani">
-      <div class="qf-card-label">Detalle de las Fulani</div>
+      <div class="qf-card-label" data-i="qf_detalle_fulani">Detalle de las Fulani</div>
       <div class="qf-row">
         <label class="qf-field">
-          <span class="qf-field-label">Tamaño (atrás)</span>
+          <span class="qf-field-label" data-i="qf_tamano_atras">Tamaño (atrás)</span>
           <select class="tf-select" id="q_tamanofulsueltas" onchange="actualizarEstimadoRapidoDebounced()">
             <option value="jumbo">Jumbo</option><option value="large">Large</option><option value="lardium">Lardium</option>
             <option value="medium">Medium</option><option value="smedium">Smedium</option><option value="small">Small</option><option value="xs_small">XS Small</option>
           </select>
         </label>
         <label class="qf-field">
-          <span class="qf-field-label">Delantera</span>
+          <span class="qf-field-label" data-i="qf_delantera">Delantera</span>
           <select class="tf-select" id="q_compfuldelante" onchange="actualizarEstimadoRapidoDebounced()">
-            <option value="simples">Simples</option><option value="medias">Medias</option><option value="elaboradas">Elaboradas</option>
+            <option value="simples" data-i="opt_simples">Simples</option><option value="medias" data-i="opt_medias">Medias</option><option value="elaboradas" data-i="opt_elaboradas">Elaboradas</option>
           </select>
         </label>
       </div>
-      <div class="qf-field-label" style="margin-top:10px">Extensiones</div>
+      <div class="qf-field-label" style="margin-top:10px" data-i="qf_extensiones">Extensiones</div>
       <div class="qf-pills">
-        <div class="qf-pill" onclick="qSetExt('ful','con',this)">Con extensiones</div>
-        <div class="qf-pill" onclick="qSetExt('ful','sin',this)">Sin extensiones</div>
+        <div class="qf-pill" onclick="qSetExt('ful','con',this)" data-i="opt_con_ext">Con extensiones</div>
+        <div class="qf-pill" onclick="qSetExt('ful','sin',this)" data-i="opt_sin_ext">Sin extensiones</div>
       </div>
       <div class="qf-boho" id="qBohoFul">
-        <div class="qf-field-label">¿Con efecto Boho?</div>
-        <div class="qf-pills"><div class="qf-pill" onclick="qSetBoho('ful','si',this)">Sí</div><div class="qf-pill" onclick="qSetBoho('ful','no',this)">No</div></div>
+        <div class="qf-field-label" data-i="qf_boho_q">¿Con efecto Boho?</div>
+        <div class="qf-pills"><div class="qf-pill" onclick="qSetBoho('ful','si',this)" data-i="opt_si">Sí</div><div class="qf-pill" onclick="qSetBoho('ful','no',this)" data-i="opt_no">No</div></div>
       </div>
     </div>
 
     <!-- Cabello -->
     <div class="qf-card qf-detail" id="qCardCabello">
-      <div class="qf-card-label">Cabello del cliente</div>
+      <div class="qf-card-label" data-i="qf_cabello_cliente">Cabello del cliente</div>
       <div class="qf-row">
         <label class="qf-field">
-          <span class="qf-field-label">Largo del cabello</span>
+          <span class="qf-field-label" data-i="qf_largo_cabello">Largo del cabello</span>
           <select class="tf-select" id="q_largocab" onchange="actualizarEstimadoRapidoDebounced()">
-            <option value="muy_corto">Muy corto</option><option value="corto">Corto</option><option value="nuca_hombros">Normal</option>
-            <option value="media_espalda">Largo</option><option value="caderas">Muy largo</option>
+            <option value="muy_corto" data-i="opt_muy_corto">Muy corto</option><option value="corto" data-i="opt_corto">Corto</option><option value="nuca_hombros" data-i="opt_normal_largo">Normal</option>
+            <option value="media_espalda" data-i="opt_largo">Largo</option><option value="caderas" data-i="opt_muy_largo">Muy largo</option>
           </select>
         </label>
         <label class="qf-field" id="qCampoLargoExt" style="display:none">
-          <span class="qf-field-label">Largo de extensiones</span>
+          <span class="qf-field-label" data-i="qf_largo_ext">Largo de extensiones</span>
           <select class="tf-select" id="q_largoext" onchange="actualizarEstimadoRapidoDebounced()">
-            <option value="nuca">Nuca</option><option value="hombros">Hombros</option><option value="media_espalda">Media espalda</option>
-            <option value="caderas">Caderas</option><option value="mas_largo">Más largo</option>
+            <option value="nuca" data-i="opt_nuca">Nuca</option><option value="hombros" data-i="opt_hombros">Hombros</option><option value="media_espalda" data-i="opt_media_espalda">Media espalda</option>
+            <option value="caderas" data-i="opt_caderas">Caderas</option><option value="mas_largo" data-i="opt_mas_largo">Más largo</option>
           </select>
         </label>
       </div>
@@ -1182,24 +1182,24 @@ option{background:#0d0d0d;color:#fff;}
 
     <!-- Tiempo y coste -->
     <div class="qf-card qf-detail" id="qCardTiempo">
-      <div class="qf-card-label">Tiempo y coste</div>
+      <div class="qf-card-label" data-i="qf_tiempo_coste">Tiempo y coste</div>
       <div class="qf-row">
         <label class="qf-field">
-          <span class="qf-field-label">Horas</span>
+          <span class="qf-field-label" data-i="qf_horas_label">Horas</span>
           <input class="tf-select" type="number" id="q_horas" placeholder="Ej: 4" min="0.5" step="0.5" oninput="qCheckBtn();actualizarEstimadoRapidoDebounced()">
         </label>
         <label class="qf-field">
-          <span class="qf-field-label" id="qLabelMateriales">Gasto en producto</span>
+          <span class="qf-field-label" id="qLabelMateriales" data-i="qf_gasto_producto">Gasto en producto</span>
           <input class="tf-select" type="number" id="q_materiales" placeholder="Ej: 8" min="0" step="1" oninput="actualizarEstimadoRapidoDebounced()">
         </label>
       </div>
       <div class="qf-row">
         <label class="qf-field">
-          <span class="qf-field-label" id="qLabelPrecioActual">¿Cuánto cobras ahora?</span>
+          <span class="qf-field-label" id="qLabelPrecioActual" data-i="qf_cobras_ahora">¿Cuánto cobras ahora?</span>
           <input class="tf-select" type="number" id="q_precioactual" placeholder="0 si es nuevo" min="0">
         </label>
         <label class="qf-field">
-          <span class="qf-field-label">Nombre del servicio (opcional)</span>
+          <span class="qf-field-label" data-i="qf_nombre_servicio">Nombre del servicio (opcional)</span>
           <input class="tf-select" type="text" id="q_nombre" placeholder="Ej: Knotless Medium" maxlength="80">
         </label>
       </div>
@@ -1209,8 +1209,8 @@ option{background:#0d0d0d;color:#fff;}
     <input type="hidden" id="q_extpeg"><input type="hidden" id="q_bohopeg">
     <input type="hidden" id="q_extsueltas"><input type="hidden" id="q_bohosueltas">
     <input type="hidden" id="q_extfulani"><input type="hidden" id="q_bohofulsueltas">
-    <div class="qf-error" id="qfError">Selecciona un tipo de trenzado y las horas para continuar.</div>
-    <button class="tf-btn-next qf-submit" id="qfSubmitBtn" disabled onclick="calcularRapido()">Ver mi precio →</button>
+    <div class="qf-error" id="qfError" data-i="qf_error">Selecciona un tipo de trenzado y las horas para continuar.</div>
+    <button class="tf-btn-next qf-submit" id="qfSubmitBtn" disabled onclick="calcularRapido()" data-i="see_price">Ver mi precio →</button>
   </div>
 </div>
 
@@ -1529,7 +1529,36 @@ var T = {
     calc_loading:'Calculando tu precio justo',access_badge:'Acceso por invitación',
     acc_sub:'Solo puedes entrar con código de invitación de un profesional élite.',
     acc_btn:'Acceder →',acc_wait:'o apúntate a la lista de espera',acc_email_ph:'Tu correo electrónico',acc_ig_ph:'Tu Instagram @',acc_join:'Quiero acceso anticipado',
-    nivel_label:'Nivel'
+    nivel_label:'Nivel',
+    // Selector de moneda (países LatAm dolarizados)
+    qf_moneda_title:'¿En qué moneda quieres calcular?',qf_moneda_local:'Moneda local',qf_moneda_local_sub:'Precios en la moneda de tu país',
+    qf_moneda_usd:'Dólares (USD)',qf_moneda_usd_sub:'Recomendado si tus clientes piensan/cobran en dólares',
+    qf_moneda_warn:'⚠️ Elige una y mantenla: si eliges dólares, el gasto en material y lo que cobras actualmente también hay que ponerlos en dólares — no mezcles monedas.',
+    qf_moneda_en_usd:'en dólares (USD)',
+    // Desglose del precio (resultado)
+    res_desglose_title:'Cómo se compone tu precio',
+    res_desglose_trabajo:'Tu experiencia y nivel',res_desglose_trabajo_sub:'Lo que vale tu técnica en tu zona y a tu nivel',
+    res_desglose_tiempo:'Tu tiempo',res_desglose_tiempo_sub:'Las horas reales que dedicas al servicio',
+    res_desglose_materiales:'Materiales',res_desglose_materiales_sub:'Lo que gastas en producto para este servicio',
+    // Precio en vivo
+    live_meter_label:'Tu precio va tomando forma',live_meter_placeholder:'Rellena los datos',
+    // Formulario rápido (consultas siguientes)
+    qf_header:'Cálculo rápido',qf_change_data:'Cambiar mis datos',qf_que_calcular:'¿Qué vas a calcular?',
+    qf_detalle_pegadas:'Detalle de las pegadas',qf_detalle_sueltas:'Detalle de las sueltas',qf_detalle_fulani:'Detalle de las Fulani',
+    qf_tipo:'Tipo',qf_diseno:'Diseño',opt_basico:'Básico',opt_con_disenos:'Con diseño',
+    qf_extensiones:'Extensiones',opt_con_ext:'Con extensiones',opt_feedin:'Feed-in',opt_sin_ext:'Sin extensiones',
+    qf_boho_q:'¿Con efecto Boho?',opt_si:'Sí',opt_no:'No',
+    qf_tamano:'Tamaño',qf_tecnica:'Técnica',opt_normales:'Normales',
+    qf_tamano_atras:'Tamaño (atrás)',qf_delantera:'Delantera',opt_simples:'Simples',opt_medias:'Medias',opt_elaboradas:'Elaboradas',
+    qf_cabello_cliente:'Cabello del cliente',qf_largo_cabello:'Largo del cabello',
+    opt_muy_corto:'Muy corto',opt_corto:'Corto',opt_normal_largo:'Normal',opt_largo:'Largo',opt_muy_largo:'Muy largo',
+    qf_largo_ext:'Largo de extensiones',opt_nuca:'Nuca',opt_hombros:'Hombros',opt_media_espalda:'Media espalda',opt_caderas:'Caderas',opt_mas_largo:'Más largo',
+    qf_tiempo_coste:'Tiempo y coste',qf_horas_label:'Horas',qf_horas_ph:'Ej: 4',
+    qf_gasto_producto:'Gasto en producto',qf_gasto_producto_ph:'Ej: 8',
+    qf_cobras_ahora:'¿Cuánto cobras ahora?',qf_cobras_ahora_ph:'0 si es nuevo',
+    qf_nombre_servicio:'Nombre del servicio (opcional)',qf_nombre_servicio_ph:'Ej: Knotless Medium',
+    qf_error:'Selecciona un tipo de trenzado y las horas para continuar.',
+    feedin_sub:'Extensión progresiva por capas — siempre lleva extensión (sin extensión serían trenzas normales)'
   },
   en:{
     step:'Step',of:'of',result:'Result',
@@ -1566,7 +1595,32 @@ var T = {
     calc_loading:'Calculating your fair price',access_badge:'Invitation only',
     acc_sub:'You can only enter with an invitation code from an elite professional.',
     acc_btn:'Enter →',acc_wait:'or join the waiting list',acc_email_ph:'Your email address',acc_ig_ph:'Your Instagram @',acc_join:'I want early access',
-    nivel_label:'Level'
+    nivel_label:'Level',
+    qf_moneda_title:'Which currency do you want to calculate in?',qf_moneda_local:'Local currency',qf_moneda_local_sub:'Prices in your country\'s currency',
+    qf_moneda_usd:'Dollars (USD)',qf_moneda_usd_sub:'Recommended if your clients think/charge in dollars',
+    qf_moneda_warn:'⚠️ Pick one and stick with it: if you choose dollars, product cost and your current price also need to be in dollars — don\'t mix currencies.',
+    qf_moneda_en_usd:'in dollars (USD)',
+    res_desglose_title:'What your price is made of',
+    res_desglose_trabajo:'Your experience and level',res_desglose_trabajo_sub:'What your skill is worth in your area and at your level',
+    res_desglose_tiempo:'Your time',res_desglose_tiempo_sub:'The real hours you spend on the service',
+    res_desglose_materiales:'Materials',res_desglose_materiales_sub:'What you spend on product for this service',
+    live_meter_label:'Your price is taking shape',live_meter_placeholder:'Fill in the details',
+    qf_header:'Quick calculation',qf_change_data:'Change my details',qf_que_calcular:'What are you calculating?',
+    qf_detalle_pegadas:'Flat braid details',qf_detalle_sueltas:'Loose braid details',qf_detalle_fulani:'Fulani details',
+    qf_tipo:'Type',qf_diseno:'Design',opt_basico:'Basic',opt_con_disenos:'With design',
+    qf_extensiones:'Extensions',opt_con_ext:'With extensions',opt_feedin:'Feed-in',opt_sin_ext:'No extensions',
+    qf_boho_q:'With Boho effect?',opt_si:'Yes',opt_no:'No',
+    qf_tamano:'Size',qf_tecnica:'Technique',opt_normales:'Regular',
+    qf_tamano_atras:'Size (back)',qf_delantera:'Front section',opt_simples:'Simple',opt_medias:'Medium',opt_elaboradas:'Elaborate',
+    qf_cabello_cliente:'Client\'s hair',qf_largo_cabello:'Hair length',
+    opt_muy_corto:'Very short',opt_corto:'Short',opt_normal_largo:'Normal',opt_largo:'Long',opt_muy_largo:'Very long',
+    qf_largo_ext:'Extension length',opt_nuca:'Nape',opt_hombros:'Shoulders',opt_media_espalda:'Mid-back',opt_caderas:'Hips',opt_mas_largo:'Longer',
+    qf_tiempo_coste:'Time and cost',qf_horas_label:'Hours',qf_horas_ph:'e.g. 4',
+    qf_gasto_producto:'Product cost',qf_gasto_producto_ph:'e.g. 8',
+    qf_cobras_ahora:'What do you currently charge?',qf_cobras_ahora_ph:'0 if it\'s new',
+    qf_nombre_servicio:'Service name (optional)',qf_nombre_servicio_ph:'e.g. Medium Knotless',
+    qf_error:'Choose a braid type and enter the hours to continue.',
+    feedin_sub:'Progressive layered extension — always includes extensions (without them it would just be regular flat braids)'
   },
   pt:{
     step:'Passo',of:'de',result:'Resultado',
@@ -1603,7 +1657,32 @@ var T = {
     calc_loading:'A calcular o seu preço justo',access_badge:'Acesso por convite',
     acc_sub:'Só pode entrar com código de convite de um profissional elite.',
     acc_btn:'Entrar →',acc_wait:'ou inscreva-se na lista de espera',acc_email_ph:'O seu endereço de email',acc_ig_ph:'O seu Instagram @',acc_join:'Quero acesso antecipado',
-    nivel_label:'Nível'
+    nivel_label:'Nível',
+    qf_moneda_title:'Em que moeda quer calcular?',qf_moneda_local:'Moeda local',qf_moneda_local_sub:'Preços na moeda do seu país',
+    qf_moneda_usd:'Dólares (USD)',qf_moneda_usd_sub:'Recomendado se os seus clientes pensam/cobram em dólares',
+    qf_moneda_warn:'⚠️ Escolha uma e mantenha-a: se escolher dólares, o gasto em produtos e o que cobra atualmente também têm de estar em dólares — não misture moedas.',
+    qf_moneda_en_usd:'em dólares (USD)',
+    res_desglose_title:'Como se compõe o seu preço',
+    res_desglose_trabajo:'A sua experiência e nível',res_desglose_trabajo_sub:'O que vale a sua técnica na sua zona e no seu nível',
+    res_desglose_tiempo:'O seu tempo',res_desglose_tiempo_sub:'As horas reais que dedica ao serviço',
+    res_desglose_materiales:'Materiais',res_desglose_materiales_sub:'O que gasta em produto para este serviço',
+    live_meter_label:'O seu preço está a tomar forma',live_meter_placeholder:'Preencha os dados',
+    qf_header:'Cálculo rápido',qf_change_data:'Alterar os meus dados',qf_que_calcular:'O que vai calcular?',
+    qf_detalle_pegadas:'Detalhe das tranças coladas',qf_detalle_sueltas:'Detalhe das tranças soltas',qf_detalle_fulani:'Detalhe das Fulani',
+    qf_tipo:'Tipo',qf_diseno:'Design',opt_basico:'Básico',opt_con_disenos:'Com design',
+    qf_extensiones:'Extensões',opt_con_ext:'Com extensões',opt_feedin:'Feed-in',opt_sin_ext:'Sem extensões',
+    qf_boho_q:'Com efeito Boho?',opt_si:'Sim',opt_no:'Não',
+    qf_tamano:'Tamanho',qf_tecnica:'Técnica',opt_normales:'Normais',
+    qf_tamano_atras:'Tamanho (atrás)',qf_delantera:'Parte dianteira',opt_simples:'Simples',opt_medias:'Médias',opt_elaboradas:'Elaboradas',
+    qf_cabello_cliente:'Cabelo do cliente',qf_largo_cabello:'Comprimento do cabelo',
+    opt_muy_corto:'Muito curto',opt_corto:'Curto',opt_normal_largo:'Normal',opt_largo:'Comprido',opt_muy_largo:'Muito comprido',
+    qf_largo_ext:'Comprimento das extensões',opt_nuca:'Nuca',opt_hombros:'Ombros',opt_media_espalda:'Meio das costas',opt_caderas:'Ancas',opt_mas_largo:'Mais comprido',
+    qf_tiempo_coste:'Tempo e custo',qf_horas_label:'Horas',qf_horas_ph:'Ex: 4',
+    qf_gasto_producto:'Gasto em produto',qf_gasto_producto_ph:'Ex: 8',
+    qf_cobras_ahora:'Quanto cobra atualmente?',qf_cobras_ahora_ph:'0 se for novo',
+    qf_nombre_servicio:'Nome do serviço (opcional)',qf_nombre_servicio_ph:'Ex: Knotless Medium',
+    qf_error:'Selecione um tipo de trança e as horas para continuar.',
+    feedin_sub:'Extensão progressiva por camadas — inclui sempre extensão (sem extensão seriam tranças normais)'
   }
 };
 
@@ -1662,6 +1741,17 @@ function applyTranslations(){
   // Placeholder email
   var em=document.getElementById('f_email');if(em)em.placeholder=t('s1_ph');
   var ig=document.getElementById('f_ig');if(ig)ig.placeholder=t('s2_ph');
+  // Formulario rápido — placeholders y resumen (si está abierto)
+  var qh=document.getElementById('q_horas');if(qh)qh.placeholder=t('qf_horas_ph');
+  var qm=document.getElementById('q_materiales');if(qm)qm.placeholder=t('qf_gasto_producto_ph');
+  var qp=document.getElementById('q_precioactual');if(qp)qp.placeholder=t('qf_cobras_ahora_ph');
+  var qn=document.getElementById('q_nombre');if(qn)qn.placeholder=t('qf_nombre_servicio_ph');
+  if(document.getElementById('quickForm').classList.contains('visible')){
+    var pais=document.getElementById('f_pais').value,geo=GEO[pais];
+    var nivel=document.getElementById('f_nivel').value,zona=document.getElementById('f_zona').value,estructura=document.getElementById('f_estructura').value;
+    document.getElementById('qfSummaryText').textContent=
+      (geo?geo.nombre:pais)+' · '+nivelLabel(nivel)+' · '+zonaLabel(zona)+' · '+estructuraLabel(estructura);
+  }
 }
 
 // ── COMPARTIR ──
@@ -2039,7 +2129,7 @@ function go(n){
     if(n===11){const tipo=document.getElementById('f_tipo').value;const bb=document.getElementById('backBtn11');if(bb)bb.onclick=()=>goBack(tipo==='pegadas'?8:tipo==='sueltas'?9:10);}
     if(n===12){
       const key=document.getElementById('f_pais').value;const geo=GEO[key];
-      const aviso=(monedaCalculo==='usd'&&geo)?'— en dólares (USD)':(geo?'— en '+monedaSimbolo(key,false):'');
+      const aviso=(monedaCalculo==='usd'&&geo)?'— '+t('qf_moneda_en_usd'):(geo?'— en '+monedaSimbolo(key,false):'');
       document.getElementById('monedaAviso12').textContent=aviso;
       document.getElementById('monedaAviso12b').textContent=aviso;
     }
@@ -2120,7 +2210,7 @@ function updateRegiones(){
   const monedaWrap=document.getElementById('monedaWrap');
   if(PAISES_MONEDA_ELEGIBLE.includes(key)){
     monedaWrap.style.display='block';
-    document.getElementById('monedaLocalLabel').textContent='Moneda local ('+monedaSimbolo(key,false)+')';
+    document.getElementById('monedaLocalLabel').textContent=t('qf_moneda_local')+' ('+monedaSimbolo(key,false)+')';
     document.getElementById('monedaOptLocal').classList.add('active');
     document.getElementById('monedaOptUsd').classList.remove('active');
   }else{
@@ -2238,9 +2328,14 @@ function actualizarEstimadoDebounced(){
 }
 
 // ── FORMULARIO RÁPIDO (consultas siguientes — segunda vez en adelante) ──
-const NIVEL_LABELS={junior:'Junior',intermedio:'Intermedio',avanzado:'Avanzado',profesional:'Profesional',elite:'Élite'};
-const ZONA_LABELS={premium:'Zona cara',media:'Zona normal',baja:'Zona económica'};
-const ESTRUCTURA_LABELS={casa:'En casa',salon:'En salón'};
+// Reutiliza las claves de traducción que ya existen para el wizard (n_junior, zona_cara, casa…)
+// en vez de mantener una tabla de etiquetas aparte solo en español.
+const NIVEL_KEYS={junior:'n_junior',intermedio:'n_inter',avanzado:'n_avanz',profesional:'n_prof',elite:'n_elite'};
+const ZONA_KEYS={premium:'zona_cara',media:'zona_normal',baja:'zona_baja'};
+const ESTRUCTURA_KEYS={casa:'casa',salon:'salon'};
+function nivelLabel(k){return NIVEL_KEYS[k]?t(NIVEL_KEYS[k]):k;}
+function zonaLabel(k){return ZONA_KEYS[k]?t(ZONA_KEYS[k]):k;}
+function estructuraLabel(k){return ESTRUCTURA_KEYS[k]?t(ESTRUCTURA_KEYS[k]):k;}
 
 function mostrarFormularioRapido(){
   ['q_tipo','q_extpeg','q_bohopeg','q_extsueltas','q_bohosueltas','q_extfulani','q_bohofulsueltas',
@@ -2253,12 +2348,12 @@ function mostrarFormularioRapido(){
   document.getElementById('qfSubmitBtn').disabled=true;
   document.getElementById('quickEstimateBar').classList.remove('visible');
   document.getElementById('quickEstimateFill').style.width='0%';
-  document.getElementById('quickEstimateVal').innerHTML='<span class="live-estimate-dot"></span>Rellena los datos';
+  document.getElementById('quickEstimateVal').innerHTML='<span class="live-estimate-dot"></span>'+t('live_meter_placeholder');
 
   const pais=document.getElementById('f_pais').value;const geo=GEO[pais];
   const nivel=document.getElementById('f_nivel').value,zona=document.getElementById('f_zona').value,estructura=document.getElementById('f_estructura').value;
   document.getElementById('qfSummaryText').textContent=
-    (geo?geo.nombre:pais)+' · '+(NIVEL_LABELS[nivel]||nivel)+' · '+(ZONA_LABELS[zona]||zona)+' · '+(ESTRUCTURA_LABELS[estructura]||estructura);
+    (geo?geo.nombre:pais)+' · '+nivelLabel(nivel)+' · '+zonaLabel(zona)+' · '+estructuraLabel(estructura);
 
   // #resultSection vive dentro de #mainContent, así que NO se oculta mainContent
   // entero (lo taparía) — solo las piezas propias del wizard.
