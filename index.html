@@ -218,6 +218,31 @@ body{overflow-y:auto;}
 .live-estimate-meter{height:4px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden;}
 .live-estimate-meter-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--purple),#a78bfa);width:0%;transition:width .6s cubic-bezier(.25,.46,.45,.94);}
 
+/* ── FORMULARIO RÁPIDO (consultas siguientes) ── */
+#quickForm{display:none;position:relative;z-index:1;min-height:100vh;flex-direction:column;}
+#quickForm.visible{display:flex;}
+#quickForm .live-estimate{position:sticky;top:49px;}
+.qf-summary{max-width:520px;margin:0 auto;width:100%;padding:12px 20px 0;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px;color:var(--subtle);}
+.qf-summary-link{color:#C4B5FD;font-weight:600;cursor:pointer;white-space:nowrap;}
+.qf-summary-link:hover{text-decoration:underline;}
+.qf-main{max-width:520px;margin:0 auto;width:100%;padding:16px 20px 100px;display:flex;flex-direction:column;gap:12px;}
+.qf-card{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:16px;box-shadow:0 1px 0 rgba(255,255,255,.06) inset;animation:fadeInA .3s ease;}
+.qf-card-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:12px;}
+.qf-detail{display:none;}
+.qf-detail.visible{display:block;}
+.qf-row{display:flex;gap:10px;}
+.qf-row+.qf-row{margin-top:10px;}
+.qf-field{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0;}
+.qf-field-label{font-size:10px;font-weight:600;color:var(--subtle);}
+.qf-pills{display:flex;flex-wrap:wrap;gap:7px;}
+.qf-pill{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:20px;padding:8px 14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--subtle);transition:all .15s;}
+.qf-pill:hover{color:var(--text);background:rgba(255,255,255,.07);}
+.qf-pill.active{background:var(--red-dim);border-color:rgba(227,30,36,.3);color:rgba(255,150,150,.9);}
+.qf-boho{display:none;margin-top:10px;}
+.qf-boho.visible{display:block;}
+.qf-error{display:none;background:rgba(227,30,36,.08);border:1px solid rgba(227,30,36,.2);border-radius:8px;padding:10px 14px;font-size:11px;color:#F87171;}
+.qf-submit{width:100%;}
+
 .tf-main{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px 100px;}
 .tf-card{width:100%;max-width:520px;}
 
@@ -510,7 +535,7 @@ option{background:#0d0d0d;color:#fff;}
 
 <!-- ══ APP PRINCIPAL ══ -->
 <div id="mainContent">
-  <div class="tf-header">
+  <div class="tf-header" id="wizHeader">
     <div class="tf-logo">
       <div class="logo-mark" style="width:24px;height:24px;border-radius:7px;"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 12L7 2L12 12" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 9H10.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
       <span class="tf-logo-text">Legacy</span>
@@ -522,7 +547,7 @@ option{background:#0d0d0d;color:#fff;}
       <div class="lang-btn" onclick="setLang('pt',this,'header')"><span class="lang-flag">🇧🇷</span>PT</div>
     </div>
   </div>
-  <div class="tf-progress"><div class="tf-progress-fill" id="tfBar" style="width:8%"></div></div>
+  <div class="tf-progress" id="wizProgress"><div class="tf-progress-fill" id="tfBar" style="width:8%"></div></div>
 
   <div id="liveEstimateBar" class="live-estimate">
     <div class="live-estimate-inner">
@@ -1004,9 +1029,188 @@ option{background:#0d0d0d;color:#fff;}
 <!-- Canvas oculto para PNG -->
 <canvas id="shareCanvas" width="1080" height="1080" style="display:none"></canvas>
 
-  <div class="tf-footer">
+  <div class="tf-footer" id="wizFooter">
     <span>Legacy Calculator · Acceso anticipado</span>
     <span>© 2026</span>
+  </div>
+</div>
+
+<!-- ══ FORMULARIO RÁPIDO (consultas siguientes) ══ -->
+<div id="quickForm">
+  <div class="tf-header">
+    <div class="tf-logo">
+      <div class="logo-mark" style="width:24px;height:24px;border-radius:7px;"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 12L7 2L12 12" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 9H10.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <span class="tf-logo-text">Legacy</span>
+    </div>
+    <span class="tf-step-counter">Cálculo rápido</span>
+  </div>
+
+  <div class="qf-summary">
+    <span id="qfSummaryText">—</span>
+    <span class="qf-summary-link" onclick="volverAWizardCompleto()">Cambiar mis datos</span>
+  </div>
+
+  <div id="quickEstimateBar" class="live-estimate">
+    <div class="live-estimate-inner">
+      <div class="live-estimate-label">Tu precio va tomando forma</div>
+      <div class="live-estimate-val" id="quickEstimateVal"><span class="live-estimate-dot"></span>Rellena los datos</div>
+      <div class="live-estimate-meter"><div class="live-estimate-meter-fill" id="quickEstimateFill"></div></div>
+    </div>
+  </div>
+
+  <div class="qf-main">
+    <div class="qf-card">
+      <div class="qf-card-label">¿Qué vas a calcular?</div>
+      <div class="qf-pills">
+        <div class="qf-pill" id="qTipoPegadas" onclick="qElegirTipo('pegadas')">Pegadas</div>
+        <div class="qf-pill" id="qTipoSueltas" onclick="qElegirTipo('sueltas')">Sueltas</div>
+        <div class="qf-pill" id="qTipoFulani" onclick="qElegirTipo('fulani')">Fulani Braids</div>
+      </div>
+    </div>
+
+    <!-- Detalle Pegadas -->
+    <div class="qf-card qf-detail" id="qDetallePegadas">
+      <div class="qf-card-label">Detalle de las pegadas</div>
+      <div class="qf-row">
+        <label class="qf-field">
+          <span class="qf-field-label">Tipo</span>
+          <select class="tf-select" id="q_tipopeg" onchange="actualizarEstimadoRapidoDebounced()">
+            <option value="cornrows">Cornrows</option>
+            <option value="twist">Twist</option>
+            <option value="barrel_twist">Barrel Twist</option>
+          </select>
+        </label>
+        <label class="qf-field">
+          <span class="qf-field-label">Diseño</span>
+          <select class="tf-select" id="q_comppeg" onchange="actualizarEstimadoRapidoDebounced()">
+            <option value="basico">Básico</option>
+            <option value="con_disenos">Con diseño</option>
+          </select>
+        </label>
+      </div>
+      <div class="qf-field-label" style="margin-top:10px">Extensiones</div>
+      <div class="qf-pills">
+        <div class="qf-pill" onclick="qSetExt('peg','con',this)">Con extensiones</div>
+        <div class="qf-pill" onclick="qSetExt('peg','feedin',this)">Feed-in</div>
+        <div class="qf-pill" onclick="qSetExt('peg','sin',this)">Sin extensiones</div>
+      </div>
+      <div class="qf-boho" id="qBohoPeg">
+        <div class="qf-field-label">¿Con efecto Boho?</div>
+        <div class="qf-pills"><div class="qf-pill" onclick="qSetBoho('peg','si',this)">Sí</div><div class="qf-pill" onclick="qSetBoho('peg','no',this)">No</div></div>
+      </div>
+    </div>
+
+    <!-- Detalle Sueltas -->
+    <div class="qf-card qf-detail" id="qDetalleSueltas">
+      <div class="qf-card-label">Detalle de las sueltas</div>
+      <div class="qf-row">
+        <label class="qf-field">
+          <span class="qf-field-label">Tamaño</span>
+          <select class="tf-select" id="q_tamano" onchange="actualizarEstimadoRapidoDebounced()">
+            <option value="jumbo">Jumbo</option><option value="large">Large</option><option value="lardium">Lardium</option>
+            <option value="medium">Medium</option><option value="smedium">Smedium</option><option value="small">Small</option><option value="xs_small">XS Small</option>
+          </select>
+        </label>
+        <label class="qf-field">
+          <span class="qf-field-label">Técnica</span>
+          <select class="tf-select" id="q_tiposueltas" onchange="actualizarEstimadoRapidoDebounced()">
+            <option value="normales">Normales</option>
+            <option value="twist">Twist</option>
+          </select>
+        </label>
+      </div>
+      <div class="qf-field-label" style="margin-top:10px">Extensiones</div>
+      <div class="qf-pills">
+        <div class="qf-pill" onclick="qSetExt('sue','con',this)">Con extensiones</div>
+        <div class="qf-pill" onclick="qSetExt('sue','sin',this)">Sin extensiones</div>
+      </div>
+      <div class="qf-boho" id="qBohoSue">
+        <div class="qf-field-label">¿Con efecto Boho?</div>
+        <div class="qf-pills"><div class="qf-pill" onclick="qSetBoho('sue','si',this)">Sí</div><div class="qf-pill" onclick="qSetBoho('sue','no',this)">No</div></div>
+      </div>
+    </div>
+
+    <!-- Detalle Fulani -->
+    <div class="qf-card qf-detail" id="qDetalleFulani">
+      <div class="qf-card-label">Detalle de las Fulani</div>
+      <div class="qf-row">
+        <label class="qf-field">
+          <span class="qf-field-label">Tamaño (atrás)</span>
+          <select class="tf-select" id="q_tamanofulsueltas" onchange="actualizarEstimadoRapidoDebounced()">
+            <option value="jumbo">Jumbo</option><option value="large">Large</option><option value="lardium">Lardium</option>
+            <option value="medium">Medium</option><option value="smedium">Smedium</option><option value="small">Small</option><option value="xs_small">XS Small</option>
+          </select>
+        </label>
+        <label class="qf-field">
+          <span class="qf-field-label">Delantera</span>
+          <select class="tf-select" id="q_compfuldelante" onchange="actualizarEstimadoRapidoDebounced()">
+            <option value="simples">Simples</option><option value="medias">Medias</option><option value="elaboradas">Elaboradas</option>
+          </select>
+        </label>
+      </div>
+      <div class="qf-field-label" style="margin-top:10px">Extensiones</div>
+      <div class="qf-pills">
+        <div class="qf-pill" onclick="qSetExt('ful','con',this)">Con extensiones</div>
+        <div class="qf-pill" onclick="qSetExt('ful','sin',this)">Sin extensiones</div>
+      </div>
+      <div class="qf-boho" id="qBohoFul">
+        <div class="qf-field-label">¿Con efecto Boho?</div>
+        <div class="qf-pills"><div class="qf-pill" onclick="qSetBoho('ful','si',this)">Sí</div><div class="qf-pill" onclick="qSetBoho('ful','no',this)">No</div></div>
+      </div>
+    </div>
+
+    <!-- Cabello -->
+    <div class="qf-card qf-detail" id="qCardCabello">
+      <div class="qf-card-label">Cabello del cliente</div>
+      <div class="qf-row">
+        <label class="qf-field">
+          <span class="qf-field-label">Largo del cabello</span>
+          <select class="tf-select" id="q_largocab" onchange="actualizarEstimadoRapidoDebounced()">
+            <option value="muy_corto">Muy corto</option><option value="corto">Corto</option><option value="nuca_hombros">Normal</option>
+            <option value="media_espalda">Largo</option><option value="caderas">Muy largo</option>
+          </select>
+        </label>
+        <label class="qf-field" id="qCampoLargoExt" style="display:none">
+          <span class="qf-field-label">Largo de extensiones</span>
+          <select class="tf-select" id="q_largoext" onchange="actualizarEstimadoRapidoDebounced()">
+            <option value="nuca">Nuca</option><option value="hombros">Hombros</option><option value="media_espalda">Media espalda</option>
+            <option value="caderas">Caderas</option><option value="mas_largo">Más largo</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <!-- Tiempo y coste -->
+    <div class="qf-card qf-detail" id="qCardTiempo">
+      <div class="qf-card-label">Tiempo y coste</div>
+      <div class="qf-row">
+        <label class="qf-field">
+          <span class="qf-field-label">Horas</span>
+          <input class="tf-select" type="number" id="q_horas" placeholder="Ej: 4" min="0.5" step="0.5" oninput="qCheckBtn();actualizarEstimadoRapidoDebounced()">
+        </label>
+        <label class="qf-field">
+          <span class="qf-field-label" id="qLabelMateriales">Gasto en producto</span>
+          <input class="tf-select" type="number" id="q_materiales" placeholder="Ej: 8" min="0" step="1" oninput="actualizarEstimadoRapidoDebounced()">
+        </label>
+      </div>
+      <div class="qf-row">
+        <label class="qf-field">
+          <span class="qf-field-label" id="qLabelPrecioActual">¿Cuánto cobras ahora?</span>
+          <input class="tf-select" type="number" id="q_precioactual" placeholder="0 si es nuevo" min="0">
+        </label>
+        <label class="qf-field">
+          <span class="qf-field-label">Nombre del servicio (opcional)</span>
+          <input class="tf-select" type="text" id="q_nombre" placeholder="Ej: Knotless Medium" maxlength="80">
+        </label>
+      </div>
+    </div>
+
+    <input type="hidden" id="q_tipo">
+    <input type="hidden" id="q_extpeg"><input type="hidden" id="q_bohopeg">
+    <input type="hidden" id="q_extsueltas"><input type="hidden" id="q_bohosueltas">
+    <input type="hidden" id="q_extfulani"><input type="hidden" id="q_bohofulsueltas">
+    <div class="qf-error" id="qfError">Selecciona un tipo de trenzado y las horas para continuar.</div>
+    <button class="tf-btn-next qf-submit" id="qfSubmitBtn" disabled onclick="calcularRapido()">Ver mi precio →</button>
   </div>
 </div>
 
@@ -2023,6 +2227,208 @@ function actualizarEstimadoDebounced(){
   estimadoDebounceT=setTimeout(()=>actualizarEstimado(ESTIMADO_CHECKPOINTS_TOTAL),600);
 }
 
+// ── FORMULARIO RÁPIDO (consultas siguientes — segunda vez en adelante) ──
+const NIVEL_LABELS={junior:'Junior',intermedio:'Intermedio',avanzado:'Avanzado',profesional:'Profesional',elite:'Élite'};
+const ZONA_LABELS={premium:'Zona cara',media:'Zona normal',baja:'Zona económica'};
+const ESTRUCTURA_LABELS={casa:'En casa',salon:'En salón'};
+
+function mostrarFormularioRapido(){
+  ['q_tipo','q_extpeg','q_bohopeg','q_extsueltas','q_bohosueltas','q_extfulani','q_bohofulsueltas',
+   'q_horas','q_materiales','q_precioactual','q_nombre'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.querySelectorAll('#quickForm .qf-pill').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#quickForm .qf-detail').forEach(d=>d.classList.remove('visible'));
+  document.querySelectorAll('#quickForm .qf-boho').forEach(d=>d.classList.remove('visible'));
+  document.getElementById('qCampoLargoExt').style.display='none';
+  document.getElementById('qfError').style.display='none';
+  document.getElementById('qfSubmitBtn').disabled=true;
+  document.getElementById('quickEstimateBar').classList.remove('visible');
+  document.getElementById('quickEstimateFill').style.width='0%';
+  document.getElementById('quickEstimateVal').innerHTML='<span class="live-estimate-dot"></span>Rellena los datos';
+
+  const pais=document.getElementById('f_pais').value;const geo=GEO[pais];
+  const nivel=document.getElementById('f_nivel').value,zona=document.getElementById('f_zona').value,estructura=document.getElementById('f_estructura').value;
+  document.getElementById('qfSummaryText').textContent=
+    (geo?geo.nombre:pais)+' · '+(NIVEL_LABELS[nivel]||nivel)+' · '+(ZONA_LABELS[zona]||zona)+' · '+(ESTRUCTURA_LABELS[estructura]||estructura);
+
+  // #resultSection vive dentro de #mainContent, así que NO se oculta mainContent
+  // entero (lo taparía) — solo las piezas propias del wizard.
+  document.getElementById('wizHeader').style.display='none';
+  document.getElementById('wizProgress').style.display='none';
+  document.getElementById('liveEstimateBar').classList.remove('visible');
+  document.getElementById('tfMainArea').style.display='none';
+  document.getElementById('wizFooter').style.display='none';
+  document.getElementById('resultSection').classList.remove('visible');
+  document.getElementById('resultSection').style.display='none';
+  document.getElementById('quickForm').classList.add('visible');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function volverAWizardCompleto(){
+  document.getElementById('quickForm').classList.remove('visible');
+  document.getElementById('wizHeader').style.display='';
+  document.getElementById('wizProgress').style.display='';
+  document.getElementById('tfMainArea').style.display='flex';
+  document.getElementById('wizFooter').style.display='';
+  cur=3;
+  document.querySelectorAll('.tf-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s3').classList.add('active');
+  document.getElementById('tfBar').style.width=Math.round((3-1)/12*100)+'%';
+  document.getElementById('stepCounter').textContent='Paso 3 de 13';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function qElegirTipo(tipo){
+  document.getElementById('q_tipo').value=tipo;
+  document.getElementById('qTipoPegadas').classList.toggle('active',tipo==='pegadas');
+  document.getElementById('qTipoSueltas').classList.toggle('active',tipo==='sueltas');
+  document.getElementById('qTipoFulani').classList.toggle('active',tipo==='fulani');
+  document.getElementById('qDetallePegadas').classList.toggle('visible',tipo==='pegadas');
+  document.getElementById('qDetalleSueltas').classList.toggle('visible',tipo==='sueltas');
+  document.getElementById('qDetalleFulani').classList.toggle('visible',tipo==='fulani');
+  document.getElementById('qCardCabello').classList.add('visible');
+  document.getElementById('qCardTiempo').classList.add('visible');
+  qUpdateLargoExt();
+  qCheckBtn();
+  actualizarEstimadoRapido();
+}
+
+function qSetExt(grupo,val,el){
+  el.parentElement.querySelectorAll('.qf-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  const map={peg:'q_extpeg',sue:'q_extsueltas',ful:'q_extfulani'};
+  document.getElementById(map[grupo]).value=val;
+  const bohoMap={peg:'qBohoPeg',sue:'qBohoSue',ful:'qBohoFul'};
+  const lleva=(grupo==='peg')?(val==='con'||val==='feedin'):(val==='con');
+  document.getElementById(bohoMap[grupo]).classList.toggle('visible',lleva);
+  qUpdateLargoExt();
+  actualizarEstimadoRapidoDebounced();
+}
+
+function qSetBoho(grupo,val,el){
+  el.parentElement.querySelectorAll('.qf-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  const map={peg:'q_bohopeg',sue:'q_bohosueltas',ful:'q_bohofulsueltas'};
+  document.getElementById(map[grupo]).value=val;
+  actualizarEstimadoRapidoDebounced();
+}
+
+function qUpdateLargoExt(){
+  const tipo=document.getElementById('q_tipo').value;
+  const ext=tipo==='pegadas'?document.getElementById('q_extpeg').value
+    :tipo==='sueltas'?document.getElementById('q_extsueltas').value
+    :tipo==='fulani'?document.getElementById('q_extfulani').value:'';
+  const lleva=tipo==='pegadas'?(ext==='con'||ext==='feedin'):(ext==='con');
+  document.getElementById('qCampoLargoExt').style.display=lleva?'flex':'none';
+}
+
+function qCheckBtn(){
+  const tipo=document.getElementById('q_tipo').value;
+  const horas=Number(document.getElementById('q_horas').value);
+  document.getElementById('qfSubmitBtn').disabled=!(tipo&&horas>0);
+}
+
+let qEstimadoDebounceT=null;
+function actualizarEstimadoRapidoDebounced(){
+  qCheckBtn();
+  clearTimeout(qEstimadoDebounceT);
+  qEstimadoDebounceT=setTimeout(actualizarEstimadoRapido,500);
+}
+
+function qCamposLlenos(){
+  const tipo=document.getElementById('q_tipo').value;
+  if(!tipo) return 0;
+  return Number(document.getElementById('q_horas').value)>0 ? 100 : 55;
+}
+
+async function actualizarEstimadoRapido(){
+  const tipo=document.getElementById('q_tipo').value;
+  if(!tipo) return;
+  const bar=document.getElementById('quickEstimateBar'),valEl=document.getElementById('quickEstimateVal'),fillEl=document.getElementById('quickEstimateFill');
+  bar.classList.add('visible');
+  valEl.classList.add('updating');
+  fillEl.style.width=qCamposLlenos()+'%';
+  if(estimadoAbortCtrl) estimadoAbortCtrl.abort();
+  estimadoAbortCtrl=new AbortController();
+  try{
+    const pais0=document.getElementById('f_pais').value;
+    const tasaConv=(monedaCalculo==='usd'&&TASAS_LOCAL_USD[pais0])?TASAS_LOCAL_USD[pais0]:1;
+    const horasVal=Number(document.getElementById('q_horas').value);
+    const body={
+      email:document.getElementById('f_email').value.trim()||'estimado@legacy.app',
+      pais:pais0, zona:document.getElementById('f_zona').value, smi:document.getElementById('f_smi').value,
+      clienteTipo:'local', nivel:document.getElementById('f_nivel').value, estructura:document.getElementById('f_estructura').value,
+      horas:horasVal>0?horasVal:3,
+      materiales:(Number(document.getElementById('q_materiales').value)||0)*tasaConv,
+      precioActual:0, tipoTrenzado:tipo,
+      tipoPegadas:document.getElementById('q_tipopeg').value||null,
+      complejidadPegadas:document.getElementById('q_comppeg').value||null,
+      extensionesPegadas:document.getElementById('q_extpeg').value||null,
+      bohoPegadas:document.getElementById('q_bohopeg').value||null,
+      tamanoSueltas:document.getElementById('q_tamano').value||'medium',
+      tipoSueltas:document.getElementById('q_tiposueltas').value||null,
+      extensionesSueltas:document.getElementById('q_extsueltas').value||null,
+      bohoSueltas:document.getElementById('q_bohosueltas').value||null,
+      tamanoFulaniAtras:document.getElementById('q_tamanofulsueltas').value||'medium',
+      complejidadFulaniDelante:document.getElementById('q_compfuldelante').value||null,
+      extensionesFulani:document.getElementById('q_extfulani').value||null,
+      bohoFulani:document.getElementById('q_bohofulsueltas').value||null,
+      largoCabello:document.getElementById('q_largocab').value||'nuca_hombros',
+      largoExtensiones:document.getElementById('q_largoext').value||'hombros',
+    };
+    const res=await fetch('/api/calculate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:estimadoAbortCtrl.signal});
+    const data=await res.json();
+    if(!res.ok||!data||typeof data.precioTotal!=='number') return;
+    const usaUsd=monedaCalculo==='usd'&&TASAS_LOCAL_USD[pais0];
+    const geo=GEO[pais0];
+    const sim=usaUsd?'$':(geo?geo.simbolo:'€');
+    const precio=data.precioTotal/tasaConv;
+    const lo=redondear2SigFigs(precio*0.88),hi=redondear2SigFigs(precio*1.15);
+    const f=v=>v>=1000?sim+Math.round(v).toLocaleString('es-ES'):sim+Math.round(v);
+    valEl.innerHTML='<span class="live-estimate-dot"></span>'+f(lo)+' – '+f(hi);
+    valEl.classList.remove('bump'); void valEl.offsetWidth; valEl.classList.add('bump');
+  }catch(e){
+    // fetch abortado o error de red — no bloquea el formulario
+  }finally{
+    valEl.classList.remove('updating');
+  }
+}
+
+function calcularRapido(){
+  const tipo=document.getElementById('q_tipo').value;
+  const horas=Number(document.getElementById('q_horas').value);
+  const qfError=document.getElementById('qfError');
+  if(!tipo||!horas||horas<=0){qfError.style.display='block';return;}
+  qfError.style.display='none';
+
+  // Copiar del formulario rápido a los campos canónicos del wizard y reutilizar calcular()
+  // tal cual — misma validación, misma llamada a /api/calculate, mismo resultado final.
+  document.getElementById('f_tipo').value=tipo;
+  document.getElementById('f_tipopeg').value=document.getElementById('q_tipopeg').value||'';
+  document.getElementById('f_comppeg').value=document.getElementById('q_comppeg').value||'';
+  document.getElementById('f_extpeg').value=document.getElementById('q_extpeg').value||'';
+  document.getElementById('f_bohopeg').value=document.getElementById('q_bohopeg').value||'';
+  document.getElementById('f_tamano').value=document.getElementById('q_tamano').value||'';
+  document.getElementById('f_tiposueltas').value=document.getElementById('q_tiposueltas').value||'';
+  document.getElementById('f_extsueltas').value=document.getElementById('q_extsueltas').value||'';
+  document.getElementById('f_bohosueltas').value=document.getElementById('q_bohosueltas').value||'';
+  document.getElementById('f_tamanofulsueltas').value=document.getElementById('q_tamanofulsueltas').value||'';
+  document.getElementById('f_compfuldelante').value=document.getElementById('q_compfuldelante').value||'';
+  document.getElementById('f_extfulani').value=document.getElementById('q_extfulani').value||'';
+  document.getElementById('f_bohofulsueltas').value=document.getElementById('q_bohofulsueltas').value||'';
+  document.getElementById('f_largocab').value=document.getElementById('q_largocab').value||'nuca_hombros';
+  document.getElementById('f_largoext').value=document.getElementById('q_largoext').value||'';
+  document.getElementById('f_horas').value=horas;
+  document.getElementById('f_materiales').value=document.getElementById('q_materiales').value||'0';
+  document.getElementById('f_precioactual').value=document.getElementById('q_precioactual').value||'0';
+  document.getElementById('f_nombre').value=document.getElementById('q_nombre').value||'';
+
+  document.getElementById('quickForm').classList.remove('visible');
+  document.getElementById('wizHeader').style.display='';
+  document.getElementById('wizProgress').style.display='';
+  document.getElementById('wizFooter').style.display='';
+  calcular();
+}
+
 // ── CALCULAR ──
 async function calcular(){
   const err12=document.getElementById('err12');err12.style.display='none';
@@ -2212,20 +2618,11 @@ function renderResult(data){
 }
 
 function siguienteConsulta(){
-  document.getElementById('resultSection').style.display='none';
-  document.getElementById('resultSection').classList.remove('visible');
-  document.getElementById('tfMainArea').style.display='flex';
-  document.getElementById('f_reputacion').value='';
-  document.querySelectorAll('#repOpts .tf-opt').forEach(o=>o.classList.remove('active'));
-  document.getElementById('f_horas').value='';
-  document.getElementById('f_materiales').value='';
-  document.getElementById('f_precioactual').value='';
-  document.getElementById('f_nombre').value='';
+  // A partir de la 2ª consulta usamos el formulario rápido de una página en
+  // vez del wizard completo — país/nivel/zona/estructura/reputación ya se
+  // conocen de la primera vez, así que no hace falta volver a preguntarlos.
   document.getElementById('eliteMsg').style.display='none';
-  document.querySelectorAll('#s7 .tf-opt').forEach(o=>o.classList.remove('active'));
-  document.getElementById('f_tipo').value='';
-  document.getElementById('liveEstimateBar').classList.remove('visible');
-  go(7);
+  mostrarFormularioRapido();
 }
 
 document.addEventListener('keydown',e=>{
