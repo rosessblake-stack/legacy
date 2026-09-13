@@ -202,10 +202,15 @@ export default async function handler(req, res) {
   const MOD_FULANI_DELANTE = { simples:1.00, medias:1.12, elaboradas:1.25 };
 
   // Factor de adaptación geográfica:
-  // Los precios base están calibrados para España zona media.
-  // Para otros países/zonas aplicamos el ratio SMI_FINAL vs SMI España base.
+  // Los precios base (PRECIO_BASE_ELITE_ES) están calibrados en EUR para España zona media.
+  // SMI_FINAL viene en moneda LOCAL, así que hay que normalizarlo a la misma escala
+  // (dividiendo por `tasa`) antes de compararlo con SMI_ES_BASE — comparar unidades
+  // distintas directamente es lo que rompía el ajuste en países con tasas altas
+  // (LatAm, Nigeria, etc.), dejando precios de Sueltas/Fulani sin convertir.
   const SMI_ES_BASE = 1134;
-  const factorGeo = SMI_FINAL / SMI_ES_BASE;
+  const factorGeoNeutral = clamp((SMI_FINAL / tasa) / SMI_ES_BASE, 0.5, 1.8);
+  // Se multiplica por `tasa` para volver a expresar el ajuste en moneda local.
+  const factorGeo = factorGeoNeutral * tasa;
 
   // ══════════════════════════════════════════════════════════════════════
   //  CÁLCULO PRINCIPAL
@@ -252,11 +257,9 @@ export default async function handler(req, res) {
     const modTwist = tipoSueltas === 'twist' ? 1.08 : 1.0;
     const modExtSueltas = extensionesSueltas === 'con' ? 1.0 : 0.85;
 
-    // factorGeo solo para países con SMI muy diferente al español
-    // Para España y Europa similar, el precio base ya es el precio final
-    const PAISES_CON_GEO = ['us','gb','ca','au','ng','other'];
-    const usarGeo = PAISES_CON_GEO.includes(pais) || SMI_FINAL > SMI_ES_BASE * 1.5;
-    const geoSueltas = usarGeo ? Math.min(factorGeo, 1.8) : 1.0;
+    // factorGeo ya está normalizado por divisa y expresado en moneda local —
+    // se aplica igual para todos los países.
+    const geoSueltas = factorGeo;
 
     valorConocimiento =
       precioBaseElite *
@@ -286,9 +289,7 @@ export default async function handler(req, res) {
     const modDelante = MOD_FULANI_DELANTE[complejidadFulaniDelante] || 1.0;
     const modExtFulani = extensionesFulani === 'con' ? 1.0 : 0.85;
 
-    const PAISES_CON_GEO = ['us','gb','ca','au','ng','other'];
-    const usarGeo = PAISES_CON_GEO.includes(pais) || SMI_FINAL > SMI_ES_BASE * 1.5;
-    const geoFulani = usarGeo ? Math.min(factorGeo, 1.8) : 1.0;
+    const geoFulani = factorGeo;
 
     valorConocimiento =
       precioBaseElite *
@@ -397,4 +398,8 @@ export default async function handler(req, res) {
 
 function round(v, d=2) {
   return Math.round(v * Math.pow(10,d)) / Math.pow(10,d);
+}
+
+function clamp(v, min, max) {
+  return Math.min(Math.max(v, min), max);
 }
