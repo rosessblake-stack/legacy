@@ -545,6 +545,16 @@ option{background:#0d0d0d;color:#fff;}
         <option value="other">🌍 Otro país</option>
       </select>
       <div class="tf-error" id="err3">Selecciona tu país.</div>
+
+      <div id="monedaWrap" style="display:none;margin-top:16px">
+        <div class="tf-sublabel first">¿En qué moneda quieres calcular?</div>
+        <div class="tf-opts" id="monedaOpts">
+          <div class="tf-opt active" id="monedaOptLocal" onclick="setMoneda('local')"><div><div class="tf-opt-name" id="monedaLocalLabel">Moneda local</div><div class="tf-opt-sub">Precios en la moneda de tu país</div></div></div>
+          <div class="tf-opt" id="monedaOptUsd" onclick="setMoneda('usd')"><div><div class="tf-opt-name">Dólares (USD)</div><div class="tf-opt-sub">Recomendado si tus clientes piensan/cobran en dólares</div></div></div>
+        </div>
+        <div class="tf-hint" style="margin-bottom:0">⚠️ Elige una y mantenla: si eliges dólares, el gasto en material y lo que cobras actualmente también hay que ponerlos en dólares — no mezcles monedas.</div>
+      </div>
+
       <div class="tf-nav">
         <button class="tf-btn-back" onclick="goBack(2)">←</button>
         <button class="tf-btn-next" onclick="validarYAvanzar(3,4)">Continuar →</button>
@@ -824,10 +834,10 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-sublabel first">Horas que tardas en este servicio</div>
       <input class="tf-input" type="number" id="f_horas" placeholder="Ej: 4" min="0.5" step="0.5" style="font-size:26px" oninput="checkBtn(12)">
       <div class="tf-hint">Tus horas reales. <strong>No te compares</strong> — el sistema ya ajusta el valor según tu nivel.</div>
-      <div class="tf-sublabel">Gasto en producto</div>
+      <div class="tf-sublabel">Gasto en producto <span id="monedaAviso12" style="text-transform:none;font-weight:600;color:var(--gold)"></span></div>
       <input class="tf-input" type="number" id="f_materiales" placeholder="Ej: 8" min="0" step="1" style="font-size:26px">
       <div class="tf-hint" style="margin-bottom:20px">Solo la parte proporcional de este servicio.</div>
-      <div class="tf-sublabel">¿Cuánto cobras actualmente?</div>
+      <div class="tf-sublabel">¿Cuánto cobras actualmente? <span id="monedaAviso12b" style="text-transform:none;font-weight:600;color:var(--gold)"></span></div>
       <input class="tf-input" type="number" id="f_precioactual" placeholder="0 si es servicio nuevo" min="0" style="font-size:26px">
       <div class="tf-chip" onclick="var b=this.nextElementSibling;b.classList.toggle('open');this.querySelector('span').textContent=b.classList.contains('open')?'▲ Cerrar':'💡 ¿Para qué sirve este dato?'">
         <span>💡 ¿Para qué sirve este dato?</span>
@@ -1657,7 +1667,18 @@ other:{nombre:'Otro país',simbolo:'',smiBase:null,smeBase:null,comunidades:{'Mi
 };
 
 // ── ESTADO ──
-let cur=1,smiMode='sme',consultaNum=0,currentCityData=null,goingBack=false;
+let cur=1,smiMode='sme',consultaNum=0,currentCityData=null,goingBack=false,monedaCalculo='local';
+
+// ── MONEDA DE CÁLCULO (países LatAm dolarizados de facto) ──
+// Mantener sincronizado con `TASAS_USD` de api/calculate.js.
+const TASAS_LOCAL_USD={mx:17.50, co:4100, do:58.0, ar:1200, cl:930, pe:3.75};
+const PAISES_MONEDA_ELEGIBLE=Object.keys(TASAS_LOCAL_USD);
+function setMoneda(modo){
+  monedaCalculo=modo;
+  document.getElementById('monedaOptLocal').classList.toggle('active',modo==='local');
+  document.getElementById('monedaOptUsd').classList.toggle('active',modo==='usd');
+  if(document.getElementById('f_ciudad').value) onCiudadChange();
+}
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded',()=>{
@@ -1739,6 +1760,12 @@ function go(n){
     document.getElementById('stepCounter').textContent='Paso '+n+' de 13';
     if(n===11)updateLargoExtField();
     if(n===11){const tipo=document.getElementById('f_tipo').value;const bb=document.getElementById('backBtn11');if(bb)bb.onclick=()=>goBack(tipo==='pegadas'?8:tipo==='sueltas'?9:10);}
+    if(n===12){
+      const key=document.getElementById('f_pais').value;const geo=GEO[key];
+      const aviso=(monedaCalculo==='usd'&&geo)?'— en dólares (USD)':(geo?'— en '+geo.simbolo:'');
+      document.getElementById('monedaAviso12').textContent=aviso;
+      document.getElementById('monedaAviso12b').textContent=aviso;
+    }
     window.scrollTo({top:0,behavior:'smooth'});
   },200);
 }
@@ -1809,6 +1836,17 @@ function updateRegiones(){
   Object.keys(geo.comunidades).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;r.appendChild(o);});
   document.getElementById('f_ciudad').innerHTML='<option value="" disabled selected>Selecciona tu ciudad…</option>';
   document.getElementById('smiPillsWrap').style.display='none';document.getElementById('f_smi').value='';
+
+  monedaCalculo='local';
+  const monedaWrap=document.getElementById('monedaWrap');
+  if(PAISES_MONEDA_ELEGIBLE.includes(key)){
+    monedaWrap.style.display='block';
+    document.getElementById('monedaLocalLabel').textContent='Moneda local ('+(geo.simbolo||'')+')';
+    document.getElementById('monedaOptLocal').classList.add('active');
+    document.getElementById('monedaOptUsd').classList.remove('active');
+  }else{
+    monedaWrap.style.display='none';
+  }
 }
 function updateCiudades(){
   const key=document.getElementById('f_pais').value;const geo=GEO[key];if(!geo)return;
@@ -1822,9 +1860,12 @@ function onCiudadChange(){
   const key=document.getElementById('f_pais').value;const geo=GEO[key];if(!opt||!geo)return;
   const factor=factorInflacion(key);
   currentCityData={sme:Math.round((Number(opt.dataset.sme)||0)*factor),smi:Math.round((Number(opt.dataset.smi)||0)*factor)};
-  const sim=geo.simbolo;
-  document.getElementById('smeVal').textContent=currentCityData.sme?currentCityData.sme.toLocaleString('es-ES')+' '+sim:'—';
-  document.getElementById('smiVal').textContent=currentCityData.smi?currentCityData.smi.toLocaleString('es-ES')+' '+sim:'—';
+  const usaUsd=monedaCalculo==='usd'&&TASAS_LOCAL_USD[key];
+  const tasa=usaUsd?TASAS_LOCAL_USD[key]:1;
+  const sim=usaUsd?'$':geo.simbolo;
+  const fmtVal=v=>usaUsd?(v/tasa).toLocaleString('es-ES',{maximumFractionDigits:0}):v.toLocaleString('es-ES');
+  document.getElementById('smeVal').textContent=currentCityData.sme?fmtVal(currentCityData.sme)+' '+sim:'—';
+  document.getElementById('smiVal').textContent=currentCityData.smi?fmtVal(currentCityData.smi)+' '+sim:'—';
   document.getElementById('smiPillsWrap').style.display='block';selectSMI(smiMode);
 }
 function selectSMI(mode){
@@ -1847,10 +1888,14 @@ async function calcular(){
   document.getElementById('spinnerOverlay').classList.add('visible');
 
   const tipo=document.getElementById('f_tipo').value;
+  const pais0=document.getElementById('f_pais').value;
+  // El backend siempre calcula en moneda local — si el usuario eligió USD,
+  // convertimos aquí lo que escribió antes de enviarlo.
+  const tasaConv=(monedaCalculo==='usd'&&TASAS_LOCAL_USD[pais0])?TASAS_LOCAL_USD[pais0]:1;
   const body={
     email:document.getElementById('f_email').value.trim(),
     instagram:document.getElementById('f_ig').value.trim(),
-    pais:document.getElementById('f_pais').value,
+    pais:pais0,
     provincia:document.getElementById('f_region').value||'',
     ciudad:document.getElementById('f_ciudad').value||'',
     zona:document.getElementById('f_zona').value,
@@ -1858,8 +1903,8 @@ async function calcular(){
     nombreServicio:document.getElementById('f_nombre').value.trim(),
     nivel:document.getElementById('f_nivel').value,
     estructura:document.getElementById('f_estructura').value,
-    horas,materiales:Number(document.getElementById('f_materiales').value)||0,
-    precioActual:Number(document.getElementById('f_precioactual').value)||0,
+    horas,materiales:(Number(document.getElementById('f_materiales').value)||0)*tasaConv,
+    precioActual:(Number(document.getElementById('f_precioactual').value)||0)*tasaConv,
     tipoTrenzado:tipo,
     tipoPegadas:document.getElementById('f_tipopeg').value||null,
     complejidadPegadas:document.getElementById('f_comppeg').value||null,
@@ -1890,22 +1935,33 @@ async function calcular(){
 }
 
 function fmt(n){
-  const pais=document.getElementById('f_pais').value;const geo=GEO[pais];const sim=geo?geo.simbolo:'€';
-  return n>=1000?sim+Math.round(n).toLocaleString('es-ES'):sim+n.toFixed(0);
+  const pais=document.getElementById('f_pais').value;const geo=GEO[pais];
+  const usaUsd=monedaCalculo==='usd'&&TASAS_LOCAL_USD[pais];
+  const sim=usaUsd?'$':(geo?geo.simbolo:'€');
+  const v=usaUsd?n/TASAS_LOCAL_USD[pais]:n;
+  return v>=1000?sim+Math.round(v).toLocaleString('es-ES'):sim+v.toFixed(0);
 }
 
 function renderResult(data){
   consultaNum++;
+  const pais=document.getElementById('f_pais').value;const geo=GEO[pais];
+  // El backend siempre devuelve en moneda local — si eligieron USD, convertimos
+  // aquí lo que se muestra (una sola vez, para todo el resto de la función).
+  const usaUsd=monedaCalculo==='usd'&&TASAS_LOCAL_USD[pais];
+  const tasaConv=usaUsd?TASAS_LOCAL_USD[pais]:1;
+  const sim=usaUsd?'$':(geo?geo.simbolo:'€');
+  const dPrecioTotal=data.precioTotal/tasaConv;
+  const dDiferencia=data.diferencia/tasaConv;
+  const dPrecioActual=data.precioActual/tasaConv;
+
   // Guardar datos para compartir
-  var pais2=document.getElementById('f_pais').value;
-  var geo2=GEO[pais2];var sim2=geo2?geo2.simbolo:'€';
-  var precioNum=Math.round(data.precioTotal);
-  var precioFmtReal=precioNum>=1000?sim2+precioNum.toLocaleString('es-ES'):sim2+precioNum;
+  var precioNum=Math.round(dPrecioTotal);
+  var precioFmtReal=precioNum>=1000?sim+precioNum.toLocaleString('es-ES'):sim+precioNum;
   shareData = {
     nombreServicio: data.nombreServicio || 'Tu servicio',
     precioFmt: precioFmtReal,
     precioNum: precioNum,
-    simbolo: sim2,
+    simbolo: sim,
     nivel: document.getElementById('f_nivel') ? document.getElementById('f_nivel').value : ''
   };
   document.getElementById('tfMainArea').style.display='none';
@@ -1916,20 +1972,19 @@ function renderResult(data){
   const nombre=data.nombreServicio||'Tu servicio';
   document.getElementById('resEyebrow').textContent=nombre;
 
-  const pais=document.getElementById('f_pais').value;const geo=GEO[pais];const sim=geo?geo.simbolo:'€';
-  const pf=data.precioTotal>=1000?sim+Math.round(data.precioTotal).toLocaleString('es-ES'):sim+Math.round(data.precioTotal);
+  const pf=dPrecioTotal>=1000?sim+Math.round(dPrecioTotal).toLocaleString('es-ES'):sim+Math.round(dPrecioTotal);
   var precioEl = document.getElementById('resTotal');
   if(precioEl) animarPrecio(precioEl, pf, '', 900);
   else document.getElementById('resTotal').textContent = pf;
 
-  const mn=Math.round(data.precioTotal*0.9),mx=Math.round(data.precioTotal*1.1);
+  const mn=Math.round(dPrecioTotal*0.9),mx=Math.round(dPrecioTotal*1.1);
   const mf=mn>=1000?sim+mn.toLocaleString('es-ES'):sim+mn;
   const xf=mx>=1000?sim+mx.toLocaleString('es-ES'):sim+mx;
   document.getElementById('resRango').innerHTML='<strong>'+mf+' – '+xf+'</strong><br><span style="font-size:10px;color:var(--subtle)">Mínimo y máximo según tu posicionamiento real.</span>';
 
   document.getElementById('resSMIval').textContent=data.relacionSMI+'x';
 
-  const diff=data.diferencia,pct=data.porcentajeDiferencia;
+  const diff=dDiferencia,pct=data.porcentajeDiferencia;
   const eliteMsg=document.getElementById('eliteMsg');eliteMsg.style.display='none';
   const cd=document.getElementById('contrasteDiff'),ct=document.getElementById('contrasteText');
 
@@ -1937,10 +1992,10 @@ function renderResult(data){
     cd.textContent='Precio de referencia';cd.style.color='var(--text)';ct.textContent='Primera vez calculando este servicio. Guarda este número.';
   }else if(diff>0){
     cd.textContent='Cobras '+sim+Math.round(Math.abs(diff))+' menos de lo que deberías';cd.style.color='var(--orange)';
-    ct.textContent='Tu precio de '+sim+data.precioActual+' está un '+Math.abs(pct)+'% por debajo del precio justo.';
+    ct.textContent='Tu precio de '+sim+Math.round(dPrecioActual)+' está un '+Math.abs(pct)+'% por debajo del precio justo.';
   }else if(diff<0){
     cd.textContent='Cobras '+sim+Math.round(Math.abs(diff))+' por encima';cd.style.color='var(--green)';
-    ct.textContent='Tu precio de '+sim+data.precioActual+' supera la referencia en un '+Math.abs(pct)+'%.';
+    ct.textContent='Tu precio de '+sim+Math.round(dPrecioActual)+' supera la referencia en un '+Math.abs(pct)+'%.';
     eliteMsg.style.display='block';
   }else{
     cd.textContent='Precio exacto';cd.style.color='var(--green)';ct.textContent='Tu precio coincide exactamente con la referencia. Bien calibrado.';
@@ -1957,7 +2012,7 @@ function renderResult(data){
   const rc=RC[repNivel]||RC.construyendo;
   const rpb=document.getElementById('repPotBlock');
   if(rc.pct>0){
-    const pot=Math.round(data.precioTotal*(1+rc.pct/100));
+    const pot=Math.round(dPrecioTotal*(1+rc.pct/100));
     const potFmt=pot>=1000?sim+pot.toLocaleString('es-ES'):sim+pot;
     rpb.style.display='block';rpb.style.background=rc.bg;rpb.style.border='1px solid '+rc.border;
     document.getElementById('repPotTopLine').style.background='linear-gradient(90deg,transparent,'+rc.top+',transparent)';
