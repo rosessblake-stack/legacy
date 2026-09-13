@@ -1939,6 +1939,16 @@ let cur=1,smiMode='sme',consultaNum=0,currentCityData=null,goingBack=false,moned
 // Mantener sincronizado con `TASAS_USD` de api/calculate.js.
 const TASAS_LOCAL_USD={mx:17.50, co:4100, do:58.0, ar:1200, cl:930, pe:3.75};
 const PAISES_MONEDA_ELEGIBLE=Object.keys(TASAS_LOCAL_USD);
+// Varios países usan el mismo símbolo "$" que el dólar (MXN, COP, ARS, CLP, USD…) —
+// sin el código, un precio en pesos mexicanos y uno en dólares se ven idénticos.
+// Se añade el código junto al símbolo siempre que NO se esté mostrando en USD.
+const MONEDA_CODIGO={us:'US', mx:'MX', co:'CO', ar:'AR', cl:'CL'};
+function monedaSimbolo(pais, usaUsd){
+  if(usaUsd) return '$';
+  const geo=GEO[pais];
+  const sim=geo?geo.simbolo:'€';
+  return (sim==='$' && MONEDA_CODIGO[pais]) ? (MONEDA_CODIGO[pais]+sim) : sim;
+}
 function setMoneda(modo){
   monedaCalculo=modo;
   document.getElementById('monedaOptLocal').classList.toggle('active',modo==='local');
@@ -2029,7 +2039,7 @@ function go(n){
     if(n===11){const tipo=document.getElementById('f_tipo').value;const bb=document.getElementById('backBtn11');if(bb)bb.onclick=()=>goBack(tipo==='pegadas'?8:tipo==='sueltas'?9:10);}
     if(n===12){
       const key=document.getElementById('f_pais').value;const geo=GEO[key];
-      const aviso=(monedaCalculo==='usd'&&geo)?'— en dólares (USD)':(geo?'— en '+geo.simbolo:'');
+      const aviso=(monedaCalculo==='usd'&&geo)?'— en dólares (USD)':(geo?'— en '+monedaSimbolo(key,false):'');
       document.getElementById('monedaAviso12').textContent=aviso;
       document.getElementById('monedaAviso12b').textContent=aviso;
     }
@@ -2110,7 +2120,7 @@ function updateRegiones(){
   const monedaWrap=document.getElementById('monedaWrap');
   if(PAISES_MONEDA_ELEGIBLE.includes(key)){
     monedaWrap.style.display='block';
-    document.getElementById('monedaLocalLabel').textContent='Moneda local ('+(geo.simbolo||'')+')';
+    document.getElementById('monedaLocalLabel').textContent='Moneda local ('+monedaSimbolo(key,false)+')';
     document.getElementById('monedaOptLocal').classList.add('active');
     document.getElementById('monedaOptUsd').classList.remove('active');
   }else{
@@ -2131,7 +2141,7 @@ function onCiudadChange(){
   currentCityData={sme:Math.round((Number(opt.dataset.sme)||0)*factor),smi:Math.round((Number(opt.dataset.smi)||0)*factor)};
   const usaUsd=monedaCalculo==='usd'&&TASAS_LOCAL_USD[key];
   const tasa=usaUsd?TASAS_LOCAL_USD[key]:1;
-  const sim=usaUsd?'$':geo.simbolo;
+  const sim=monedaSimbolo(key,usaUsd);
   const fmtVal=v=>usaUsd?(v/tasa).toLocaleString('es-ES',{maximumFractionDigits:0}):v.toLocaleString('es-ES');
   document.getElementById('smeVal').textContent=currentCityData.sme?fmtVal(currentCityData.sme)+' '+sim:'—';
   document.getElementById('smiVal').textContent=currentCityData.smi?fmtVal(currentCityData.smi)+' '+sim:'—';
@@ -2210,7 +2220,7 @@ async function actualizarEstimado(checkpoint){
     const usaUsd=monedaCalculo==='usd'&&TASAS_LOCAL_USD[pais0];
     const tasaConv=usaUsd?TASAS_LOCAL_USD[pais0]:1;
     const geo=GEO[pais0];
-    const sim=usaUsd?'$':(geo?geo.simbolo:'€');
+    const sim=monedaSimbolo(pais0,usaUsd);
     const precio=data.precioTotal/tasaConv;
     const lo=redondear2SigFigs(precio*0.88),hi=redondear2SigFigs(precio*1.15);
     const f=v=>v>=1000?sim+Math.round(v).toLocaleString('es-ES'):sim+Math.round(v);
@@ -2380,7 +2390,7 @@ async function actualizarEstimadoRapido(){
     if(!res.ok||!data||typeof data.precioTotal!=='number') return;
     const usaUsd=monedaCalculo==='usd'&&TASAS_LOCAL_USD[pais0];
     const geo=GEO[pais0];
-    const sim=usaUsd?'$':(geo?geo.simbolo:'€');
+    const sim=monedaSimbolo(pais0,usaUsd);
     const precio=data.precioTotal/tasaConv;
     const lo=redondear2SigFigs(precio*0.88),hi=redondear2SigFigs(precio*1.15);
     const f=v=>v>=1000?sim+Math.round(v).toLocaleString('es-ES'):sim+Math.round(v);
@@ -2490,7 +2500,7 @@ async function calcular(){
 function fmt(n){
   const pais=document.getElementById('f_pais').value;const geo=GEO[pais];
   const usaUsd=monedaCalculo==='usd'&&TASAS_LOCAL_USD[pais];
-  const sim=usaUsd?'$':(geo?geo.simbolo:'€');
+  const sim=monedaSimbolo(pais,usaUsd);
   const v=usaUsd?n/TASAS_LOCAL_USD[pais]:n;
   return v>=1000?sim+Math.round(v).toLocaleString('es-ES'):sim+v.toFixed(0);
 }
@@ -2502,7 +2512,7 @@ function renderResult(data){
   // aquí lo que se muestra (una sola vez, para todo el resto de la función).
   const usaUsd=monedaCalculo==='usd'&&TASAS_LOCAL_USD[pais];
   const tasaConv=usaUsd?TASAS_LOCAL_USD[pais]:1;
-  const sim=usaUsd?'$':(geo?geo.simbolo:'€');
+  const sim=monedaSimbolo(pais,usaUsd);
   const dPrecioTotal=data.precioTotal/tasaConv;
   const dDiferencia=data.diferencia/tasaConv;
   const dPrecioActual=data.precioActual/tasaConv;
