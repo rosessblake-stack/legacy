@@ -160,6 +160,8 @@ export default async function handler(req, res) {
   const modLargoCabello = MOD_LARGO_CABELLO[largoCabello] || 1.0;
 
   // ── DETERMINAR SI LLEVA EXTENSIONES ───────────────────────────
+  // 'feedin' siempre implica extensiones — sin extensión, feed-in no existe como
+  // técnica (serían simplemente pegadas normales).
   const llevaExtensiones =
     (tipoTrenzado === 'pegadas' && (extensionesPegadas === 'con' || extensionesPegadas === 'feedin')) ||
     (tipoTrenzado === 'sueltas' && extensionesSueltas === 'con') ||
