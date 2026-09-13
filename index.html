@@ -43,6 +43,7 @@ body{overflow-y:auto;}
 .splash-sub{font-size:13px;color:var(--subtle);letter-spacing:.06em;animation:splashIn .6s .2s cubic-bezier(.25,.46,.45,.94) both;}
 .splash-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 1.2s ease-in-out infinite;box-shadow:0 0 8px rgba(227,30,36,.5);}
 @keyframes splashIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.75);}}
 
 /* ── SELECTOR IDIOMA ── */
 .lang-selector{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:3px;display:flex;gap:2px;}
@@ -203,6 +204,15 @@ body{overflow-y:auto;}
 
 .tf-progress{height:2px;background:rgba(255,255,255,.05);position:sticky;top:49px;z-index:99;}
 .tf-progress-fill{height:100%;background:linear-gradient(90deg,var(--red),#ff6b6b);transition:width .4s ease;box-shadow:0 0 10px rgba(227,30,36,.4);}
+
+/* ── PRECIO EN VIVO (estimado, checkpoints — no exacto hasta el resultado) ── */
+.live-estimate{max-height:0;overflow:hidden;opacity:0;transition:max-height .35s ease,opacity .35s ease;position:sticky;top:51px;z-index:98;backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);background:rgba(139,92,246,.07);border-bottom:1px solid rgba(139,92,246,.18);}
+.live-estimate.visible{max-height:60px;opacity:1;}
+.live-estimate-inner{max-width:520px;margin:0 auto;padding:9px 20px;display:flex;align-items:center;gap:8px;}
+.live-estimate-dot{width:6px;height:6px;border-radius:50%;background:var(--purple);box-shadow:0 0 8px rgba(139,92,246,.6);flex-shrink:0;animation:pulse 1.4s ease-in-out infinite;}
+.live-estimate-label{font-size:10px;color:rgba(196,181,253,.7);font-weight:600;letter-spacing:.02em;}
+.live-estimate-val{font-family:'Clash Display',sans-serif;font-size:13px;font-weight:700;color:#C4B5FD;margin-left:auto;transition:opacity .2s ease;}
+.live-estimate-val.updating{opacity:.4;}
 
 .tf-main{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px 100px;}
 .tf-card{width:100%;max-width:520px;}
@@ -510,6 +520,14 @@ option{background:#0d0d0d;color:#fff;}
   </div>
   <div class="tf-progress"><div class="tf-progress-fill" id="tfBar" style="width:8%"></div></div>
 
+  <div id="liveEstimateBar" class="live-estimate">
+    <div class="live-estimate-inner">
+      <span class="live-estimate-dot"></span>
+      <span class="live-estimate-label">Estimado con lo que llevas</span>
+      <span class="live-estimate-val" id="liveEstimateVal">—</span>
+    </div>
+  </div>
+
   <div class="tf-main" id="tfMainArea">
   <div class="tf-card">
 
@@ -687,9 +705,9 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-q clash" id="i_q7">¿Qué tipo de trenzado vas a calcular?</div>
       <div class="tf-sub">Este sistema <strong>no calcula por número de trenzas</strong> — te ayuda a descubrir el valor real de tu hora de trabajo.</div>
       <div class="tf-opts" id="tipoOpts">
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','pegadas');go(8)"><div><div class="tf-opt-name">Pegadas</div><div class="tf-opt-sub">Cornrows · Twist · Barrel Twist</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','sueltas');go(9)"><div><div class="tf-opt-name">Sueltas</div><div class="tf-opt-sub">Box Braids · Knotless · Goddess · Bohemian…</div></div></div>
-        <div class="tf-opt" onclick="selOpt(this,'f_tipo','fulani');go(10)"><div><div class="tf-opt-name">Fulani Braids</div><div class="tf-opt-sub">Combinación de pegadas y sueltas</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipo','pegadas');go(8);actualizarEstimado()"><div><div class="tf-opt-name">Pegadas</div><div class="tf-opt-sub">Cornrows · Twist · Barrel Twist</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipo','sueltas');go(9);actualizarEstimado()"><div><div class="tf-opt-name">Sueltas</div><div class="tf-opt-sub">Box Braids · Knotless · Goddess · Bohemian…</div></div></div>
+        <div class="tf-opt" onclick="selOpt(this,'f_tipo','fulani');go(10);actualizarEstimado()"><div><div class="tf-opt-name">Fulani Braids</div><div class="tf-opt-sub">Combinación de pegadas y sueltas</div></div></div>
       </div>
       <input type="hidden" id="f_tipo">
       <div class="tf-nav"><button class="tf-btn-back" onclick="goBack(13)">←</button></div>
@@ -850,7 +868,7 @@ option{background:#0d0d0d;color:#fff;}
       <div class="tf-q clash">Tiempo y materiales</div>
       <div class="tf-sub">Tres datos más y calculamos tu precio justo.</div>
       <div class="tf-sublabel first">Horas que tardas en este servicio</div>
-      <input class="tf-input" type="number" id="f_horas" placeholder="Ej: 4" min="0.5" step="0.5" style="font-size:26px" oninput="checkBtn(12)">
+      <input class="tf-input" type="number" id="f_horas" placeholder="Ej: 4" min="0.5" step="0.5" style="font-size:26px" oninput="checkBtn(12);actualizarEstimadoDebounced()">
       <div class="tf-hint">Tus horas reales. <strong>No te compares</strong> — el sistema ya ajusta el valor según tu nivel.</div>
       <div class="tf-sublabel">Gasto en producto <span id="monedaAviso12" style="text-transform:none;font-weight:600;color:var(--gold)"></span></div>
       <input class="tf-input" type="number" id="f_materiales" placeholder="Ej: 8" min="0" step="1" style="font-size:26px">
@@ -1798,6 +1816,7 @@ function go(n){
     const pct=n>=12?92:Math.round((n-1)/12*100);
     document.getElementById('tfBar').style.width=pct+'%';
     document.getElementById('stepCounter').textContent='Paso '+n+' de 13';
+    if(!document.getElementById('f_tipo').value) document.getElementById('liveEstimateBar').classList.remove('visible');
     if(n===11)updateLargoExtField();
     if(n===11){const tipo=document.getElementById('f_tipo').value;const bb=document.getElementById('backBtn11');if(bb)bb.onclick=()=>goBack(tipo==='pegadas'?8:tipo==='sueltas'?9:10);}
     if(n===12){
@@ -1840,6 +1859,7 @@ function validarYAvanzar(step,next){
   if(step===10){if(!document.getElementById('f_tamanofulsueltas').value||!document.getElementById('f_compfuldelante').value||!document.getElementById('f_extfulani').value){if(errEl)errEl.style.display='block';return;}updateLargoExtField();}
   if(step===11){if(!document.getElementById('f_largocab').value){if(errEl)errEl.style.display='block';return;}}
   go(next);
+  if([6,8,9,10,11,13].includes(step)) actualizarEstimado();
 }
 
 // ── SELECTORES ──
@@ -1914,6 +1934,85 @@ function selectSMI(mode){
   document.getElementById('pillSMI').classList.toggle('active',mode==='smi');
   if(!currentCityData)return;
   document.getElementById('f_smi').value=mode==='sme'?currentCityData.sme:currentCityData.smi||'';
+}
+
+// ── PRECIO EN VIVO (estimado por checkpoints) ──
+// Llama al mismo endpoint /api/calculate (la fórmula real nunca sale del
+// servidor) pero solo en puntos clave del formulario, no en cada clic, y
+// redondea el resultado a un rango de 2 cifras significativas — así se ve
+// dinámico sin regalar el efecto exacto de cada respuesta individual.
+function redondear2SigFigs(n){
+  if(!n||n<=0) return 0;
+  const mag=Math.pow(10, Math.floor(Math.log10(n))-1);
+  return Math.round(n/mag)*mag;
+}
+let estimadoAbortCtrl=null, estimadoDebounceT=null;
+function datosSuficientesParaEstimado(){
+  return !!(document.getElementById('f_pais').value && document.getElementById('f_smi').value &&
+            document.getElementById('f_zona').value && document.getElementById('f_nivel').value &&
+            document.getElementById('f_estructura').value && document.getElementById('f_tipo').value);
+}
+function buildEstimadoBody(){
+  const pais0=document.getElementById('f_pais').value;
+  const tasaConv=(monedaCalculo==='usd'&&TASAS_LOCAL_USD[pais0])?TASAS_LOCAL_USD[pais0]:1;
+  const horasVal=Number(document.getElementById('f_horas').value);
+  return {
+    email:document.getElementById('f_email').value.trim()||'estimado@legacy.app',
+    pais:pais0,
+    zona:document.getElementById('f_zona').value,
+    smi:document.getElementById('f_smi').value,
+    clienteTipo:'local',
+    nivel:document.getElementById('f_nivel').value,
+    estructura:document.getElementById('f_estructura').value,
+    horas:horasVal>0?horasVal:3,
+    materiales:(Number(document.getElementById('f_materiales').value)||0)*tasaConv,
+    precioActual:0,
+    tipoTrenzado:document.getElementById('f_tipo').value,
+    tipoPegadas:document.getElementById('f_tipopeg').value||null,
+    complejidadPegadas:document.getElementById('f_comppeg').value||null,
+    extensionesPegadas:document.getElementById('f_extpeg').value||null,
+    bohoPegadas:document.getElementById('f_bohopeg').value||null,
+    tamanoSueltas:document.getElementById('f_tamano').value||'medium',
+    tipoSueltas:document.getElementById('f_tiposueltas').value||null,
+    extensionesSueltas:document.getElementById('f_extsueltas').value||null,
+    bohoSueltas:document.getElementById('f_bohosueltas').value||null,
+    tamanoFulaniAtras:document.getElementById('f_tamanofulsueltas').value||'medium',
+    complejidadFulaniDelante:document.getElementById('f_compfuldelante').value||null,
+    extensionesFulani:document.getElementById('f_extfulani').value||null,
+    bohoFulani:document.getElementById('f_bohofulsueltas').value||null,
+    largoCabello:document.getElementById('f_largocab').value||'nuca_hombros',
+    largoExtensiones:document.getElementById('f_largoext').value||'hombros',
+  };
+}
+async function actualizarEstimado(){
+  if(!datosSuficientesParaEstimado()) return;
+  const bar=document.getElementById('liveEstimateBar'),valEl=document.getElementById('liveEstimateVal');
+  bar.classList.add('visible');
+  valEl.classList.add('updating');
+  if(estimadoAbortCtrl) estimadoAbortCtrl.abort();
+  estimadoAbortCtrl=new AbortController();
+  try{
+    const res=await fetch('/api/calculate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildEstimadoBody()),signal:estimadoAbortCtrl.signal});
+    const data=await res.json();
+    if(!res.ok||!data||typeof data.precioTotal!=='number') return;
+    const pais0=document.getElementById('f_pais').value;
+    const usaUsd=monedaCalculo==='usd'&&TASAS_LOCAL_USD[pais0];
+    const tasaConv=usaUsd?TASAS_LOCAL_USD[pais0]:1;
+    const geo=GEO[pais0];
+    const sim=usaUsd?'$':(geo?geo.simbolo:'€');
+    const precio=data.precioTotal/tasaConv;
+    const lo=redondear2SigFigs(precio*0.88),hi=redondear2SigFigs(precio*1.15);
+    const f=v=>v>=1000?sim+Math.round(v).toLocaleString('es-ES'):sim+Math.round(v);
+    valEl.textContent=f(lo)+' – '+f(hi);
+  }catch(e){
+    // fetch abortado (llegó una respuesta más reciente) o error de red — no bloquea el formulario
+  }finally{
+    valEl.classList.remove('updating');
+  }
+}
+function actualizarEstimadoDebounced(){
+  clearTimeout(estimadoDebounceT);
+  estimadoDebounceT=setTimeout(actualizarEstimado,600);
 }
 
 // ── CALCULAR ──
@@ -2116,6 +2215,8 @@ function siguienteConsulta(){
   document.getElementById('f_nombre').value='';
   document.getElementById('eliteMsg').style.display='none';
   document.querySelectorAll('#s7 .tf-opt').forEach(o=>o.classList.remove('active'));
+  document.getElementById('f_tipo').value='';
+  document.getElementById('liveEstimateBar').classList.remove('visible');
   go(7);
 }
 
