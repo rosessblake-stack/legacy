@@ -90,7 +90,7 @@ export default async function handler(req, res) {
     es:1.00, us:1.00, gb:0.80, fr:1.00, de:1.00, it:1.00, pt:1.00,
     nl:1.00, be:1.00, ch:0.90, at:1.00, se:10.5, no:10.8, dk:7.0,
     mx:17.50, co:4100, do:58.0, ar:1200, cl:930, pe:3.75, ec:1.00,
-    ve:38, gt:7.8, cr:520, pa:1.00, py:7300, uy:39, bo:6.9, br:5.0,
+    ve:38, gt:7.8, cr:520, pa:1.00, py:7300, uy:40, bo:6.9, br:5.0,
     ca:1.36, au:1.53, nz:1.65,
     ng:1600, gh:15.5, ke:130, za:18.5, ma:10.0, eg:48, other:1.00,
   };

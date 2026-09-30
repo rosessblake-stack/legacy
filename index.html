@@ -551,6 +551,7 @@ option{background:#0d0d0d;color:#fff;}
         <option value="ng">🇳🇬 Nigeria</option>
         <option value="cl">🇨🇱 Chile</option>
         <option value="pe">🇵🇪 Perú</option>
+        <option value="uy">🇺🇾 Uruguay</option>
         <option value="other">🌍 Otro país</option>
       </select>
       <div class="tf-error" id="err3">Selecciona tu país.</div>
@@ -1816,6 +1817,7 @@ au:{nombre:'Australia',simbolo:'$AU',smiBase:2400,smeBase:3800,comunidades:{'Nue
 ng:{nombre:'Nigeria',simbolo:'₦',smiBase:70000,smeBase:150000,comunidades:{'Lagos':{ciudades:{'Lagos Island / VI':{sme:200000,smi:70000},'Lekki':{sme:180000,smi:70000},'Ikeja':{sme:150000,smi:70000},'Otra zona':{sme:120000,smi:70000}}},'Abuja (FCT)':{ciudades:{'Abuja Central':{sme:180000,smi:70000},'Otra zona':{sme:130000,smi:70000}}},'Otro estado':{ciudades:{'Mi ciudad':{sme:100000,smi:70000}}}}},
 cl:{nombre:'Chile',simbolo:'$',smiBase:539000,smeBase:1000000,comunidades:{'Metropolitana de Santiago':{ciudades:{'Las Condes / Vitacura':{sme:1800000,smi:539000},'Santiago Centro':{sme:1000000,smi:539000},'Providencia':{sme:1400000,smi:539000},'Otra zona':{sme:900000,smi:539000}}},'Valparaíso':{ciudades:{'Valparaíso':{sme:800000,smi:539000},'Viña del Mar':{sme:900000,smi:539000},'Otra ciudad':{sme:750000,smi:539000}}},'Otra región':{ciudades:{'Mi ciudad':{sme:700000,smi:539000}}}}},
 pe:{nombre:'Perú',simbolo:'S/',smiBase:1130,smeBase:3500,comunidades:{'Lima':{ciudades:{'Miraflores / San Isidro':{sme:6000,smi:1130},'Lima Centro':{sme:3500,smi:1130},'Lima Sur / Norte':{sme:2200,smi:1130},'Otra zona':{sme:2800,smi:1130}}},'Arequipa':{ciudades:{'Arequipa':{sme:2200,smi:1130},'Otra ciudad':{sme:1800,smi:1130}}},'Otra región':{ciudades:{'Mi ciudad':{sme:1800,smi:1130}}}}},
+uy:{nombre:'Uruguay',simbolo:'$',smiBase:25383,smeBase:45000,comunidades:{'Montevideo':{ciudades:{'Pocitos / Carrasco':{sme:70000,smi:25383},'Punta Carretas':{sme:62000,smi:25383},'Centro / Ciudad Vieja':{sme:40000,smi:25383},'Otra zona':{sme:45000,smi:25383}}},'Canelones':{ciudades:{'Ciudad de la Costa':{sme:42000,smi:25383},'Otra ciudad':{sme:35000,smi:25383}}},'Maldonado':{ciudades:{'Punta del Este':{sme:85000,smi:25383},'Maldonado Capital':{sme:40000,smi:25383},'Otra zona':{sme:35000,smi:25383}}},'Otro departamento':{ciudades:{'Mi ciudad':{sme:32000,smi:25383}}}}},
 other:{nombre:'Otro país',simbolo:'',smiBase:null,smeBase:null,comunidades:{'Mi región':{ciudades:{'Mi ciudad':{sme:null,smi:null}}}}}
 };
 
@@ -1824,12 +1826,12 @@ let cur=1,smiMode='sme',consultaNum=0,currentCityData=null,goingBack=false,moned
 
 // ── MONEDA DE CÁLCULO (países LatAm dolarizados de facto) ──
 // Mantener sincronizado con `TASAS_USD` de api/calculate.js.
-const TASAS_LOCAL_USD={mx:17.50, co:4100, do:58.0, ar:1200, cl:930, pe:3.75};
+const TASAS_LOCAL_USD={mx:17.50, co:4100, do:58.0, ar:1200, cl:930, pe:3.75, uy:40};
 const PAISES_MONEDA_ELEGIBLE=Object.keys(TASAS_LOCAL_USD);
 // Varios países usan el mismo símbolo "$" que el dólar (MXN, COP, ARS, CLP, USD…) —
 // sin el código, un precio en pesos mexicanos y uno en dólares se ven idénticos.
 // Se añade el código junto al símbolo siempre que NO se esté mostrando en USD.
-const MONEDA_CODIGO={us:'US', mx:'MX', co:'CO', ar:'AR', cl:'CL'};
+const MONEDA_CODIGO={us:'US', mx:'MX', co:'CO', ar:'AR', cl:'CL', uy:'UY'};
 function monedaSimbolo(pais, usaUsd){
   if(usaUsd) return '$';
   const geo=GEO[pais];
@@ -2153,8 +2155,9 @@ function mostrarFormularioRapido(){
   document.getElementById('qfSummaryText').textContent=
     (geo?geo.nombre:pais)+' · '+nivelLabel(nivel)+' · '+zonaLabel(zona)+' · '+estructuraLabel(estructura);
 
-  // #resultSection vive dentro de #mainContent, así que NO se oculta mainContent
-  // entero (lo taparía) — solo las piezas propias del wizard.
+  // #quickForm es hermano de #mainContent (no vive dentro), y #mainContent
+  // tiene min-height:100vh — si no se oculta entero deja un hueco en blanco
+  // de una pantalla completa encima del formulario rápido.
   document.getElementById('wizHeader').style.display='none';
   document.getElementById('wizProgress').style.display='none';
   document.getElementById('liveEstimateBar').classList.remove('visible');
@@ -2162,12 +2165,14 @@ function mostrarFormularioRapido(){
   document.getElementById('wizFooter').style.display='none';
   document.getElementById('resultSection').classList.remove('visible');
   document.getElementById('resultSection').style.display='none';
+  document.getElementById('mainContent').classList.remove('visible');
   document.getElementById('quickForm').classList.add('visible');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function volverAWizardCompleto(){
   document.getElementById('quickForm').classList.remove('visible');
+  document.getElementById('mainContent').classList.add('visible');
   document.getElementById('wizHeader').style.display='';
   document.getElementById('wizProgress').style.display='';
   document.getElementById('tfMainArea').style.display='flex';
@@ -2326,6 +2331,7 @@ function calcularRapido(){
   document.getElementById('f_nombre').value=document.getElementById('q_nombre').value||'';
 
   document.getElementById('quickForm').classList.remove('visible');
+  document.getElementById('mainContent').classList.add('visible');
   document.getElementById('wizHeader').style.display='';
   document.getElementById('wizProgress').style.display='';
   document.getElementById('wizFooter').style.display='';
